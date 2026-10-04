@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
 
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<meta name="theme-color"
-      content="#0f172a">
+content="width=device-width, initial-scale=1.0">
 
 <title>KRON Study AI</title>
 
@@ -21,129 +17,409 @@
     padding:0;
 }
 
+:root{
+    --bg:#07111f;
+    --card:#0d1b2e;
+    --card2:#12243a;
+    --text:#ffffff;
+    --muted:#94a3b8;
+    --border:#20344d;
+    --accent:#2563eb;
+}
+
+body.light{
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --card2:#e9eef5;
+    --text:#111827;
+    --muted:#64748b;
+    --border:#d7dee8;
+}
+
 body{
     font-family:Arial,sans-serif;
-    background:#0f172a;
-    color:#f8fafc;
+    background:var(--bg);
+    color:var(--text);
     min-height:100vh;
+    transition:.2s;
 }
 
-header{
-    background:#111827;
-    padding:20px;
-    border-bottom:1px solid #334155;
-}
-
-.logo{
-    font-size:30px;
-    font-weight:800;
-    color:#60a5fa;
-}
-
-.subtitle{
-    margin-top:5px;
-    color:#94a3b8;
-    font-size:14px;
-}
-
-main{
-    max-width:1100px;
-    margin:auto;
-    padding:20px;
-}
-
-.hero{
-    background:#1e293b;
-    border:1px solid #334155;
-    border-radius:18px;
-    padding:25px;
-    margin-bottom:20px;
-}
-
-.hero h1{
-    font-size:28px;
-    margin-bottom:10px;
-}
-
-.hero p{
-    color:#cbd5e1;
-    line-height:1.6;
-}
-
-.navigation{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:10px;
-    margin-bottom:20px;
-}
-
-.navButton{
-    border:0;
-    border-radius:12px;
-    padding:14px 8px;
-    background:#1e293b;
-    color:#cbd5e1;
-    font-weight:bold;
+button{
+    font-family:inherit;
     cursor:pointer;
 }
 
-.navButton:hover{
-    background:#2563eb;
-    color:white;
+/* HEADER */
+
+header{
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:var(--card);
+    border-bottom:1px solid var(--border);
+    padding:14px 16px;
+}
+
+.header{
+    max-width:700px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.header-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.icon-btn{
+    width:40px;
+    height:40px;
+    border:0;
+    border-radius:12px;
+    background:var(--card2);
+    color:var(--text);
+    font-size:18px;
+}
+
+/* MAIN */
+
+main{
+    max-width:700px;
+    margin:auto;
+    padding:20px 15px 90px;
 }
 
 .page{
-    background:#1e293b;
-    border:1px solid #334155;
-    border-radius:18px;
-    padding:20px;
-}
-
-.page h2{
-    margin-bottom:10px;
-}
-
-.page p{
-    color:#cbd5e1;
-    line-height:1.6;
-}
-
-.hidden{
     display:none;
 }
 
-input,
-select{
-    width:100%;
-    padding:13px;
-    margin-top:10px;
-    border-radius:10px;
-    border:1px solid #475569;
-    background:#0f172a;
-    color:#f8fafc;
+.page.active{
+    display:block;
 }
 
-footer{
-    max-width:1100px;
-    margin:auto;
-    padding:25px 20px;
+.page-title{
+    font-size:27px;
+    margin-bottom:7px;
+}
+
+.page-description{
+    color:var(--muted);
+    line-height:1.5;
+    margin-bottom:20px;
+}
+
+/* HOME */
+
+.welcome{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:18px;
+}
+
+.welcome h1{
+    font-size:27px;
+    margin-bottom:8px;
+}
+
+.welcome p{
+    color:var(--muted);
+    line-height:1.5;
+}
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+
+.feature{
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    border-radius:18px;
+    padding:16px;
+    text-align:left;
+    min-height:120px;
+}
+
+.feature:active{
+    transform:scale(.98);
+}
+
+.feature-icon{
+    font-size:25px;
+    margin-bottom:10px;
+}
+
+.feature h3{
+    font-size:16px;
+    margin-bottom:6px;
+}
+
+.feature p{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.4;
+}
+/* =========================
+   AUTHENTICATION
+   ========================= */
+
+.auth-card{
+    max-width:500px;
+    margin:0 auto;
+}
+
+.auth-card label{
+    display:block;
+    margin:14px 0 7px;
+    font-size:14px;
+    font-weight:600;
+}
+
+.auth-card input{
+    width:100%;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--card2);
+    color:var(--text);
+    font-size:15px;
+    outline:none;
+}
+
+.auth-card input:focus{
+    border-color:var(--accent);
+}
+
+.auth-card input::placeholder{
+    color:var(--muted);
+}
+
+.auth-button{
+    width:100%;
+    margin-top:20px;
+    padding:14px;
+    border:0;
+    border-radius:12px;
+    background:var(--accent);
+    color:#ffffff;
+    font-size:15px;
+    font-weight:700;
+}
+
+.auth-button:active{
+    transform:scale(.98);
+}
+
+.auth-switch{
     text-align:center;
-    color:#64748b;
+    margin-top:18px;
+    color:var(--muted);
     font-size:14px;
 }
 
-@media(max-width:650px){
+.auth-switch button{
+    border:0;
+    background:transparent;
+    color:var(--accent);
+    font-size:14px;
+    font-weight:700;
+      }
+      /* ACCOUNT SETTINGS */
 
-    .navigation{
-        grid-template-columns:repeat(2,1fr);
-    }
+.account-card h3{
+    font-size:18px;
+    margin-bottom:8px;
+}
 
-    .hero h1{
-        font-size:23px;
-    }
+.account-card p{
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:16px;
+}
 
-    main{
-        padding:14px;
+.settings-button{
+    width:100%;
+    padding:13px;
+    margin-top:9px;
+    border:0;
+    border-radius:12px;
+    background:var(--accent);
+    color:#ffffff;
+    font-size:14px;
+    font-weight:700;
+}
+
+.settings-button.secondary{
+    background:var(--card2);
+    color:var(--text);
+    border:1px solid var(--border);
+}
+
+.settings-button.danger{
+    background:#b91c1c;
+}
+
+.settings-button:active{
+    transform:scale(.98);
+}
+      /* =========================
+   STUDY INPUTS
+   ========================= */
+
+.study-input,
+.study-textarea{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--card2);
+    color:var(--text);
+    font-family:inherit;
+    font-size:14px;
+    outline:none;
+}
+
+.study-input{
+    padding:13px;
+    margin:8px 0 14px;
+}
+
+.study-textarea{
+    min-height:160px;
+    padding:13px;
+    margin-top:8px;
+    resize:vertical;
+}
+
+.study-input:focus,
+.study-textarea:focus{
+    border-color:var(--accent);
+}
+
+.study-input::placeholder,
+.study-textarea::placeholder{
+    color:var(--muted);
+}
+
+.card label{
+    display:block;
+    font-size:14px;
+    font-weight:600;
+}
+
+.study-button{
+    width:100%;
+    margin-top:14px;
+    padding:13px;
+    border:0;
+    border-radius:12px;
+    background:var(--accent);
+    color:#ffffff;
+    font-size:14px;
+    font-weight:700;
+}
+
+.study-button:active{
+    transform:scale(.98);
+}
+
+.empty-message{
+    color:var(--muted);
+    font-size:14px;
+    margin-top:12px;
+}
+
+#savedNotes h4{
+    font-size:16px;
+    margin-bottom:6px;
+}
+
+#savedNotes p{
+    color:var(--muted);
+    line-height:1.5;
+    font-size:14px;
+}
+
+.note-item{
+    border:1px solid var(--border);
+    border-radius:13px;
+    padding:14px;
+    margin-top:10px;
+    background:var(--card2);
+}
+/* GENERAL CARD */
+
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:15px;
+}
+
+/* AD SPACE */
+
+.ad-space{
+    min-height:60px;
+    border:1px dashed var(--border);
+    border-radius:14px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:var(--muted);
+    font-size:12px;
+    margin-top:20px;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:20;
+    background:var(--card);
+    border-top:1px solid var(--border);
+    display:flex;
+    justify-content:space-around;
+    padding:7px 3px;
+}
+
+.nav-button{
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    font-size:11px;
+    padding:5px;
+    min-width:55px;
+}
+
+.nav-button span{
+    display:block;
+    font-size:20px;
+    margin-bottom:3px;
+}
+
+.nav-button.active{
+    color:var(--accent);
+}
+
+@media(min-width:700px){
+
+    .features{
+        grid-template-columns:repeat(3,1fr);
     }
 
 }
@@ -154,1371 +430,734 @@ footer{
 
 <body>
 
+<div id="app">
+
 <header>
 
-    <div class="logo">
-        KRON
-    </div>
+<div class="header">
 
-    <div class="subtitle">
-        Study AI • Learn. Practice. Improve.
-    </div>
+<div class="logo">
+KRON
+</div>
+
+<div class="header-buttons">
+
+<button
+class="icon-btn"
+id="themeButton"
+onclick="toggleTheme()">
+☾
+</button>
+
+<button
+class="icon-btn"
+onclick="showPage('settingsPage')">
+⚙
+</button>
+
+</div>
+
+</div>
 
 </header>
 
 <main>
 
-<section class="hero">
+<!-- HOME PAGE -->
 
-    <h1>
-        Welcome to KRON Study AI
-    </h1>
+<section
+id="homePage"
+class="page active">
 
-    <p>
-        Learn, practice and track your academic
-        progress from one simple study platform.
-    </p>
+<div class="welcome">
 
-</section>
+<h1>
+Welcome to KRON
+</h1>
 
-<div class="navigation">
+<p>
+Your AI-powered study companion.
+</p>
 
-    <button class="navButton"
-            onclick="showPage('home')">
-        Home
-    </button>
+</div>
+<div class="auth-home">
 
-    <button class="navButton"
-            onclick="showPage('quiz')">
-        Quiz
-    </button>
+<button
+class="auth-home-button"
+onclick="showPage('loginPage')">
 
-    <button class="navButton"
-            onclick="showPage('planner')">
-        Planner
-    </button>
+Log In
 
-    <button class="navButton"
-            onclick="showPage('progress')">
-        Progress
-    </button>
+</button>
+
+<button
+class="auth-home-button secondary"
+onclick="showPage('signupPage')">
+
+Create Account
+
+</button>
+
+</div>
+<div class="features">
+
+<button
+class="feature"
+onclick="showPage('tutorPage')">
+
+<div class="feature-icon">
+🤖
+</div>
+
+<h3>
+AI Tutor
+</h3>
+
+<p>
+Learn with your personal AI tutor.
+</p>
+
+</button>
+
+<button
+class="feature"
+onclick="showPage('quizPage')">
+
+<div class="feature-icon">
+📝
+</div>
+
+<h3>
+Quiz
+</h3>
+
+<p>
+Practice your WAEC subjects.
+</p>
+
+</button>
+
+<button
+class="feature"
+onclick="showPage('searchPage')">
+
+<div class="feature-icon">
+🔎
+</div>
+
+<h3>
+Web Search
+</h3>
+
+<p>
+Search for useful information.
+</p>
+
+</button>
+
+<button
+class="feature"
+onclick="showPage('notesPage')">
+
+<div class="feature-icon">
+📚
+</div>
+
+<h3>
+Notes
+</h3>
+
+<p>
+Create and save study notes.
+</p>
+
+</button>
+
+<button
+class="feature"
+onclick="showPage('plannerPage')">
+
+<div class="feature-icon">
+📅
+</div>
+
+<h3>
+Planner
+</h3>
+
+<p>
+Organize your study sessions.
+</p>
+
+</button>
+
+<button
+class="feature"
+onclick="showPage('progressPage')">
+
+<div class="feature-icon">
+📊
+</div>
+
+<h3>
+Progress
+</h3>
+
+<p>
+Track your learning progress.
+</p>
+
+</button>
+
+<button
+class="feature"
+onclick="showPage('chatPage')">
+
+<div class="feature-icon">
+💬
+</div>
+
+<h3>
+Chat
+</h3>
+
+<p>
+Continue your AI conversations.
+</p>
+
+</button>
+
+<button
+class="feature"
+onclick="showPage('summaryPage')">
+
+<div class="feature-icon">
+📈
+</div>
+
+<h3>
+Daily Summary
+</h3>
+
+<p>
+See your daily study activity.
+</p>
+
+</button>
+
+<button
+class="feature"
+onclick="showPage('targetPage')">
+
+<div class="feature-icon">
+🎯
+</div>
+
+<h3>
+Weekly Target
+</h3>
+
+<p>
+Set and track your weekly goal.
+</p>
+
+</button>
 
 </div>
 
-<section id="home"
-         class="page">
-
-    <h2>
-        Home
-    </h2>
-
-    <p>
-        Welcome to KRON. Your AI-powered study
-        platform will appear here.
-    </p>
+<div class="ad-space">
+Banner Ad Space
+</div>
 
 </section>
 
-<section id="quiz"
-         class="page hidden">
+<!-- AI TUTOR PAGE -->
 
-    <h2>
-        AI Quiz
-    </h2>
+<section
+id="tutorPage"
+class="page">
 
-    <p>
-        Choose a subject and let KRON generate
-        fresh questions for you.
-    </p>
+<h2 class="page-title">
+AI Tutor
+</h2>
 
-</section>
+<p class="page-description">
+Ask questions and learn with KRON.
+</p>
 
-<section id="planner"
-         class="page hidden">
-
-    <h2>
-        Study Planner
-    </h2>
-
-    <p>
-        Plan what you want to study.
-    </p>
+<div class="card">
+AI Tutor interface coming next.
+</div>
 
 </section>
 
-<section id="progress"
-         class="page hidden">
+<!-- QUIZ PAGE -->
 
-    <h2>
-        Progress
-    </h2>
+<section
+id="quizPage"
+class="page">
 
-    <p>
-        Your quiz progress will appear here.
-    </p>
+<h2 class="page-title">
+Quiz
+</h2>
 
-  </section>
-  <section id="quizPanel"
-         class="page hidden">
+<p class="page-description">
+Practice WAEC and SSCE questions.
+</p>
 
-    <h2>
-        AI Practice Quiz
-    </h2>
+<div class="card">
+Quiz interface coming next.
+</div>
 
-    <p>
-        KRON will generate fresh questions
-        based on your subject and settings.
-    </p>
+</section>
 
-    <label>
-        Choose Subject
-    </label>
+<!-- WEB SEARCH PAGE -->
 
-    <select id="quizSubject">
+<section
+id="searchPage"
+class="page">
 
-        <option value="English Language">
-            English Language
-        </option>
+<h2 class="page-title">
+Web Search
+</h2>
 
-        <option value="General Mathematics">
-            General Mathematics
-        </option>
+<p class="page-description">
+Search the web for learning resources.
+</p>
 
-        <option value="Further Mathematics">
-            Further Mathematics
-        </option>
+<div class="card">
+Web Search interface coming next.
+</div>
 
-        <option value="Physics">
-            Physics
-        </option>
+</section>
 
-        <option value="Chemistry">
-            Chemistry
-        </option>
+<!-- NOTES PAGE -->
 
-        <option value="Biology">
-            Biology
-        </option>
+<!-- NOTES PAGE -->
 
-        <option value="Economics">
-            Economics
-        </option>
+<section
+id="notesPage"
+class="page">
 
-        <option value="Government">
-            Government
-        </option>
+<h2 class="page-title">
+Notes
+</h2>
 
-        <option value="Commerce">
-            Commerce
-        </option>
+<p class="page-description">
+Create and save your study notes.
+</p>
 
-        <option value="Financial Accounting">
-            Financial Accounting
-        </option>
+<div class="card">
 
-        <option value="Marketing">
-            Marketing
-        </option>
+<label for="noteTitle">
+Note Title
+</label>
 
-        <option value="Geography">
-            Geography
-        </option>
+<input
+type="text"
+id="noteTitle"
+class="study-input"
+placeholder="e.g. Chemistry - Acids and Bases">
 
-        <option value="Agricultural Science">
-            Agricultural Science
-        </option>
+<label for="noteContent">
+Note
+</label>
 
-        <option value="Civic Education">
-            Civic Education
-        </option>
+<textarea
+id="noteContent"
+class="study-textarea"
+placeholder="Write your study note here...">
+</textarea>
 
-        <option value="Literature in English">
-            Literature in English
-        </option>
+<button
+class="study-button"
+onclick="saveNote()">
+Save Note
+</button>
 
-        <option value="Computer Studies">
-            Computer Studies
-        </option>
+</div>
 
-    </select>
+<div class="card">
 
+<h3>
+Saved Notes
+</h3>
 
-    <label style="display:block;margin-top:15px;">
-        Number of Questions
-    </label>
+<div id="savedNotes">
+<p class="empty-message">
+No notes saved yet.
+</p>
+</div>
 
-    <select id="questionCount">
+</div>
 
-        <option value="5">
-            5 Questions
-        </option>
+</section>
 
-        <option value="10">
-            10 Questions
-        </option>
+<!-- PLANNER PAGE -->
 
-        <option value="15">
-            15 Questions
-        </option>
+<section
+id="plannerPage"
+class="page">
 
-        <option value="20">
-            20 Questions
-        </option>
+<h2 class="page-title">
+Planner
+</h2>
 
-    </select>
+<p class="page-description">
+Plan your study sessions.
+</p>
 
+</section>
 
-    <button
-        class="navButton"
-        style="width:100%;margin-top:15px;"
-        onclick="generateAIQuiz()">
+<!-- PROGRESS PAGE -->
 
-        Generate AI Quiz
+<section
+id="progressPage"
+class="page">
 
-    </button>
+<h2 class="page-title">
+Progress
+</h2>
 
+<p class="page-description">
+Track your learning progress.
+</p>
 
-    <div id="quizLoading"
-         class="hidden"
-         style="margin-top:20px;">
+</section>
 
-        <p>
-            KRON AI is preparing your questions...
-        </p>
+<!-- CHAT PAGE -->
 
-    </div>
+<section
+id="chatPage"
+class="page">
 
+<h2 class="page-title">
+Chat
+</h2>
 
-    <div id="quizArea"
-         class="hidden"
-         style="margin-top:20px;">
+<p class="page-description">
+Your AI conversations.
+</p>
 
-        <p id="quizQuestionNumber"></p>
+</section>
 
-        <h3 id="quizQuestion"
-            style="margin-top:12px;">
-        </h3>
+<!-- DAILY SUMMARY PAGE -->
 
+<section
+id="summaryPage"
+class="page">
 
-        <div id="quizAnswers"
-             style="margin-top:15px;">
-        </div>
+<h2 class="page-title">
+Daily Summary
+</h2>
 
+<p class="page-description">
+Review your study activity.
+</p>
 
-        <div id="writtenAnswerArea"
-             class="hidden"
-             style="margin-top:15px;">
+</section>
 
-            <textarea
-                id="studentAnswer"
-                placeholder="Write your answer here..."
-                style="
-                    width:100%;
-                    min-height:130px;
-                    padding:13px;
-                    border-radius:10px;
-                    border:1px solid #475569;
-                    background:#0f172a;
-                    color:#f8fafc;
-                    resize:vertical;
-                ">
-            </textarea>
+<!-- WEEKLY TARGET PAGE -->
 
-            <button
-                class="navButton"
-                style="width:100%;margin-top:10px;"
-                onclick="submitWrittenAnswer()">
+<section
+id="targetPage"
+class="page">
 
-                Submit Answer
+<h2 class="page-title">
+Weekly Target
+</h2>
 
-            </button>
+<p class="page-description">
+Set and track your weekly target.
+</p>
 
-        </div>
+</section>
+<!-- LOGIN PAGE -->
 
+<section
+id="loginPage"
+class="page">
 
-        <div id="questionExplanation"
-             class="hidden"
-             style="
-                margin-top:15px;
-                padding:15px;
-                background:#0f172a;
-                border-radius:12px;
-             ">
-        </div>
+<h2 class="page-title">
+Welcome Back
+</h2>
 
+<p class="page-description">
+Log in to continue your KRON study journey.
+</p>
 
-        <button
-            id="nextQuizButton"
-            class="navButton"
-            style="width:100%;margin-top:15px;"
-            onclick="nextAIQuestion()">
+<div class="card auth-card">
 
-            Next Question
+<label for="loginEmail">
+Email
+</label>
 
-        </button>
+<input
+type="email"
+id="loginEmail"
+placeholder="Enter your email">
 
-    </div>
+<label for="loginPassword">
+Password
+</label>
 
+<input
+type="password"
+id="loginPassword"
+placeholder="Enter your password">
 
-    <div id="quizFinished"
-         class="hidden"
-         style="margin-top:20px;">
+<button
+class="auth-button"
+onclick="loginUser()">
+Log In
+</button>
 
-        <h3>
-            Quiz Complete
-        </h3>
+<p class="auth-switch">
+Don't have an account?
+<button onclick="showPage('signupPage')">
+Sign Up
+</button>
+</p>
 
-        <p id="quizScore">
-        </p>
-
-        <button
-            class="navButton"
-            style="width:100%;margin-top:12px;"
-            onclick="generateAIQuiz()">
-
-            Try Another Quiz
-
-        </button>
-
-    </div>
-
-  </section>
-  <section id="plannerPanel"
-         class="page hidden">
-
-    <h2>
-        Study Planner
-    </h2>
-
-    <p>
-        Add something you want to study and keep
-        your study tasks saved on this device.
-    </p>
-
-    <input
-        id="studyTask"
-        type="text"
-        placeholder="Enter a study task">
-
-    <button
-        class="navButton"
-        style="width:100%;margin-top:12px;"
-        onclick="saveTask()">
-
-        Save Task
-
-    </button>
-
-    <div id="taskList"
-         style="margin-top:20px;">
-    </div>
+</div>
 
 </section>
 
 
-<section id="progressPanel"
-         class="page hidden">
+<!-- SIGN UP PAGE -->
 
-    <h2>
-        Your Progress
-    </h2>
+<section
+id="signupPage"
+class="page">
 
-    <div
-        style="
-            margin-top:15px;
-            padding:15px;
-            background:#0f172a;
-            border-radius:12px;
-        ">
+<h2 class="page-title">
+Create Account
+</h2>
 
-        <p id="progressScore">
-            Quiz points: 0
-        </p>
+<p class="page-description">
+Create your KRON account.
+</p>
 
-        <p id="progressCompleted"
-           style="margin-top:8px;">
+<div class="card auth-card">
 
-            Quizzes completed: 0
+<label for="signupName">
+Full Name
+</label>
 
-        </p>
+<input
+type="text"
+id="signupName"
+placeholder="Enter your name">
 
-    </div>
+<label for="signupEmail">
+Email
+</label>
+
+<input
+type="email"
+id="signupEmail"
+placeholder="Enter your email">
+
+<label for="signupPassword">
+Password
+</label>
+
+<input
+type="password"
+id="signupPassword"
+placeholder="Create a password">
+
+<label for="signupConfirm">
+Confirm Password
+</label>
+
+<input
+type="password"
+id="signupConfirm"
+placeholder="Confirm your password">
+
+<button
+class="auth-button"
+onclick="signupUser()">
+Create Account
+</button>
+
+<p class="auth-switch">
+Already have an account?
+<button onclick="showPage('loginPage')">
+Log In
+</button>
+</p>
+
+</div>
+
+      </section>
+<!-- SETTINGS PAGE -->
+
+<section
+<!-- SETTINGS PAGE -->
+
+<section
+id="settingsPage"
+class="page">
+
+<h2 class="page-title">
+Settings
+</h2>
+
+<p class="page-description">
+Customize your KRON experience.
+</p>
+
+<div class="card account-card">
+
+<h3>
+Account
+</h3>
+
+<p id="accountStatus">
+You are not logged in.
+</p>
+
+<button
+class="settings-button"
+onclick="showPage('loginPage')">
+Log In
+</button>
+
+<button
+class="settings-button secondary"
+onclick="showPage('signupPage')">
+Create Account
+</button>
+
+<button
+class="settings-button danger"
+onclick="logoutUser()">
+Log Out
+</button>
+
+</div>
 
 </section>
-
-
-<section id="favoritesPanel"
-         class="page hidden">
-
-    <h2>
-        Favorite Subjects
-    </h2>
-
-    <p>
-        Choose the subjects you study most often.
-        You can select more than one.
-    </p>
-
-    <div id="favoriteSubjects"
-         style="margin-top:15px;">
-    </div>
-
-    <button
-        class="navButton"
-        style="width:100%;margin-top:15px;"
-        onclick="saveFavoriteSubjects()">
-
-        Save Favorite Subjects
-
-    </button>
-
-    <p id="favoriteMessage"
-       style="margin-top:12px;">
-    </p>
-
-</section>
-
-
-<footer>
-  <script>
-
-let currentPage = "home";
-
-function showPage(page){
-
-    const pages = document.querySelectorAll(".page");
-
-    pages.forEach(function(section){
-        section.classList.add("hidden");
-    });
-
-    if(page === "home"){
-        document.getElementById("home").classList.remove("hidden");
-    }
-
-    if(page === "quiz"){
-        document.getElementById("quizPanel").classList.remove("hidden");
-    }
-
-    if(page === "planner"){
-        document.getElementById("plannerPanel").classList.remove("hidden");
-        loadTasks();
-    }
-
-    if(page === "progress"){
-        document.getElementById("progressPanel").classList.remove("hidden");
-        loadProgress();
-    }
-
-    if(page === "favorites"){
-        document.getElementById("favoritesPanel").classList.remove("hidden");
-        loadFavoriteSubjects();
-    }
-
-    currentPage = page;
-}
-
-
-function saveTask(){
-
-    const input = document.getElementById("studyTask");
-
-    const task = input.value.trim();
-
-    if(!task){
-        alert("Please enter a study task.");
-        return;
-    }
-
-    let tasks =
-        JSON.parse(localStorage.getItem("kronTasks") || "[]");
-
-    tasks.push({
-        text: task,
-        completed: false
-    });
-
-    localStorage.setItem(
-        "kronTasks",
-        JSON.stringify(tasks)
-    );
-
-    input.value = "";
-
-    loadTasks();
-}
-
-
-function loadTasks(){
-
-    const list =
-        document.getElementById("taskList");
-
-    if(!list) return;
-
-    let tasks =
-        JSON.parse(localStorage.getItem("kronTasks") || "[]");
-
-    if(tasks.length === 0){
-
-        list.innerHTML =
-            "<p style='color:#94a3b8;'>No study tasks yet.</p>";
-
-        return;
-    }
-
-    list.innerHTML = "";
-
-    tasks.forEach(function(task,index){
-
-        const box = document.createElement("div");
-
-        box.style.cssText =
-            "margin-top:10px;padding:13px;background:#0f172a;border-radius:10px;display:flex;gap:10px;align-items:center;";
-
-        box.innerHTML = `
-            <input
-                type="checkbox"
-                ${task.completed ? "checked" : ""}
-                onchange="completeTask(${index})"
-                style="width:auto;margin:0;"
-            >
-
-            <span style="flex:1;">
-                ${escapeHTML(task.text)}
-            </span>
-
-            <button
-                onclick="deleteTask(${index})"
-                style="
-                    border:0;
-                    background:#dc2626;
-                    color:white;
-                    padding:7px 10px;
-                    border-radius:8px;
-                ">
-                Delete
-            </button>
-        `;
-
-        list.appendChild(box);
-    });
-}
-
-
-function completeTask(index){
-
-    let tasks =
-        JSON.parse(localStorage.getItem("kronTasks") || "[]");
-
-    tasks[index].completed =
-        !tasks[index].completed;
-
-    localStorage.setItem(
-        "kronTasks",
-        JSON.stringify(tasks)
-    );
-
-    loadTasks();
-}
-
-
-function deleteTask(index){
-
-    let tasks =
-        JSON.parse(localStorage.getItem("kronTasks") || "[]");
-
-    tasks.splice(index,1);
-
-    localStorage.setItem(
-        "kronTasks",
-        JSON.stringify(tasks)
-    );
-
-    loadTasks();
-}
-
-
-function escapeHTML(text){
-
-    const div = document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
-}
-
-
-function loadProgress(){
-
-    const score =
-        Number(
-            localStorage.getItem("kronQuizScore") || 0
-        );
-
-    const completed =
-        Number(
-            localStorage.getItem("kronQuizzesCompleted") || 0
-        );
-
-    const scoreElement =
-        document.getElementById("progressScore");
-
-    const completedElement =
-        document.getElementById("progressCompleted");
-
-    if(scoreElement){
-        scoreElement.textContent =
-            "Quiz points: " + score;
-    }
-
-    if(completedElement){
-        completedElement.textContent =
-            "Quizzes completed: " + completed;
-    }
-}
-
-
-function loadFavoriteSubjects(){
-
-    const container =
-        document.getElementById("favoriteSubjects");
-
-    if(!container) return;
-
-    const subjects = [
-
-        "English Language",
-        "General Mathematics",
-        "Further Mathematics",
-        "Physics",
-        "Chemistry",
-        "Biology",
-        "Economics",
-        "Government",
-        "Commerce",
-        "Financial Accounting",
-        "Marketing",
-        "Geography",
-        "Agricultural Science",
-        "Civic Education",
-        "Literature in English",
-        "Computer Studies"
-
-    ];
-
-    const saved =
-        JSON.parse(
-            localStorage.getItem("kronFavoriteSubjects") || "[]"
-        );
-
-    container.innerHTML = "";
-
-    subjects.forEach(function(subject){
-
-        const label =
-            document.createElement("label");
-
-        label.style.cssText =
-            "display:block;margin-top:10px;padding:12px;background:#0f172a;border-radius:10px;";
-
-        const checked =
-            saved.includes(subject)
-                ? "checked"
-                : "";
-
-        label.innerHTML = `
-            <input
-                type="checkbox"
-                value="${escapeHTML(subject)}"
-                ${checked}
-                style="width:auto;margin-right:8px;"
-            >
-            ${escapeHTML(subject)}
-        `;
-
-        container.appendChild(label);
-    });
-}
-
-
-function saveFavoriteSubjects(){
-
-    const boxes =
-        document.querySelectorAll(
-            "#favoriteSubjects input[type='checkbox']"
-        );
-
-    const selected = [];
-
-    boxes.forEach(function(box){
-
-        if(box.checked){
-            selected.push(box.value);
-        }
-
-    });
-
-    localStorage.setItem(
-        "kronFavoriteSubjects",
-        JSON.stringify(selected)
-    );
-
-    const message =
-        document.getElementById("favoriteMessage");
-
-    if(message){
-
-        message.textContent =
-            selected.length +
-            " favorite subject(s) saved.";
-
-        message.style.color =
-            "#60a5fa";
-    }
-}
-
-
-document.addEventListener("DOMContentLoaded", function(){
-
-    loadTasks();
-
-    loadProgress();
-
-    loadFavoriteSubjects();
-
-    showPage("home");
-
-});
-
-  </script>
-  <script>
-
-let aiQuestions = [];
-let currentQuestionIndex = 0;
-let currentQuizScore = 0;
-let currentQuizAnswered = false;
-
-
-async function generateAIQuiz(){
-
-    const subject =
-        document.getElementById("quizSubject").value;
-
-    const count =
-        Number(
-            document.getElementById("questionCount").value
-        );
-
-    const loading =
-        document.getElementById("quizLoading");
-
-    const area =
-        document.getElementById("quizArea");
-
-    const finished =
-        document.getElementById("quizFinished");
-
-    loading.classList.remove("hidden");
-    area.classList.add("hidden");
-    finished.classList.add("hidden");
-
-    try{
-
-        const response =
-            await fetch("/api/quiz",{
-
-                method:"POST",
-
-                headers:{
-                    "Content-Type":"application/json"
-                },
-
-                body:JSON.stringify({
-
-                    mode:"generate",
-                    subject:subject,
-                    count:count
-
-                })
-
-            });
-
-
-              if(!response.ok){
-
-    const errorText =
-        await response.text();
-
-    throw new Error(
-        "Server response: " + errorText
-    );
-
-              }
-
-
-        const data =
-            await response.json();
-
-
-        if(!data.questions ||
-           !Array.isArray(data.questions) ||
-           data.questions.length === 0){
-
-            throw new Error(
-                "No quiz questions were returned."
-            );
-
-        }
-
-
-        aiQuestions =
-            data.questions;
-
-        currentQuestionIndex = 0;
-        currentQuizScore = 0;
-        currentQuizAnswered = false;
-
-        loading.classList.add("hidden");
-
-        showQuestion();
-
-    }catch(error){
-
-        loading.classList.add("hidden");
-
-        alert(
-            "KRON could not generate the quiz yet.\n\n" +
-            error.message
-        );
-
-    }
-
-}
-
-
-function showQuestion(){
-
-    if(
-        currentQuestionIndex >=
-        aiQuestions.length
-    ){
-
-        finishQuiz();
-
-        return;
-    }
-
-
-    const question =
-        aiQuestions[currentQuestionIndex];
-
-
-    currentQuizAnswered = false;
-
-
-    document
-        .getElementById("quizArea")
-        .classList.remove("hidden");
-
-
-    document
-        .getElementById("quizFinished")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("quizQuestionNumber")
-        .textContent =
-            "Question " +
-            (currentQuestionIndex + 1) +
-            " of " +
-            aiQuestions.length;
-
-
-    document
-        .getElementById("quizQuestion")
-        .textContent =
-            question.question || "";
-
-
-    const answers =
-        document.getElementById(
-            "quizAnswers"
-        );
-
-    answers.innerHTML = "";
-
-
-    document
-        .getElementById("questionExplanation")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("questionExplanation")
-        .innerHTML = "";
-
-
-    document
-        .getElementById("writtenAnswerArea")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("studentAnswer")
-        .value = "";
-
-
-    if(
-    question.type === "choice" &&
-    Array.isArray(question.options)
-){
-
-    const optionPairs =
-        question.options.map(
-            function(option,index){
-
-                return {
-                    text: option,
-                    originalIndex: index
-                };
-
-            }
-        );
-
-
-    for(
-        let i = optionPairs.length - 1;
-        i > 0;
-        i--
-    ){
-
-        const randomIndex =
-            Math.floor(
-                Math.random() * (i + 1)
-            );
-
-
-        const temp =
-            optionPairs[i];
-
-        optionPairs[i] =
-            optionPairs[randomIndex];
-
-        optionPairs[randomIndex] =
-            temp;
-
-    }
-
-
-    question.options =
-        optionPairs.map(
-            function(item){
-
-                return item.text;
-
-            }
-        );
-
-
-    question.correct =
-        optionPairs.findIndex(
-            function(item){
-
-                return (
-                    item.originalIndex ===
-                    Number(question.correct)
-                );
-
-            }
-        );
-
-
-    question.options.forEach(
-        function(option,index){
-
-            const button =
-                document.createElement("button");
-
-
-            button.className =
-                "navButton";
-
-
-            button.style.cssText =
-                "width:100%;margin-top:10px;text-align:left;";
-
-
-            button.textContent =
-                String.fromCharCode(65 + index) +
-                ". " +
-                option;
-
-
-            button.onclick =
-                function(){
-
-                    answerChoice(index);
-
-                };
-
-
-            answers.appendChild(button);
-
-        }
-    );
-
-}else{
-
-        document
-            .getElementById("writtenAnswerArea")
-            .classList.remove("hidden");
-
-    }
-
-}
-
-
-function answerChoice(selectedIndex){
-
-    if(currentQuizAnswered){
-        return;
-    }
-
-
-    const question =
-        aiQuestions[currentQuestionIndex];
-
-
-    currentQuizAnswered = true;
-
-
-    const buttons =
-        document.querySelectorAll(
-            "#quizAnswers button"
-        );
-
-
-    buttons.forEach(function(button,index){
-
-        button.disabled = true;
-
-        if(index === Number(question.correct)){
-
-            button.style.background =
-                "#166534";
-
-        }
-
-        if(index === selectedIndex &&
-           index !== Number(question.correct)){
-
-            button.style.background =
-                "#991b1b";
-
-        }
-
-    });
-
-
-    if(
-        Number(selectedIndex) ===
-        Number(question.correct)
-    ){
-
-        currentQuizScore++;
-
-    }
-
-
-    showExplanation(
-        question.explanation ||
-        "Answer explanation is not available."
-    );
-
-}
-
-
-async function submitWrittenAnswer(){
-
-    if(currentQuizAnswered){
-        return;
-    }
-
-
-    const question =
-        aiQuestions[currentQuestionIndex];
-
-
-    const input =
-        document.getElementById(
-            "studentAnswer"
-        );
-
-
-    const studentAnswer =
-        input.value.trim();
-
-
-    if(!studentAnswer){
-
-        alert(
-            "Please write an answer first."
-        );
-
-        return;
-
-    }
-
-
-    currentQuizAnswered = true;
-
-
-    const button =
-        document.querySelector(
-            "#writtenAnswerArea button"
-        );
-
-
-    if(button){
-
-        button.disabled = true;
-
-        button.textContent =
-            "Checking answer...";
-
-    }
-
-
-    try{
-
-        const response =
-            await fetch("/api/quiz",{
-
-                method:"POST",
-
-                headers:{
-                    "Content-Type":"application/json"
-                },
-
-                body:JSON.stringify({
-
-                    mode:"check",
-
-                    subject:
-                        document.getElementById(
-                            "quizSubject"
-                        ).value,
-
-                    question:
-                        question.question,
-
-                    correctAnswer:
-                        question.answer,
-
-                    studentAnswer:
-                        studentAnswer
-
-                })
-
-            });
-
-
-        if(!response.ok){
-
-            throw new Error(
-                "Answer checker failed."
-            );
-
-        }
-
-
-        const result =
-    await response.json();
-
-if(button){
-
-    button.disabled = true;
-
-    button.textContent =
-        "Answer Submitted";
-
-}
-
-        if(result.correct === true){
-
-            currentQuizScore++;
-
-        }
-
-
-        let explanation =
-            result.explanation || "";
-
-
-        if(result.correct === true){
-
-            explanation =
-                "<strong>Correct.</strong><br><br>" +
-                explanation;
-
-        }else{
-
-            explanation =
-                "<strong>Not quite correct.</strong><br><br>" +
-                explanation;
-
-        }
-
-
-        showExplanation(explanation);
-
-    }catch(error){
-
-    currentQuizAnswered = false;
-
-    if(button){
-
-        button.disabled = false;
-
-        button.textContent =
-            "Submit Answer";
-
-    }
-
-    alert(
-        "KRON could not check the answer.\n\n" +
-        error.message
-    );
-
-    }
-
-
-
-    }
-
-}
-
-
-function showExplanation(text){
-
-    const box =
-        document.getElementById(
-            "questionExplanation"
-        );
-
-
-    box.innerHTML =
-        "<strong>Explanation</strong><br><br>" +
-        escapeHTML(text)
-            .replace(/\n/g,"<br>");
-
-
-    box.classList.remove("hidden");
-
-}
-
-
-function nextAIQuestion(){
-
-    if(!currentQuizAnswered){
-
-        alert(
-            "Please answer the current question first."
-        );
-
-        return;
-
-    }
-
-
-    currentQuestionIndex++;
-
-    showQuestion();
-
-}
-
-
-function finishQuiz(){
-
-    document
-        .getElementById("quizArea")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("quizFinished")
-        .classList.remove("hidden");
-
-
-    const total =
-        aiQuestions.length;
-
-
-    const scoreText =
-        currentQuizScore +
-        " / " +
-        total;
-
-
-    document
-        .getElementById("quizScore")
-        .textContent =
-            "Your score: " +
-            scoreText;
-
-
-    const oldScore =
-        Number(
-            localStorage.getItem(
-                "kronQuizScore"
-            ) || 0
-        );
-
-
-    const oldCompleted =
-        Number(
-            localStorage.getItem(
-                "kronQuizzesCompleted"
-            ) || 0
-        );
-
-
-    localStorage.setItem(
-        "kronQuizScore",
-        String(
-            oldScore +
-            currentQuizScore
-        )
-    );
-
-
-    localStorage.setItem(
-        "kronQuizzesCompleted",
-        String(
-            oldCompleted + 1
-        )
-    );
-
-
-    loadProgress();
-
-}
-
-
-</script>
 
 </main>
 
+<nav class="bottom-nav">
+
+<button
+class="nav-button active"
+onclick="showPage('homePage',this)">
+
+<span>⌂</span>
+Home
+
+</button>
+
+<button
+class="nav-button"
+onclick="showPage('tutorPage',this)">
+
+<span>🤖</span>
+Tutor
+
+</button>
+
+<button
+class="nav-button"
+onclick="showPage('quizPage',this)">
+
+<span>📝</span>
+Quiz
+
+</button>
+
+<button
+class="nav-button"
+onclick="showPage('progressPage',this)">
+
+<span>📊</span>
+Progress
+
+</button>
+
+<button
+class="nav-button"
+onclick="showPage('settingsPage',this)">
+
+<span>⚙</span>
+Settings
+
+</button>
+
+</nav>
+
+</div>
+
+<script>
+
+function showPage(pageId,button){
+
+document.querySelectorAll(".page")
+.forEach(function(page){
+
+page.classList.remove("active");
+
+});
+
+const page=document.getElementById(pageId);
+
+if(page){
+page.classList.add("active");
+}
+
+document.querySelectorAll(".nav-button")
+.forEach(function(nav){
+
+nav.classList.remove("active");
+
+});
+
+if(button){
+button.classList.add("active");
+}
+
+window.scrollTo(0,0);
+
+}
+
+function toggleTheme(){
+
+document.body.classList.toggle("light");
+
+const light=
+document.body.classList.contains("light");
+
+localStorage.setItem(
+"KRON_THEME",
+light ? "light" : "dark"
+);
+
+document.getElementById(
+"themeButton"
+).textContent=light ? "☀" : "☾";
+
+}
+
+const savedTheme=
+localStorage.getItem("KRON_THEME");
+
+if(savedTheme==="light"){
+
+document.body.classList.add("light");
+
+document.getElementById(
+"themeButton"
+).textContent="☀";
+
+}
+
+</script>
+
 </body>
-
 </html>
-
-    KRON Study AI
-
-    <br>
-
-    Learn. Practice. Improve.
-
-</footer>
