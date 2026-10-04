@@ -733,8 +733,6 @@ Web Search interface coming next.
 
 <!-- NOTES PAGE -->
 
-<!-- NOTES PAGE -->
-
 <section
 id="notesPage"
 class="page">
@@ -804,8 +802,44 @@ Planner
 </h2>
 
 <p class="page-description">
-Plan your study sessions.
+Plan your study sessions and tasks.
 </p>
+
+<div class="card">
+
+<label for="taskInput">
+Study Task
+</label>
+
+<input
+type="text"
+id="taskInput"
+class="study-input"
+placeholder="e.g. Study Chemistry for 1 hour">
+
+<button
+class="study-button"
+onclick="addTask()">
+Add Task
+</button>
+
+</div>
+
+<div class="card">
+
+<h3>
+My Study Tasks
+</h3>
+
+<div id="taskList">
+
+<p class="empty-message">
+No tasks added yet.
+</p>
+
+</div>
+
+</div>
 
 </section>
 
@@ -1255,6 +1289,125 @@ function escapeHTML(text){
 }
 
 loadNotes();
+    function addTask(){
+
+    const input =
+        document.getElementById("taskInput");
+
+    const task =
+        input.value.trim();
+
+    if(!task){
+
+        alert("Please enter a study task.");
+
+        return;
+
+    }
+
+    const tasks =
+        JSON.parse(
+            localStorage.getItem("KRON_TASKS") || "[]"
+        );
+
+    tasks.unshift({
+
+        id:Date.now(),
+
+        text:task,
+
+        completed:false
+
+    });
+
+    localStorage.setItem(
+        "KRON_TASKS",
+        JSON.stringify(tasks)
+    );
+
+    input.value="";
+
+    loadTasks();
+
+}
+
+function loadTasks(){
+
+    const container =
+        document.getElementById("taskList");
+
+    if(!container){
+        return;
+    }
+
+    const tasks =
+        JSON.parse(
+            localStorage.getItem("KRON_TASKS") || "[]"
+        );
+
+    if(tasks.length===0){
+
+        container.innerHTML=
+            '<p class="empty-message">No tasks added yet.</p>';
+
+        return;
+
+    }
+
+    container.innerHTML="";
+
+    tasks.forEach(function(task){
+
+        const item =
+            document.createElement("div");
+
+        item.className="note-item";
+
+        item.innerHTML=
+            '<label style="display:flex;gap:10px;align-items:center;">'+
+            '<input type="checkbox" '+
+            (task.completed ? "checked" : "")+
+            ' onchange="toggleTask('+task.id+')">'+
+            '<span>'+escapeHTML(task.text)+'</span>'+
+            '</label>';
+
+        container.appendChild(item);
+
+    });
+
+}
+
+function toggleTask(id){
+
+    const tasks =
+        JSON.parse(
+            localStorage.getItem("KRON_TASKS") || "[]"
+        );
+
+    const task =
+        tasks.find(function(item){
+
+            return item.id===id;
+
+        });
+
+    if(task){
+
+        task.completed =
+            !task.completed;
+
+    }
+
+    localStorage.setItem(
+        "KRON_TASKS",
+        JSON.stringify(tasks)
+    );
+
+    loadTasks();
+
+}
+
+loadTasks();
 </script>
 
 </body>
