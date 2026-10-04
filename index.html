@@ -358,6 +358,121 @@ main{
     margin-top:10px;
     background:var(--card2);
 }
+    /* =========================
+   PROGRESS
+   ========================= */
+
+.progress-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:15px;
+}
+
+.progress-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px;
+    text-align:center;
+}
+
+.progress-icon{
+    display:block;
+    font-size:25px;
+    margin-bottom:8px;
+}
+
+.progress-card strong{
+    display:block;
+    font-size:25px;
+    margin-bottom:5px;
+}
+
+.progress-card p{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.progress-text{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.5;
+    margin-top:10px;
+}
+
+.progress-bar{
+    width:100%;
+    height:12px;
+    margin-top:18px;
+    background:var(--card2);
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    width:0%;
+    height:100%;
+    background:var(--accent);
+    border-radius:20px;
+    transition:width .3s;
+}
+
+@media(min-width:500px){
+
+    .progress-grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+}
+    /* =========================
+   QUIZ
+   ========================= */
+
+.study-input{
+    appearance:none;
+}
+
+select.study-input{
+    cursor:pointer;
+}
+
+#quizArea{
+    min-height:100px;
+}
+
+.quiz-question{
+    font-size:17px;
+    line-height:1.5;
+    margin-bottom:16px;
+}
+
+.quiz-option{
+    width:100%;
+    display:block;
+    text-align:left;
+    padding:13px;
+    margin-top:9px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:var(--card2);
+    color:var(--text);
+    font-size:14px;
+}
+
+.quiz-option:active{
+    transform:scale(.99);
+}
+
+.quiz-option.selected{
+    border-color:var(--accent);
+}
+
+.quiz-number{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:8px;
+}
 /* GENERAL CARD */
 
 .card{
@@ -702,11 +817,54 @@ Quiz
 </h2>
 
 <p class="page-description">
-Practice WAEC and SSCE questions.
+Practice WAEC and SSCE questions with KRON.
 </p>
 
 <div class="card">
-Quiz interface coming next.
+
+<label for="quizSubject">
+Subject
+</label>
+
+<select
+id="quizSubject"
+class="study-input">
+
+<option value="">
+Choose a subject
+</option>
+
+<option>English Language</option>
+<option>Mathematics</option>
+<option>Physics</option>
+<option>Chemistry</option>
+<option>Biology</option>
+<option>Economics</option>
+<option>Government</option>
+<option>Commerce</option>
+<option>Financial Accounting</option>
+<option>Marketing</option>
+<option>Data Processing</option>
+<option>Office Practice</option>
+
+</select>
+
+<button
+class="study-button"
+onclick="startQuiz()">
+Start Quiz
+</button>
+
+</div>
+
+<div
+id="quizArea"
+class="card">
+
+<p class="empty-message">
+Choose a subject and start a quiz.
+</p>
+
 </div>
 
 </section>
@@ -854,10 +1012,64 @@ Progress
 </h2>
 
 <p class="page-description">
-Track your learning progress.
+Track your learning activity and study progress.
 </p>
 
+<div class="progress-grid">
+
+<div class="progress-card">
+<span class="progress-icon">📝</span>
+<strong id="progressNotes">0</strong>
+<p>Notes</p>
+</div>
+
+<div class="progress-card">
+<span class="progress-icon">📅</span>
+<strong id="progressTasks">0</strong>
+<p>Study Tasks</p>
+</div>
+
+<div class="progress-card">
+<span class="progress-icon">✅</span>
+<strong id="progressCompleted">0</strong>
+<p>Completed</p>
+</div>
+
+<div class="progress-card">
+<span class="progress-icon">🎯</span>
+<strong id="progressScore">0%</strong>
+<p>Quiz Score</p>
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>
+Study Overview
+</h3>
+
+<p class="progress-text">
+Keep studying consistently to build your progress.
+</p>
+
+<div class="progress-bar">
+<div
+id="studyProgressBar"
+class="progress-fill">
+</div>
+</div>
+
+<p
+id="studyProgressText"
+class="progress-text">
+0% study progress
+</p>
+
+</div>
+
 </section>
+
 
 <!-- CHAT PAGE -->
 
@@ -1408,6 +1620,244 @@ function toggleTask(id){
 }
 
 loadTasks();
+    function updateProgress(){
+
+    const notes =
+        JSON.parse(
+            localStorage.getItem("KRON_NOTES") || "[]"
+        );
+
+    const tasks =
+        JSON.parse(
+            localStorage.getItem("KRON_TASKS") || "[]"
+        );
+
+    const completed =
+        tasks.filter(function(task){
+
+            return task.completed;
+
+        }).length;
+
+    const noteCount =
+        document.getElementById("progressNotes");
+
+    const taskCount =
+        document.getElementById("progressTasks");
+
+    const completedCount =
+        document.getElementById("progressCompleted");
+
+    const progressBar =
+        document.getElementById("studyProgressBar");
+
+    const progressText =
+        document.getElementById("studyProgressText");
+
+    if(noteCount){
+        noteCount.textContent=notes.length;
+    }
+
+    if(taskCount){
+        taskCount.textContent=tasks.length;
+    }
+
+    if(completedCount){
+        completedCount.textContent=completed;
+    }
+
+    let percentage=0;
+
+    if(tasks.length>0){
+
+        percentage =
+            Math.round(
+                (completed/tasks.length)*100
+            );
+
+    }
+
+    if(progressBar){
+        progressBar.style.width=
+            percentage+"%";
+    }
+
+    if(progressText){
+        progressText.textContent=
+            percentage+
+            "% study progress";
+    }
+
+}
+
+updateProgress();
+    const quizQuestions = [
+
+    {
+        subject:"Mathematics",
+        question:"If 3x + 5 = 20, what is the value of x?",
+        options:["3","5","7","10"],
+        answer:"5"
+    },
+
+    {
+        subject:"English Language",
+        question:"Choose the word that is closest in meaning to 'rapid'.",
+        options:["Slow","Quick","Weak","Late"],
+        answer:"Quick"
+    },
+
+    {
+        subject:"Physics",
+        question:"What is the SI unit of force?",
+        options:["Joule","Watt","Newton","Pascal"],
+        answer:"Newton"
+    },
+
+    {
+        subject:"Chemistry",
+        question:"What is the chemical symbol for oxygen?",
+        options:["Ox","O","C","Og"],
+        answer:"O"
+    },
+
+    {
+        subject:"Biology",
+        question:"Which organ pumps blood around the human body?",
+        options:["Lung","Kidney","Heart","Liver"],
+        answer:"Heart"
+    }
+
+];
+
+let currentQuizQuestion=null;
+
+function startQuiz(){
+
+    const subject =
+        document.getElementById("quizSubject").value;
+
+    const area =
+        document.getElementById("quizArea");
+
+    if(!subject){
+
+        area.innerHTML=
+            '<p class="empty-message">'+
+            'Please choose a subject first.'+
+            '</p>';
+
+        return;
+
+    }
+
+    const available =
+        quizQuestions.filter(function(question){
+
+            return question.subject===subject;
+
+        });
+
+    if(available.length===0){
+
+        area.innerHTML=
+            '<p class="empty-message">'+
+            'No local question is available for this subject yet.'+
+            '</p>';
+
+        return;
+
+    }
+
+    currentQuizQuestion =
+        available[
+            Math.floor(
+                Math.random()*available.length
+            )
+        ];
+
+    renderQuizQuestion();
+
+}
+
+function renderQuizQuestion(){
+
+    const area =
+        document.getElementById("quizArea");
+
+    const question =
+        currentQuizQuestion;
+
+    let html=
+        '<div class="quiz-number">'+
+        question.subject+
+        '</div>';
+
+    html+=
+        '<div class="quiz-question">'+
+        escapeHTML(question.question)+
+        '</div>';
+
+    question.options.forEach(function(option){
+
+        html+=
+            '<button class="quiz-option" '+
+            'onclick="checkQuizAnswer(this,'+
+            'escapeHTMLForQuiz(\''+
+            escapeHTML(option)+
+            '\'))">'+
+            escapeHTML(option)+
+            '</button>';
+
+    });
+
+    area.innerHTML=html;
+
+}
+
+function escapeHTMLForQuiz(text){
+
+    return text;
+
+}
+
+function checkQuizAnswer(button,answer){
+
+    const buttons =
+        document.querySelectorAll(
+            ".quiz-option"
+        );
+
+    buttons.forEach(function(item){
+
+        item.disabled=true;
+
+    });
+
+    if(answer===currentQuizQuestion.answer){
+
+        button.classList.add("selected");
+
+        button.textContent=
+            button.textContent+
+            " ✓";
+
+        alert("Correct! Well done.");
+
+    }else{
+
+        button.textContent=
+            button.textContent+
+            " ✕";
+
+        alert(
+            "Not quite. The correct answer is: "+
+            currentQuizQuestion.answer
+        );
+
+    }
+
+    }
 </script>
 
 </body>
