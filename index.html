@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color"
+      content="#0f172a">
+
+<title>KRON Study AI</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#0f172a;
+    color:#f8fafc;
+    min-height:100vh;
+}
+
+header{
+    background:#111827;
+    padding:20px;
+    border-bottom:1px solid #334155;
+}
+
+.logo{
+    font-size:30px;
+    font-weight:800;
+    color:#60a5fa;
+}
+
+.subtitle{
+    margin-top:5px;
+    color:#94a3b8;
+    font-size:14px;
+}
+
+main{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+.hero{
+    background:#1e293b;
+    border:1px solid #334155;
+    border-radius:18px;
+    padding:25px;
+    margin-bottom:20px;
+}
+
+.hero h1{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.hero p{
+    color:#cbd5e1;
+    line-height:1.6;
+}
+
+.navigation{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.navButton{
+    border:0;
+    border-radius:12px;
+    padding:14px 8px;
+    background:#1e293b;
+    color:#cbd5e1;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.navButton:hover{
+    background:#2563eb;
+    color:white;
+}
+
+.page{
+    background:#1e293b;
+    border:1px solid #334155;
+    border-radius:18px;
+    padding:20px;
+}
+
+.page h2{
+    margin-bottom:10px;
+}
+
+.page p{
+    color:#cbd5e1;
+    line-height:1.6;
+}
+
+.hidden{
+    display:none;
+}
+
+input,
+select{
+    width:100%;
+    padding:13px;
+    margin-top:10px;
+    border-radius:10px;
+    border:1px solid #475569;
+    background:#0f172a;
+    color:#f8fafc;
+}
+
+footer{
+    max-width:1100px;
+    margin:auto;
+    padding:25px 20px;
+    text-align:center;
+    color:#64748b;
+    font-size:14px;
+}
+
+@media(max-width:650px){
+
+    .navigation{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .hero h1{
+        font-size:23px;
+    }
+
+    main{
+        padding:14px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        KRON
+    </div>
+
+    <div class="subtitle">
+        Study AI • Learn. Practice. Improve.
+    </div>
+
+</header>
+
+<main>
+
+<section class="hero">
+
+    <h1>
+        Welcome to KRON Study AI
+    </h1>
+
+    <p>
+        Learn, practice and track your academic
+        progress from one simple study platform.
+    </p>
+
+</section>
+
+<div class="navigation">
+
+    <button class="navButton"
+            onclick="showPage('home')">
+        Home
+    </button>
+
+    <button class="navButton"
+            onclick="showPage('quiz')">
+        Quiz
+    </button>
+
+    <button class="navButton"
+            onclick="showPage('planner')">
+        Planner
+    </button>
+
+    <button class="navButton"
+            onclick="showPage('progress')">
+        Progress
+    </button>
+
+</div>
+
+<section id="home"
+         class="page">
+
+    <h2>
+        Home
+    </h2>
+
+    <p>
+        Welcome to KRON. Your AI-powered study
+        platform will appear here.
+    </p>
+
+</section>
+
+<section id="quiz"
+         class="page hidden">
+
+    <h2>
+        AI Quiz
+    </h2>
+
+    <p>
+        Choose a subject and let KRON generate
+        fresh questions for you.
+    </p>
+
+</section>
+
+<section id="planner"
+         class="page hidden">
+
+    <h2>
+        Study Planner
+    </h2>
+
+    <p>
+        Plan what you want to study.
+    </p>
+
+</section>
+
+<section id="progress"
+         class="page hidden">
+
+    <h2>
+        Progress
+    </h2>
+
+    <p>
+        Your quiz progress will appear here.
+    </p>
+
+  </section>
+  <section id="quizPanel"
+         class="page hidden">
+
+    <h2>
+        AI Practice Quiz
+    </h2>
+
+    <p>
+        KRON will generate fresh questions
+        based on your subject and settings.
+    </p>
+
+    <label>
+        Choose Subject
+    </label>
+
+    <select id="quizSubject">
+
+        <option value="English Language">
+            English Language
+        </option>
+
+        <option value="General Mathematics">
+            General Mathematics
+        </option>
+
+        <option value="Further Mathematics">
+            Further Mathematics
+        </option>
+
+        <option value="Physics">
+            Physics
+        </option>
+
+        <option value="Chemistry">
+            Chemistry
+        </option>
+
+        <option value="Biology">
+            Biology
+        </option>
+
+        <option value="Economics">
+            Economics
+        </option>
+
+        <option value="Government">
+            Government
+        </option>
+
+        <option value="Commerce">
+            Commerce
+        </option>
+
+        <option value="Financial Accounting">
+            Financial Accounting
+        </option>
+
+        <option value="Marketing">
+            Marketing
+        </option>
+
+        <option value="Geography">
+            Geography
+        </option>
+
+        <option value="Agricultural Science">
+            Agricultural Science
+        </option>
+
+        <option value="Civic Education">
+            Civic Education
+        </option>
+
+        <option value="Literature in English">
+            Literature in English
+        </option>
+
+        <option value="Computer Studies">
+            Computer Studies
+        </option>
+
+    </select>
+
+
+    <label style="display:block;margin-top:15px;">
+        Number of Questions
+    </label>
+
+    <select id="questionCount">
+
+        <option value="5">
+            5 Questions
+        </option>
+
+        <option value="10">
+            10 Questions
+        </option>
+
+        <option value="15">
+            15 Questions
+        </option>
+
+        <option value="20">
+            20 Questions
+        </option>
+
+    </select>
+
+
+    <button
+        class="navButton"
+        style="width:100%;margin-top:15px;"
+        onclick="generateAIQuiz()">
+
+        Generate AI Quiz
+
+    </button>
+
+
+    <div id="quizLoading"
+         class="hidden"
+         style="margin-top:20px;">
+
+        <p>
+            KRON AI is preparing your questions...
+        </p>
+
+    </div>
+
+
+    <div id="quizArea"
+         class="hidden"
+         style="margin-top:20px;">
+
+        <p id="quizQuestionNumber"></p>
+
+        <h3 id="quizQuestion"
+            style="margin-top:12px;">
+        </h3>
+
+
+        <div id="quizAnswers"
+             style="margin-top:15px;">
+        </div>
+
+
+        <div id="writtenAnswerArea"
+             class="hidden"
+             style="margin-top:15px;">
+
+            <textarea
+                id="studentAnswer"
+                placeholder="Write your answer here..."
+                style="
+                    width:100%;
+                    min-height:130px;
+                    padding:13px;
+                    border-radius:10px;
+                    border:1px solid #475569;
+                    background:#0f172a;
+                    color:#f8fafc;
+                    resize:vertical;
+                ">
+            </textarea>
+
+            <button
+                class="navButton"
+                style="width:100%;margin-top:10px;"
+                onclick="submitWrittenAnswer()">
+
+                Submit Answer
+
+            </button>
+
+        </div>
+
+
+        <div id="questionExplanation"
+             class="hidden"
+             style="
+                margin-top:15px;
+                padding:15px;
+                background:#0f172a;
+                border-radius:12px;
+             ">
+        </div>
+
+
+        <button
+            id="nextQuizButton"
+            class="navButton"
+            style="width:100%;margin-top:15px;"
+            onclick="nextAIQuestion()">
+
+            Next Question
+
+        </button>
+
+    </div>
+
+
+    <div id="quizFinished"
+         class="hidden"
+         style="margin-top:20px;">
+
+        <h3>
+            Quiz Complete
+        </h3>
+
+        <p id="quizScore">
+        </p>
+
+        <button
+            class="navButton"
+            style="width:100%;margin-top:12px;"
+            onclick="generateAIQuiz()">
+
+            Try Another Quiz
+
+        </button>
+
+    </div>
+
+  </section>
+  <section id="plannerPanel"
+         class="page hidden">
+
+    <h2>
+        Study Planner
+    </h2>
+
+    <p>
+        Add something you want to study and keep
+        your study tasks saved on this device.
+    </p>
+
+    <input
+        id="studyTask"
+        type="text"
+        placeholder="Enter a study task">
+
+    <button
+        class="navButton"
+        style="width:100%;margin-top:12px;"
+        onclick="saveTask()">
+
+        Save Task
+
+    </button>
+
+    <div id="taskList"
+         style="margin-top:20px;">
+    </div>
+
+</section>
+
+
+<section id="progressPanel"
+         class="page hidden">
+
+    <h2>
+        Your Progress
+    </h2>
+
+    <div
+        style="
+            margin-top:15px;
+            padding:15px;
+            background:#0f172a;
+            border-radius:12px;
+        ">
+
+        <p id="progressScore">
+            Quiz points: 0
+        </p>
+
+        <p id="progressCompleted"
+           style="margin-top:8px;">
+
+            Quizzes completed: 0
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<section id="favoritesPanel"
+         class="page hidden">
+
+    <h2>
+        Favorite Subjects
+    </h2>
+
+    <p>
+        Choose the subjects you study most often.
+        You can select more than one.
+    </p>
+
+    <div id="favoriteSubjects"
+         style="margin-top:15px;">
+    </div>
+
+    <button
+        class="navButton"
+        style="width:100%;margin-top:15px;"
+        onclick="saveFavoriteSubjects()">
+
+        Save Favorite Subjects
+
+    </button>
+
+    <p id="favoriteMessage"
+       style="margin-top:12px;">
+    </p>
+
+</section>
+
+
+<footer>
+  <script>
+
+let currentPage = "home";
+
+function showPage(page){
+
+    const pages = document.querySelectorAll(".page");
+
+    pages.forEach(function(section){
+        section.classList.add("hidden");
+    });
+
+    if(page === "home"){
+        document.getElementById("home").classList.remove("hidden");
+    }
+
+    if(page === "quiz"){
+        document.getElementById("quizPanel").classList.remove("hidden");
+    }
+
+    if(page === "planner"){
+        document.getElementById("plannerPanel").classList.remove("hidden");
+        loadTasks();
+    }
+
+    if(page === "progress"){
+        document.getElementById("progressPanel").classList.remove("hidden");
+        loadProgress();
+    }
+
+    if(page === "favorites"){
+        document.getElementById("favoritesPanel").classList.remove("hidden");
+        loadFavoriteSubjects();
+    }
+
+    currentPage = page;
+}
+
+
+function saveTask(){
+
+    const input = document.getElementById("studyTask");
+
+    const task = input.value.trim();
+
+    if(!task){
+        alert("Please enter a study task.");
+        return;
+    }
+
+    let tasks =
+        JSON.parse(localStorage.getItem("kronTasks") || "[]");
+
+    tasks.push({
+        text: task,
+        completed: false
+    });
+
+    localStorage.setItem(
+        "kronTasks",
+        JSON.stringify(tasks)
+    );
+
+    input.value = "";
+
+    loadTasks();
+}
+
+
+function loadTasks(){
+
+    const list =
+        document.getElementById("taskList");
+
+    if(!list) return;
+
+    let tasks =
+        JSON.parse(localStorage.getItem("kronTasks") || "[]");
+
+    if(tasks.length === 0){
+
+        list.innerHTML =
+            "<p style='color:#94a3b8;'>No study tasks yet.</p>";
+
+        return;
+    }
+
+    list.innerHTML = "";
+
+    tasks.forEach(function(task,index){
+
+        const box = document.createElement("div");
+
+        box.style.cssText =
+            "margin-top:10px;padding:13px;background:#0f172a;border-radius:10px;display:flex;gap:10px;align-items:center;";
+
+        box.innerHTML = `
+            <input
+                type="checkbox"
+                ${task.completed ? "checked" : ""}
+                onchange="completeTask(${index})"
+                style="width:auto;margin:0;"
+            >
+
+            <span style="flex:1;">
+                ${escapeHTML(task.text)}
+            </span>
+
+            <button
+                onclick="deleteTask(${index})"
+                style="
+                    border:0;
+                    background:#dc2626;
+                    color:white;
+                    padding:7px 10px;
+                    border-radius:8px;
+                ">
+                Delete
+            </button>
+        `;
+
+        list.appendChild(box);
+    });
+}
+
+
+function completeTask(index){
+
+    let tasks =
+        JSON.parse(localStorage.getItem("kronTasks") || "[]");
+
+    tasks[index].completed =
+        !tasks[index].completed;
+
+    localStorage.setItem(
+        "kronTasks",
+        JSON.stringify(tasks)
+    );
+
+    loadTasks();
+}
+
+
+function deleteTask(index){
+
+    let tasks =
+        JSON.parse(localStorage.getItem("kronTasks") || "[]");
+
+    tasks.splice(index,1);
+
+    localStorage.setItem(
+        "kronTasks",
+        JSON.stringify(tasks)
+    );
+
+    loadTasks();
+}
+
+
+function escapeHTML(text){
+
+    const div = document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+}
+
+
+function loadProgress(){
+
+    const score =
+        Number(
+            localStorage.getItem("kronQuizScore") || 0
+        );
+
+    const completed =
+        Number(
+            localStorage.getItem("kronQuizzesCompleted") || 0
+        );
+
+    const scoreElement =
+        document.getElementById("progressScore");
+
+    const completedElement =
+        document.getElementById("progressCompleted");
+
+    if(scoreElement){
+        scoreElement.textContent =
+            "Quiz points: " + score;
+    }
+
+    if(completedElement){
+        completedElement.textContent =
+            "Quizzes completed: " + completed;
+    }
+}
+
+
+function loadFavoriteSubjects(){
+
+    const container =
+        document.getElementById("favoriteSubjects");
+
+    if(!container) return;
+
+    const subjects = [
+
+        "English Language",
+        "General Mathematics",
+        "Further Mathematics",
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "Economics",
+        "Government",
+        "Commerce",
+        "Financial Accounting",
+        "Marketing",
+        "Geography",
+        "Agricultural Science",
+        "Civic Education",
+        "Literature in English",
+        "Computer Studies"
+
+    ];
+
+    const saved =
+        JSON.parse(
+            localStorage.getItem("kronFavoriteSubjects") || "[]"
+        );
+
+    container.innerHTML = "";
+
+    subjects.forEach(function(subject){
+
+        const label =
+            document.createElement("label");
+
+        label.style.cssText =
+            "display:block;margin-top:10px;padding:12px;background:#0f172a;border-radius:10px;";
+
+        const checked =
+            saved.includes(subject)
+                ? "checked"
+                : "";
+
+        label.innerHTML = `
+            <input
+                type="checkbox"
+                value="${escapeHTML(subject)}"
+                ${checked}
+                style="width:auto;margin-right:8px;"
+            >
+            ${escapeHTML(subject)}
+        `;
+
+        container.appendChild(label);
+    });
+}
+
+
+function saveFavoriteSubjects(){
+
+    const boxes =
+        document.querySelectorAll(
+            "#favoriteSubjects input[type='checkbox']"
+        );
+
+    const selected = [];
+
+    boxes.forEach(function(box){
+
+        if(box.checked){
+            selected.push(box.value);
+        }
+
+    });
+
+    localStorage.setItem(
+        "kronFavoriteSubjects",
+        JSON.stringify(selected)
+    );
+
+    const message =
+        document.getElementById("favoriteMessage");
+
+    if(message){
+
+        message.textContent =
+            selected.length +
+            " favorite subject(s) saved.";
+
+        message.style.color =
+            "#60a5fa";
+    }
+}
+
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    loadTasks();
+
+    loadProgress();
+
+    loadFavoriteSubjects();
+
+    showPage("home");
+
+});
+
+  </script>
+  <script>
+
+let aiQuestions = [];
+let currentQuestionIndex = 0;
+let currentQuizScore = 0;
+let currentQuizAnswered = false;
+
+
+async function generateAIQuiz(){
+
+    const subject =
+        document.getElementById("quizSubject").value;
+
+    const count =
+        Number(
+            document.getElementById("questionCount").value
+        );
+
+    const loading =
+        document.getElementById("quizLoading");
+
+    const area =
+        document.getElementById("quizArea");
+
+    const finished =
+        document.getElementById("quizFinished");
+
+    loading.classList.remove("hidden");
+    area.classList.add("hidden");
+    finished.classList.add("hidden");
+
+    try{
+
+        const response =
+            await fetch("/api/quiz",{
+
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+
+                    mode:"generate",
+                    subject:subject,
+                    count:count
+
+                })
+
+            });
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "AI server returned an error."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if(!data.questions ||
+           !Array.isArray(data.questions) ||
+           data.questions.length === 0){
+
+            throw new Error(
+                "No quiz questions were returned."
+            );
+
+        }
+
+
+        aiQuestions =
+            data.questions;
+
+        currentQuestionIndex = 0;
+        currentQuizScore = 0;
+        currentQuizAnswered = false;
+
+        loading.classList.add("hidden");
+
+        showQuestion();
+
+    }catch(error){
+
+        loading.classList.add("hidden");
+
+        alert(
+            "KRON could not generate the quiz yet.\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+function showQuestion(){
+
+    if(
+        currentQuestionIndex >=
+        aiQuestions.length
+    ){
+
+        finishQuiz();
+
+        return;
+    }
+
+
+    const question =
+        aiQuestions[currentQuestionIndex];
+
+
+    currentQuizAnswered = false;
+
+
+    document
+        .getElementById("quizArea")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("quizFinished")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("quizQuestionNumber")
+        .textContent =
+            "Question " +
+            (currentQuestionIndex + 1) +
+            " of " +
+            aiQuestions.length;
+
+
+    document
+        .getElementById("quizQuestion")
+        .textContent =
+            question.question || "";
+
+
+    const answers =
+        document.getElementById(
+            "quizAnswers"
+        );
+
+    answers.innerHTML = "";
+
+
+    document
+        .getElementById("questionExplanation")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("questionExplanation")
+        .innerHTML = "";
+
+
+    document
+        .getElementById("writtenAnswerArea")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("studentAnswer")
+        .value = "";
+
+
+    if(
+        question.type === "choice" &&
+        Array.isArray(question.options)
+    ){
+
+        question.options.forEach(
+            function(option,index){
+
+                const button =
+                    document.createElement("button");
+
+                button.className =
+                    "navButton";
+
+                button.style.cssText =
+                    "width:100%;margin-top:10px;text-align:left;";
+
+                button.textContent =
+                    String.fromCharCode(65 + index) +
+                    ". " +
+                    option;
+
+
+                button.onclick =
+                    function(){
+
+                        answerChoice(index);
+
+                    };
+
+
+                answers.appendChild(button);
+
+            }
+        );
+
+    }else{
+
+        document
+            .getElementById("writtenAnswerArea")
+            .classList.remove("hidden");
+
+    }
+
+}
+
+
+function answerChoice(selectedIndex){
+
+    if(currentQuizAnswered){
+        return;
+    }
+
+
+    const question =
+        aiQuestions[currentQuestionIndex];
+
+
+    currentQuizAnswered = true;
+
+
+    const buttons =
+        document.querySelectorAll(
+            "#quizAnswers button"
+        );
+
+
+    buttons.forEach(function(button,index){
+
+        button.disabled = true;
+
+        if(index === Number(question.correct)){
+
+            button.style.background =
+                "#166534";
+
+        }
+
+        if(index === selectedIndex &&
+           index !== Number(question.correct)){
+
+            button.style.background =
+                "#991b1b";
+
+        }
+
+    });
+
+
+    if(
+        Number(selectedIndex) ===
+        Number(question.correct)
+    ){
+
+        currentQuizScore++;
+
+    }
+
+
+    showExplanation(
+        question.explanation ||
+        "Answer explanation is not available."
+    );
+
+}
+
+
+async function submitWrittenAnswer(){
+
+    if(currentQuizAnswered){
+        return;
+    }
+
+
+    const question =
+        aiQuestions[currentQuestionIndex];
+
+
+    const input =
+        document.getElementById(
+            "studentAnswer"
+        );
+
+
+    const studentAnswer =
+        input.value.trim();
+
+
+    if(!studentAnswer){
+
+        alert(
+            "Please write an answer first."
+        );
+
+        return;
+
+    }
+
+
+    currentQuizAnswered = true;
+
+
+    const button =
+        document.querySelector(
+            "#writtenAnswerArea button"
+        );
+
+
+    if(button){
+
+        button.disabled = true;
+
+        button.textContent =
+            "Checking answer...";
+
+    }
+
+
+    try{
+
+        const response =
+            await fetch("/api/quiz",{
+
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+
+                    mode:"check",
+
+                    subject:
+                        document.getElementById(
+                            "quizSubject"
+                        ).value,
+
+                    question:
+                        question.question,
+
+                    correctAnswer:
+                        question.answer,
+
+                    studentAnswer:
+                        studentAnswer
+
+                })
+
+            });
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Answer checker failed."
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if(result.correct === true){
+
+            currentQuizScore++;
+
+        }
+
+
+        let explanation =
+            result.explanation || "";
+
+
+        if(result.correct === true){
+
+            explanation =
+                "<strong>Correct.</strong><br><br>" +
+                explanation;
+
+        }else{
+
+            explanation =
+                "<strong>Not quite correct.</strong><br><br>" +
+                explanation;
+
+        }
+
+
+        showExplanation(explanation);
+
+    }catch(error){
+
+        currentQuizAnswered = false;
+
+        alert(
+            "KRON could not check the answer.\n\n" +
+            error.message
+        );
+
+    }
+
+
+    if(button){
+
+        button.disabled = true;
+
+        button.textContent =
+            "Answer Submitted";
+
+    }
+
+}
+
+
+function showExplanation(text){
+
+    const box =
+        document.getElementById(
+            "questionExplanation"
+        );
+
+
+    box.innerHTML =
+        "<strong>Explanation</strong><br><br>" +
+        escapeHTML(text)
+            .replace(/\n/g,"<br>");
+
+
+    box.classList.remove("hidden");
+
+}
+
+
+function nextAIQuestion(){
+
+    if(!currentQuizAnswered){
+
+        alert(
+            "Please answer the current question first."
+        );
+
+        return;
+
+    }
+
+
+    currentQuestionIndex++;
+
+    showQuestion();
+
+}
+
+
+function finishQuiz(){
+
+    document
+        .getElementById("quizArea")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("quizFinished")
+        .classList.remove("hidden");
+
+
+    const total =
+        aiQuestions.length;
+
+
+    const scoreText =
+        currentQuizScore +
+        " / " +
+        total;
+
+
+    document
+        .getElementById("quizScore")
+        .textContent =
+            "Your score: " +
+            scoreText;
+
+
+    const oldScore =
+        Number(
+            localStorage.getItem(
+                "kronQuizScore"
+            ) || 0
+        );
+
+
+    const oldCompleted =
+        Number(
+            localStorage.getItem(
+                "kronQuizzesCompleted"
+            ) || 0
+        );
+
+
+    localStorage.setItem(
+        "kronQuizScore",
+        String(
+            oldScore +
+            currentQuizScore
+        )
+    );
+
+
+    localStorage.setItem(
+        "kronQuizzesCompleted",
+        String(
+            oldCompleted + 1
+        )
+    );
+
+
+    loadProgress();
+
+}
+
+
+</script>
+
+</main>
+
+</body>
+
+</html>
+
+    KRON Study AI
+
+    <br>
+
+    Learn. Practice. Improve.
+
+</footer>
