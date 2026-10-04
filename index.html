@@ -945,10 +945,7 @@ async function generateAIQuiz(){
             });
 
 
-        throw new Error(
-    data?.error ||
-    "AI server returned an unknown error."
-);
+        throw new Error("AI server returned an error");
 
         }
 
