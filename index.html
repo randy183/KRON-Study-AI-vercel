@@ -1691,48 +1691,25 @@ loadTasks();
 }
 
 updateProgress();
-    const quizQuestions = [
+    
+    const subject =
+        document.getElementById("quizSubject").value;
 
-    {
-        subject:"Mathematics",
-        question:"If 3x + 5 = 20, what is the value of x?",
-        options:["3","5","7","10"],
-        answer:"5"
-    },
+    const area =
+        document.getElementById("quizArea");
 
-    {
-        subject:"English Language",
-        question:"Choose the word that is closest in meaning to 'rapid'.",
-        options:["Slow","Quick","Weak","Late"],
-        answer:"Quick"
-    },
+    if(!subject){
 
-    {
-        subject:"Physics",
-        question:"What is the SI unit of force?",
-        options:["Joule","Watt","Newton","Pascal"],
-        answer:"Newton"
-    },
+        area.innerHTML=
+            '<p class="empty-message">'+
+            'Please choose a subject first.'+
+            '</p>';
 
-    {
-        subject:"Chemistry",
-        question:"What is the chemical symbol for oxygen?",
-        options:["Ox","O","C","Og"],
-        answer:"O"
-    },
+        return;
 
-    {
-        subject:"Biology",
-        question:"Which organ pumps blood around the human body?",
-        options:["Lung","Kidney","Heart","Liver"],
-        answer:"Heart"
     }
 
-];
-
-let currentQuizQuestion=null;
-
-function startQuiz(){
+ function startQuiz(){
 
     const subject =
         document.getElementById("quizSubject").value;
@@ -1751,34 +1728,91 @@ function startQuiz(){
 
     }
 
-    const available =
-        quizQuestions.filter(function(question){
+    area.innerHTML=
+        '<p class="empty-message">'+
+        'Generating your quiz...'+
+        '</p>';
 
-            return question.subject===subject;
+    fetch("/api/quiz",{
 
-        });
+        method:"POST",
 
-    if(available.length===0){
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+
+            subject:subject,
+
+            count:1
+
+        })
+
+    })
+
+    .then(function(response){
+
+        if(!response.ok){
+
+            throw new Error(
+                "Quiz request failed."
+            );
+
+        }
+
+        return response.json();
+
+    })
+
+    .then(function(data){
+
+        const question =
+            data.question ||
+            data.questions?.[0];
+
+        if(!question){
+
+            throw new Error(
+                "No question returned."
+            );
+
+        }
+
+        currentQuizQuestion={
+
+            subject:subject,
+
+            question:
+                question.question ||
+                question.text,
+
+            options:
+                question.options || [],
+
+            answer:
+                question.answer ||
+                question.correctAnswer
+
+        };
+
+        renderQuizQuestion();
+
+    })
+
+    .catch(function(error){
+
+        console.error(error);
 
         area.innerHTML=
             '<p class="empty-message">'+
-            'No local question is available for this subject yet.'+
+            'Unable to generate the quiz. '+
+            'Please check your internet connection.'+
             '</p>';
 
-        return;
+    });
 
-    }
-
-    currentQuizQuestion =
-        available[
-            Math.floor(
-                Math.random()*available.length
-            )
-        ];
-
-    renderQuizQuestion();
-
-}
+ }
 
 function renderQuizQuestion(){
 
