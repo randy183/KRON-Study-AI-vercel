@@ -945,7 +945,11 @@ async function generateAIQuiz(){
             });
 
 
-        throw new Error("AI server returned an error");
+              if(!response.ok){
+
+            throw new Error(
+                "AI server returned an error"
+            );
 
         }
 
