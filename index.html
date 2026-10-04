@@ -947,11 +947,14 @@ async function generateAIQuiz(){
 
               if(!response.ok){
 
-            throw new Error(
-                "AI server returned an error"
-            );
+    const errorText =
+        await response.text();
 
-        }
+    throw new Error(
+        "Server response: " + errorText
+    );
+
+              }
 
 
         const data =
