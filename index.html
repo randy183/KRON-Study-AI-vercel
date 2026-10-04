@@ -1071,42 +1071,105 @@ function showQuestion(){
 
 
     if(
-        question.type === "choice" &&
-        Array.isArray(question.options)
-    ){
+    question.type === "choice" &&
+    Array.isArray(question.options)
+){
 
-        question.options.forEach(
+    const optionPairs =
+        question.options.map(
             function(option,index){
 
-                const button =
-                    document.createElement("button");
-
-                button.className =
-                    "navButton";
-
-                button.style.cssText =
-                    "width:100%;margin-top:10px;text-align:left;";
-
-                button.textContent =
-                    String.fromCharCode(65 + index) +
-                    ". " +
-                    option;
-
-
-                button.onclick =
-                    function(){
-
-                        answerChoice(index);
-
-                    };
-
-
-                answers.appendChild(button);
+                return {
+                    text: option,
+                    originalIndex: index
+                };
 
             }
         );
 
-    }else{
+
+    for(
+        let i = optionPairs.length - 1;
+        i > 0;
+        i--
+    ){
+
+        const randomIndex =
+            Math.floor(
+                Math.random() * (i + 1)
+            );
+
+
+        const temp =
+            optionPairs[i];
+
+        optionPairs[i] =
+            optionPairs[randomIndex];
+
+        optionPairs[randomIndex] =
+            temp;
+
+    }
+
+
+    question.options =
+        optionPairs.map(
+            function(item){
+
+                return item.text;
+
+            }
+        );
+
+
+    question.correct =
+        optionPairs.findIndex(
+            function(item){
+
+                return (
+                    item.originalIndex ===
+                    Number(question.correct)
+                );
+
+            }
+        );
+
+
+    question.options.forEach(
+        function(option,index){
+
+            const button =
+                document.createElement("button");
+
+
+            button.className =
+                "navButton";
+
+
+            button.style.cssText =
+                "width:100%;margin-top:10px;text-align:left;";
+
+
+            button.textContent =
+                String.fromCharCode(65 + index) +
+                ". " +
+                option;
+
+
+            button.onclick =
+                function(){
+
+                    answerChoice(index);
+
+                };
+
+
+            answers.appendChild(button);
+
+        }
+    );
+
+}else{
 
         document
             .getElementById("writtenAnswerArea")
@@ -1272,8 +1335,16 @@ async function submitWrittenAnswer(){
 
 
         const result =
-            await response.json();
+    await response.json();
 
+if(button){
+
+    button.disabled = true;
+
+    button.textContent =
+        "Answer Submitted";
+
+}
 
         if(result.correct === true){
 
@@ -1305,22 +1376,25 @@ async function submitWrittenAnswer(){
 
     }catch(error){
 
-        currentQuizAnswered = false;
+    currentQuizAnswered = false;
 
-        alert(
-            "KRON could not check the answer.\n\n" +
-            error.message
-        );
+    if(button){
+
+        button.disabled = false;
+
+        button.textContent =
+            "Submit Answer";
+
+    }
+
+    alert(
+        "KRON could not check the answer.\n\n" +
+        error.message
+    );
 
     }
 
 
-    if(button){
-
-        button.disabled = true;
-
-        button.textContent =
-            "Answer Submitted";
 
     }
 
