@@ -1023,75 +1023,7 @@ Track your learning activity and study progress.
 <p>Notes</p>
 </div>
 
-<div class="progress-card">
-<span class="progress-icon">📅</span>
-<strong id="progressTasks">0</strong>
-<p>Study Tasks</p>
-</div>
-
-<div class="progress-card">
-<span class="progress-icon">✅</span>
-<strong id="progressCompleted">0</strong>
-<p>Completed</p>
-</div>
-
-<div class="progress-card">
-<span class="progress-icon">🎯</span>
-<strong id="progressScore">0%</strong>
-<p>Quiz Score</p>
-</div>
-
-</div>
-
-<div class="card">
-
-<h3>
-Study Overview
-</h3>
-
-<p class="progress-text">
-Keep studying consistently to build your progress.
-</p>
-
-<div class="progress-bar">
-<div
-id="studyProgressBar"
-class="progress-fill">
-</div>
-</div>
-
-<p
-id="studyProgressText"
-class="progress-text">
-0% study progress
-</p>
-
-</div>
-
-</section>
-
-
-<!-- CHAT PAGE -->
-
-<section
-id="chatPage"
-class="page">
-
-<h2 class="page-title">
-Chat
-</h2>
-
-<p class="page-description">
-Your AI conversations.
-</p>
-
-</section>
-
-<!-- DAILY SUMMARY PAGE -->
-
-<section
-id="summaryPage"
-class="page">
+<div class="progress-card">">
 
 <h2 class="page-title">
 Daily Summary
@@ -1796,26 +1728,7 @@ updateProgress();
             '</p>';
 
     });
-
     }
-        renderQuizQuestion();
-
-    })
-
-    .catch(function(error){
-
-        console.error(error);
-
-        area.innerHTML=
-            '<p class="empty-message">'+
-            'Unable to generate the quiz. '+
-            'Please check your internet connection.'+
-            '</p>';
-
-    });
-
- }
-
 function renderQuizQuestion(){
 
     const area =
