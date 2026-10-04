@@ -218,77 +218,68 @@ Do not include code fences.
         );
 
 
-        const data =
-            await response.json();
+const data =
+    await response.json();
 
+if (!response.ok) {
 
-        if (!response.ok) {
+    return res.status(500).json({
 
-            return res.status(
-                response.status
-            ).json({
+        error:
+            "OpenRouter error: " +
+            JSON.stringify(data)
 
-                error:
-                    data?.error?.message ||
-                    "OpenRouter request failed."
+    });
 
-            });
+}
 
-        }
+const content =
+    data?.choices?.[0]?.message?.content;
 
+if (!content) {
 
-        const content =
-            data?.choices?.[0]?.message?.content;
+    return res.status(500).json({
 
+        error:
+            "OpenRouter returned no AI content: " +
+            JSON.stringify(data)
 
-        if (!content) {
+    });
 
-            return res.status(500).json({
+}
 
-                error:
-                    "The AI returned no content."
+let cleaned =
+    content.trim();
 
-            });
+if (cleaned.startsWith("```")) {
 
-        }
+    cleaned =
+        cleaned
+            .replace(/^```json\s*/i, "")
+            .replace(/^```\s*/i, "")
+            .replace(/\s*```$/i, "")
+            .trim();
 
+}
 
-        let cleaned =
-            content.trim();
+let result;
 
+try {
 
-        if (cleaned.startsWith("```")) {
+    result =
+        JSON.parse(cleaned);
 
-            cleaned =
-                cleaned
-                    .replace(/^```json\s*/i, "")
-                    .replace(/^```\s*/i, "")
-                    .replace(/\s*```$/i, "")
-                    .trim();
+} catch (parseError) {
 
-        }
+    return res.status(500).json({
 
+        error:
+            "AI returned invalid JSON: " +
+            cleaned
 
-        let result;
+    });
 
-
-        try {
-
-            result =
-                JSON.parse(cleaned);
-
-        } catch (parseError) {
-
-            return res.status(500).json({
-
-                error:
-                    "The AI returned invalid JSON."
-
-            });
-
-        }
-
-
+}
         return res.status(200).json(result);
 
 
