@@ -189,7 +189,7 @@ Do not include code fences.
                 body: JSON.stringify({
 
                     model:
-                        "openai/gpt-4o-mini",
+    "openrouter/free",
 
                     messages: [
 
