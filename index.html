@@ -1288,23 +1288,101 @@ Track your learning activity and study progress.
 <div class="progress-grid">
 
 <div class="progress-card">
-<span class="progress-icon">📝</span>
-<strong id="progressNotes">0</strong>
-<p>Notes</p>
+
+<span class="progress-icon">
+📝
+</span>
+
+<strong id="progressNotes">
+0
+</strong>
+
+<p>
+Notes
+</p>
+
 </div>
+
 
 <div class="progress-card">
 
-<h2 class="page-title">
-Daily Summary
-</h2>
+<span class="progress-icon">
+📚
+</span>
 
-<p class="page-description">
-Review your study activity.
+<strong id="progressTasks">
+0
+</strong>
+
+<p>
+Study Tasks
 </p>
 
-</section>
+</div>
 
+
+<div class="progress-card">
+
+<span class="progress-icon">
+✅
+</span>
+
+<strong id="progressCompleted">
+0
+</strong>
+
+<p>
+Completed
+</p>
+
+</div>
+
+
+<div class="progress-card">
+
+<span class="progress-icon">
+📊
+</span>
+
+<strong id="progressPercentage">
+0%
+</strong>
+
+<p>
+Progress
+</p>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+Study Progress
+</h3>
+
+<div class="progress-bar">
+
+<div
+id="studyProgressBar"
+class="progress-fill">
+</div>
+
+</div>
+
+<p
+id="studyProgressText"
+class="progress-text">
+
+0% study progress
+
+</p>
+
+</div>
+
+</section>
 <!-- WEEKLY TARGET PAGE -->
 
 <section
@@ -1889,7 +1967,7 @@ loadTasks();
 
 }
 
-updateProgress():
+updateProgress();
 
     /* =========================
    PLANNER SUBJECTS
@@ -1977,71 +2055,7 @@ function getTodayDate(){
 }
 
 
-/* =========================
-   ADD TASK
-========================= */
-
-function addTask(){
-
-    const taskInput =
-        document.getElementById("taskInput");
-
-    const taskSubject =
-        document.getElementById("taskSubject");
-
-    const taskDate =
-        document.getElementById("taskDate");
-
-    const taskStartTime =
-        document.getElementById("taskStartTime");
-
-    const taskEndTime =
-        document.getElementById("taskEndTime");
-
-    const taskPriority =
-        document.getElementById("taskPriority");
-
-
-    const task =
-        taskInput?.value.trim();
-
-    const subject =
-        taskSubject?.value;
-
-    const date =
-        taskDate?.value;
-
-    const startTime =
-        taskStartTime?.value;
-
-    const endTime =
-        taskEndTime?.value;
-
-    const priority =
-        taskPriority?.value;
-
-
-    if(!task){
-
-        alert("Please enter a study task.");
-
-        return;
-
-    }
-
-
-    if(!subject){
-
-        alert("Please choose a subject.");
-
-        return;
-
-    }
-
-
-    if(!date){
-
-        alert("Please choose a date.");
+ert("Please choose a date.");
 
         return;
 
@@ -2540,7 +2554,7 @@ const WAEC_SUBJECTS = [
 
 /* =========================
    UPDATE TERM
-   ========================= */
+========================= */
 
 function updateQuizTerms(){
 
@@ -2565,41 +2579,9 @@ function updateQuizTerms(){
     }
 
     updateQuizSubjects();
-    /* =========================
-   PLANNER SUBJECTS
-========================= */
 
-function updatePlannerSubjects(){
-
-    const subjectSelect =
-        document.getElementById("taskSubject");
-
-    if(!subjectSelect){
-        return;
-    }
-
-    subjectSelect.innerHTML =
-        '<option value="">Choose subject</option>';
-
-    WAEC_SUBJECTS.forEach(function(subject){
-
-        const option =
-            document.createElement("option");
-
-        option.value = subject;
-
-        option.textContent = subject;
-
-        subjectSelect.appendChild(option);
-
-    });
-
-}
-
-updatePlannerSubjects();
-
-}
-
+          }
+   
 
 /* =========================
    UPDATE SUBJECTS
@@ -2903,7 +2885,8 @@ async function retryQuizConnection(){
 
     }
 
-    /* =========================
+
+/* =========================
    START QUIZ
    ========================= */
 
@@ -3061,11 +3044,9 @@ async function startQuiz(){
 
         if(!response.ok){
 
-            const errorText =
-                await response.text();
-
             throw new Error(
-                `HTTP ${response.status}: ${errorText}`
+                "Quiz generation failed. Server returned " +
+                response.status
             );
 
         }
@@ -3076,29 +3057,28 @@ async function startQuiz(){
 
 
         if(
-            !data.questions ||
-            !Array.isArray(data.questions)
+            !data ||
+            !Array.isArray(data.questions) ||
+            data.questions.length === 0
         ){
 
             throw new Error(
-                "No questions returned."
+                "No quiz questions were returned."
             );
 
         }
 
 
         currentQuizQuestions =
-            data.questions.slice(0,10);
+            data.questions;
 
         currentQuizIndex = 0;
 
         quizScore = 0;
 
-        pendingWrittenAnswer = "";
-
         quizPaused = false;
 
-        quizPauseAction = null;
+        pendingWrittenAnswer = "";
 
 
         saveQuizSession();
@@ -3147,8 +3127,9 @@ async function startQuiz(){
 
 }
 
+
 /* =========================
-   SHOW QUIZ QUESTION
+   RENDER QUIZ QUESTION
    ========================= */
 
 function renderQuizQuestion(){
@@ -3156,8 +3137,33 @@ function renderQuizQuestion(){
     const quizArea =
         document.getElementById("quizArea");
 
+
     if(!quizArea){
+
         return;
+
+    }
+
+
+    if(
+        !Array.isArray(currentQuizQuestions) ||
+        currentQuizQuestions.length === 0
+    ){
+
+        quizArea.innerHTML = `
+
+            <div class="quiz-feedback">
+
+                <div class="quiz-answer">
+                    No questions available
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+
     }
 
 
@@ -3181,50 +3187,58 @@ function renderQuizQuestion(){
         currentQuizQuestions.length;
 
 
-    const questionNumber =
-        currentQuizIndex + 1;
-
-
-    saveQuizSession();
+    const options =
+        Array.isArray(question.options)
+        ? question.options
+        : [];
 
 
     let optionsHTML = "";
 
 
-    if(Array.isArray(question.options)){
+    if(options.length > 0){
 
-        question.options.forEach(
-            function(option,index){
+        optionsHTML =
+            options.map(
+                function(option,index){
 
-                optionsHTML += `
+                    return `
 
-                    <button
-                        class="quiz-option"
-                        onclick="checkQuizAnswer(${index})">
+                        <button
+                            class="quiz-option"
+                            onclick="checkQuizAnswer(${index})">
 
-                        ${String.fromCharCode(65 + index)}.
-                        ${option}
+                            ${String.fromCharCode(65 + index)}.
+                            ${option}
 
-                    </button>
+                        </button>
 
-                `;
+                    `;
 
-            }
-        );
+                }
+            ).join("");
 
     }
 
 
     quizArea.innerHTML = `
 
-        <div class="quiz-meta">
+        <div class="quiz-top">
 
             <span class="quiz-badge">
-                Question ${questionNumber} of ${total}
+
+                Question
+                ${currentQuizIndex + 1}
+                /
+                ${total}
+
             </span>
 
             <span class="quiz-badge">
-                Score: ${quizScore}
+
+                Score:
+                ${quizScore}
+
             </span>
 
         </div>
@@ -3245,10 +3259,7 @@ function renderQuizQuestion(){
     `;
 
 
-    if(
-        !Array.isArray(question.options) ||
-        question.options.length === 0
-    ){
+    if(options.length === 0){
 
         quizArea.innerHTML += `
 
@@ -3269,19 +3280,25 @@ function renderQuizQuestion(){
 
     }
 
-    }
-    /* =========================
+}
+
+
+/* =========================
    CHECK MULTIPLE CHOICE
    ========================= */
 
 async function checkQuizAnswer(selectedIndex){
 
     if(quizPaused){
+
         return;
+
     }
+
 
     const online =
         await checkQuizConnection();
+
 
     if(!online){
 
@@ -3291,17 +3308,29 @@ async function checkQuizAnswer(selectedIndex){
 
     }
 
+
     const question =
         currentQuizQuestions[currentQuizIndex];
+
+
+    if(!question){
+
+        return;
+
+    }
+
 
     const buttons =
         document.querySelectorAll(".quiz-option");
 
-    buttons.forEach(function(button){
 
-        button.disabled = true;
+    buttons.forEach(
+        function(button){
 
-    });
+            button.disabled = true;
+
+        }
+    );
 
 
     /* FIND THE CORRECT ANSWER */
@@ -3309,6 +3338,21 @@ async function checkQuizAnswer(selectedIndex){
     let correctIndex =
         question.correctIndex;
 
+
+    /* BACKEND USES "correct" */
+
+    if(
+        typeof correctIndex !== "number" &&
+        typeof question.correct === "number"
+    ){
+
+        correctIndex =
+            question.correct;
+
+    }
+
+
+    /* SUPPORT OTHER FORMATS */
 
     if(
         typeof correctIndex !== "number" &&
@@ -3321,7 +3365,7 @@ async function checkQuizAnswer(selectedIndex){
     }
 
 
-    /* IF AI RETURNED THE ANSWER AS TEXT */
+    /* IF AI RETURNED ANSWER AS TEXT */
 
     if(
         typeof correctIndex !== "number" &&
@@ -3334,13 +3378,15 @@ async function checkQuizAnswer(selectedIndex){
             .trim()
             .toLowerCase();
 
+
         correctIndex =
             question.options.findIndex(
                 function(option){
 
                     return String(option)
                         .trim()
-                        .toLowerCase() === answerText;
+                        .toLowerCase()
+                        === answerText;
 
                 }
             );
@@ -3358,6 +3404,7 @@ async function checkQuizAnswer(selectedIndex){
 
         quizScore++;
 
+
         if(buttons[selectedIndex]){
 
             buttons[selectedIndex]
@@ -3373,6 +3420,7 @@ async function checkQuizAnswer(selectedIndex){
                 .classList.add("wrong");
 
         }
+
 
         if(
             correctIndex >= 0 &&
@@ -3393,6 +3441,7 @@ async function checkQuizAnswer(selectedIndex){
             question.options?.[correctIndex]
         ) ||
         question.correctAnswer ||
+        question.answer ||
         "Not provided";
 
 
@@ -3416,6 +3465,7 @@ async function checkQuizAnswer(selectedIndex){
 
                 </div>
 
+
                 <p>
 
                     <strong>
@@ -3425,6 +3475,7 @@ async function checkQuizAnswer(selectedIndex){
                     ${correctAnswer}
 
                 </p>
+
 
                 <p class="quiz-explanation">
 
@@ -3438,6 +3489,7 @@ async function checkQuizAnswer(selectedIndex){
                     }
 
                 </p>
+
 
                 <button
                     class="study-button quiz-next"
@@ -3461,7 +3513,8 @@ async function checkQuizAnswer(selectedIndex){
 
     saveQuizSession();
 
-    }
+}
+
 
 /* =========================
    NEXT QUESTION
@@ -3470,11 +3523,15 @@ async function checkQuizAnswer(selectedIndex){
 async function nextQuizQuestion(){
 
     if(quizPaused){
+
         return;
+
     }
+
 
     const online =
         await checkQuizConnection();
+
 
     if(!online){
 
@@ -3503,7 +3560,9 @@ async function nextQuizQuestion(){
 async function submitWrittenAnswer(){
 
     if(quizPaused){
+
         return;
+
     }
 
 
@@ -3524,7 +3583,8 @@ async function submitWrittenAnswer(){
     }
 
 
-    pendingWrittenAnswer = answer;
+    pendingWrittenAnswer =
+        answer;
 
     saveQuizSession();
 
@@ -3585,10 +3645,12 @@ async function submitWrittenAnswer(){
                     question:
                         question.question,
 
-                    answer:answer,
+                    studentAnswer:
+                        answer,
 
                     correctAnswer:
-                        question.correctAnswer,
+                        question.correctAnswer ||
+                        question.answer,
 
                     explanation:
                         question.explanation
@@ -3634,7 +3696,9 @@ async function submitWrittenAnswer(){
 
                     </div>
 
+
                     <p>
+
                         <strong>
                             Correct answer:
                         </strong>
@@ -3642,10 +3706,12 @@ async function submitWrittenAnswer(){
                         ${
                             result.correctAnswer ||
                             question.correctAnswer ||
+                            question.answer ||
                             "See explanation"
                         }
 
                     </p>
+
 
                     <p class="quiz-explanation">
 
@@ -3660,6 +3726,7 @@ async function submitWrittenAnswer(){
                         }
 
                     </p>
+
 
                     <button
                         class="study-button quiz-next"
@@ -3688,7 +3755,8 @@ async function submitWrittenAnswer(){
 
     }catch(error){
 
-        pendingWrittenAnswer = answer;
+        pendingWrittenAnswer =
+            answer;
 
         saveQuizSession();
 
@@ -3710,8 +3778,11 @@ function showQuizResult(){
     const quizArea =
         document.getElementById("quizArea");
 
+
     if(!quizArea){
+
         return;
+
     }
 
 
@@ -3735,19 +3806,28 @@ function showQuizResult(){
                 Quiz Complete
             </div>
 
+
             <p>
+
                 Score:
+
                 <strong>
                     ${quizScore} / ${total}
                 </strong>
+
             </p>
 
+
             <p>
+
                 Percentage:
+
                 <strong>
                     ${percentage}%
                 </strong>
+
             </p>
+
 
             <button
                 class="study-button quiz-next"
@@ -3775,8 +3855,10 @@ function startNewQuiz(){
 
     clearQuizSession();
 
+
     const quizArea =
         document.getElementById("quizArea");
+
 
     if(quizArea){
 
@@ -3808,7 +3890,8 @@ window.addEventListener(
 
     }
 );
+
 </script>
 
 </body>
-</html>
+</html> 
