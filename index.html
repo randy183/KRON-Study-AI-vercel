@@ -1840,6 +1840,12 @@ function checkQuizAnswer(button,index){
     const question =
         currentQuizQuestions[currentQuizIndex];
 
+    const options =
+        question.options || [];
+
+    const correctIndex =
+        Number(question.correct);
+
     const buttons =
         document.querySelectorAll(
             ".quiz-option"
@@ -1850,12 +1856,6 @@ function checkQuizAnswer(button,index){
         item.disabled = true;
 
     });
-
-    const options =
-        question.options || [];
-
-    const correctIndex =
-        Number(question.correct);
 
     if(index === correctIndex){
 
@@ -1878,7 +1878,6 @@ function checkQuizAnswer(button,index){
         const correctAnswer =
             question.answer ||
             options[correctIndex] ||
-            question.correctAnswer ||
             "";
 
         alert(
@@ -1888,11 +1887,16 @@ function checkQuizAnswer(button,index){
 
     }
 
-    currentQuizIndex++;
+    currentQuizIndex =
+        currentQuizIndex + 1;
 
-    showNextQuizQuestion();
+    setTimeout(function(){
 
-    }
+        showNextQuizQuestion();
+
+    }, 100);
+
+}
     function showQuizResult(){
 
     const area =
