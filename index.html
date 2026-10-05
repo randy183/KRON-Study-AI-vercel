@@ -887,14 +887,18 @@ class="study-input">
 
 <label for="quizCount">Number of Questions</label>
 
-<select id="quizCount"
-class="study-input">
-
+<select id="quizCount" class="study-input">
+<option value="">Choose number of questions</option>
+<option value="1">1 Question</option>
+<option value="2">2 Questions</option>
+<option value="3">3 Questions</option>
+<option value="4">4 Questions</option>
 <option value="5">5 Questions</option>
+<option value="6">6 Questions</option>
+<option value="7">7 Questions</option>
+<option value="8">8 Questions</option>
+<option value="9">9 Questions</option>
 <option value="10">10 Questions</option>
-<option value="15">15 Questions</option>
-<option value="20">20 Questions</option>
-
 </select>
 
 
@@ -1672,7 +1676,1291 @@ loadTasks();
 }
 
 updateProgress();
+    /* =========================
+   KRON QUIZ SYSTEM
+   ========================= */
 
+const QUIZ_STORAGE_KEY = "KRON_ACTIVE_QUIZ";
+const QUIZ_RECOVERY_TIME = 5 * 60 * 1000;
+
+let currentQuizQuestions = [];
+let currentQuizIndex = 0;
+let quizScore = 0;
+let quizPaused = false;
+let quizPauseAction = null;
+let pendingWrittenAnswer = "";
+
+
+/* =========================
+   SUBJECT LIST
+   ========================= */
+
+const WAEC_SUBJECTS = [
+    "English Language",
+    "Mathematics",
+    "Biology",
+    "Chemistry",
+    "Physics",
+    "Agricultural Science",
+    "Economics",
+    "Government",
+    "Geography",
+    "Commerce",
+    "Financial Accounting",
+    "Marketing",
+    "Christian Religious Studies",
+    "Islamic Studies",
+    "Literature in English",
+    "Civic Education",
+    "Data Processing",
+    "Computer Studies",
+    "Office Practice",
+    "Insurance",
+    "Store Management",
+    "Animal Husbandry",
+    "Fishery",
+    "Further Mathematics",
+    "Technical Drawing",
+    "Basic Electricity",
+    "Basic Technology",
+    "Building Construction",
+    "Auto Mechanics",
+    "Woodwork",
+    "Metalwork",
+    "Visual Art",
+    "Music",
+    "French",
+    "Yoruba",
+    "Igbo",
+    "Hausa",
+    "Home Management",
+    "Food and Nutrition",
+    "Clothing and Textiles",
+    "Physical Education"
+];
+
+
+/* =========================
+   UPDATE TERM
+   ========================= */
+
+function updateQuizTerms(){
+
+    const level =
+        document.getElementById("quizLevel");
+
+    const termContainer =
+        document.getElementById("quizTermContainer");
+
+    if(!level || !termContainer){
+        return;
+    }
+
+    if(level.value === "WAEC"){
+
+        termContainer.style.display = "none";
+
+    }else{
+
+        termContainer.style.display = "block";
+
+    }
+
+    updateQuizSubjects();
+
+}
+
+
+/* =========================
+   UPDATE SUBJECTS
+   ========================= */
+
+function updateQuizSubjects(){
+
+    const subjectSelect =
+        document.getElementById("quizSubject");
+
+    if(!subjectSelect){
+        return;
+    }
+
+    subjectSelect.innerHTML =
+        '<option value="">Choose a subject</option>';
+
+    WAEC_SUBJECTS.forEach(function(subject){
+
+        const option =
+            document.createElement("option");
+
+        option.value = subject;
+
+        option.textContent = subject;
+
+        subjectSelect.appendChild(option);
+
+    });
+
+}
+
+
+/* =========================
+   LOAD SUBJECTS
+   ========================= */
+
+updateQuizSubjects();
+    /* =========================
+   QUIZ CONNECTION CHECK
+   ========================= */
+
+async function checkQuizConnection(){
+
+    if(!navigator.onLine){
+        return false;
+    }
+
+    try{
+
+        const controller =
+            new AbortController();
+
+        const timeout =
+            setTimeout(function(){
+
+                controller.abort();
+
+            },5000);
+
+        await fetch(window.location.href,{
+
+            method:"HEAD",
+
+            cache:"no-store",
+
+            signal:controller.signal
+
+        });
+
+        clearTimeout(timeout);
+
+        return true;
+
+    }catch(error){
+
+        return false;
+
+    }
+
+}
+
+
+/* =========================
+   SAVE TEMPORARY QUIZ
+   ========================= */
+
+function saveQuizSession(){
+
+    const state = {
+
+        questions:currentQuizQuestions,
+
+        index:currentQuizIndex,
+
+        score:quizScore,
+
+        level:
+            document.getElementById("quizLevel")?.value || "",
+
+        term:
+            document.getElementById("quizTerm")?.value || "",
+
+        subject:
+            document.getElementById("quizSubject")?.value || "",
+
+        count:
+            document.getElementById("quizCount")?.value || "",
+
+        pendingWrittenAnswer:
+            pendingWrittenAnswer,
+
+        paused:
+            quizPaused,
+
+        pauseTime:
+            quizPaused ? Date.now() : null,
+
+        pauseAction:
+            quizPauseAction
+
+    };
+
+    sessionStorage.setItem(
+        QUIZ_STORAGE_KEY,
+        JSON.stringify(state)
+    );
+
+}
+
+
+/* =========================
+   CLEAR QUIZ SESSION
+   ========================= */
+
+function clearQuizSession(){
+
+    sessionStorage.removeItem(
+        QUIZ_STORAGE_KEY
+    );
+
+    currentQuizQuestions = [];
+
+    currentQuizIndex = 0;
+
+    quizScore = 0;
+
+    quizPaused = false;
+
+    quizPauseAction = null;
+
+    pendingWrittenAnswer = "";
+
+}
+
+
+/* =========================
+   CONNECTION LOST
+   ========================= */
+
+function showQuizConnectionError(action){
+
+    quizPaused = true;
+
+    quizPauseAction = action;
+
+    saveQuizSession();
+
+    const quizArea =
+        document.getElementById("quizArea");
+
+    if(!quizArea){
+        return;
+    }
+
+    quizArea.innerHTML = `
+
+        <div class="quiz-feedback">
+
+            <div class="quiz-answer">
+                Connection lost
+            </div>
+
+            <p class="quiz-explanation">
+                Your quiz is temporarily saved.
+                You are still on Question
+                ${currentQuizIndex + 1}.
+            </p>
+
+            <button
+                class="study-button quiz-next"
+                onclick="retryQuizConnection()">
+
+                Retry
+
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================
+   RETRY QUIZ CONNECTION
+   ========================= */
+
+async function retryQuizConnection(){
+
+    const quizArea =
+        document.getElementById("quizArea");
+
+    if(quizArea){
+
+        quizArea.innerHTML = `
+
+            <div class="quiz-feedback">
+
+                <div class="quiz-answer">
+                    Checking connection...
+                </div>
+
+                <p class="quiz-explanation">
+                    Please wait.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+    const saved =
+        sessionStorage.getItem(
+            QUIZ_STORAGE_KEY
+        );
+
+    if(!saved){
+
+        clearQuizSession();
+
+        if(quizArea){
+
+            quizArea.innerHTML = `
+
+                <div class="quiz-feedback">
+
+                    <div class="quiz-answer">
+                        Quiz session expired
+                    </div>
+
+                    <p class="quiz-explanation">
+                        Please start the quiz again.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+        return;
+
+    }
+
+    const state =
+        JSON.parse(saved);
+
+    if(
+        state.pauseTime &&
+        Date.now() - state.pauseTime >
+        QUIZ_RECOVERY_TIME
+    ){
+
+        clearQuizSession();
+
+        if(quizArea){
+
+            quizArea.innerHTML = `
+
+                <div class="quiz-feedback">
+
+                    <div class="quiz-answer">
+                        Recovery time expired
+                    </div>
+
+                    <p class="quiz-explanation">
+                        The 5-minute recovery period
+                        has expired. Please start again.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+        return;
+
+    }
+
+    const online =
+        await checkQuizConnection();
+
+    if(!online){
+
+        showQuizConnectionError(
+            state.pauseAction
+        );
+
+        return;
+
+    }
+
+    currentQuizQuestions =
+        state.questions || [];
+
+    currentQuizIndex =
+        state.index || 0;
+
+    quizScore =
+        state.score || 0;
+
+    pendingWrittenAnswer =
+        state.pendingWrittenAnswer || "";
+
+    quizPaused = false;
+
+    quizPauseAction = null;
+
+    saveQuizSession();
+
+    renderQuizQuestion();
+
+    }
+/* =========================
+   START QUIZ
+   ========================= */
+
+async function startQuiz(){
+
+    const level =
+        document.getElementById("quizLevel")?.value;
+
+    const term =
+        document.getElementById("quizTerm")?.value;
+
+    const subject =
+        document.getElementById("quizSubject")?.value;
+
+    const count =
+        Number(
+            document.getElementById("quizCount")?.value
+        );
+
+    const quizArea =
+        document.getElementById("quizArea");
+
+
+    if(!level){
+
+        alert("Please choose a class / level.");
+
+        return;
+
+    }
+
+
+    if(level !== "WAEC" && !term){
+
+        alert("Please choose a term.");
+
+        return;
+
+    }
+
+
+    if(!subject){
+
+        alert("Please choose a subject.");
+
+        return;
+
+    }
+
+
+    if(!count || count < 1 || count > 10){
+
+        alert("Please choose between 1 and 10 questions.");
+
+        return;
+
+    }
+
+
+    if(quizArea){
+
+        quizArea.innerHTML = `
+
+            <div class="quiz-feedback">
+
+                <div class="quiz-answer">
+                    Generating your quiz...
+                </div>
+
+                <p class="quiz-explanation">
+                    Please wait.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+
+    const online =
+        await checkQuizConnection();
+
+
+    if(!online){
+
+        if(quizArea){
+
+            quizArea.innerHTML = `
+
+                <div class="quiz-feedback">
+
+                    <div class="quiz-answer">
+                        Connection lost
+                    </div>
+
+                    <p class="quiz-explanation">
+                        Internet connection is required
+                        to generate this quiz.
+                    </p>
+
+                    <button
+                        class="study-button quiz-next"
+                        onclick="startQuiz()">
+
+                        Retry
+
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+
+        return;
+
+    }
+
+
+    try{
+
+        const response =
+            await fetch("/api/quiz",{
+
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+
+                    mode:"generate",
+
+                    level:level,
+
+                    term:
+                        level === "WAEC"
+                        ? ""
+                        : term,
+
+                    subject:subject,
+
+                    count:count,
+
+                    requireExplanation:true,
+
+                    explanationRequired:true
+
+                })
+
+            });
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Quiz request failed."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if(
+            !data.questions ||
+            !Array.isArray(data.questions)
+        ){
+
+            throw new Error(
+                "No questions returned."
+            );
+
+        }
+
+
+        currentQuizQuestions =
+            data.questions.slice(0,10);
+
+        currentQuizIndex = 0;
+
+        quizScore = 0;
+
+        pendingWrittenAnswer = "";
+
+        quizPaused = false;
+
+        quizPauseAction = null;
+
+
+        saveQuizSession();
+
+        renderQuizQuestion();
+
+
+    }catch(error){
+
+        if(quizArea){
+
+            quizArea.innerHTML = `
+
+                <div class="quiz-feedback">
+
+                    <div class="quiz-answer">
+                        Unable to generate quiz
+                    </div>
+
+                    <p class="quiz-explanation">
+                        Check your internet connection
+                        and try again.
+                    </p>
+
+                    <button
+                        class="study-button quiz-next"
+                        onclick="startQuiz()">
+
+                        Retry
+
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+}
+
+
+/* =========================
+   SHOW QUIZ QUESTION
+   ========================= */
+
+function renderQuizQuestion(){
+
+    const quizArea =
+        document.getElementById("quizArea");
+
+    if(!quizArea){
+        return;
+    }
+
+
+    if(
+        currentQuizIndex >=
+        currentQuizQuestions.length
+    ){
+
+        showQuizResult();
+
+        return;
+
+    }
+
+
+    const question =
+        currentQuizQuestions[currentQuizIndex];
+
+
+    const total =
+        currentQuizQuestions.length;
+
+
+    const questionNumber =
+        currentQuizIndex + 1;
+
+
+    saveQuizSession();
+
+
+    let optionsHTML = "";
+
+
+    if(Array.isArray(question.options)){
+
+        question.options.forEach(
+            function(option,index){
+
+                optionsHTML += `
+
+                    <button
+                        class="quiz-option"
+                        onclick="checkQuizAnswer(${index})">
+
+                        ${String.fromCharCode(65 + index)}.
+                        ${option}
+
+                    </button>
+
+                `;
+
+            }
+        );
+
+    }
+
+
+    quizArea.innerHTML = `
+
+        <div class="quiz-meta">
+
+            <span class="quiz-badge">
+                Question ${questionNumber} of ${total}
+            </span>
+
+            <span class="quiz-badge">
+                Score: ${quizScore}
+            </span>
+
+        </div>
+
+
+        <div class="quiz-question">
+
+            ${question.question || ""}
+
+        </div>
+
+
+        ${optionsHTML}
+
+
+        <div id="quizFeedback"></div>
+
+    `;
+
+
+    if(
+        !Array.isArray(question.options) ||
+        question.options.length === 0
+    ){
+
+        quizArea.innerHTML += `
+
+            <textarea
+                id="writtenAnswer"
+                class="study-textarea"
+                placeholder="Type your answer here..."></textarea>
+
+            <button
+                class="study-button quiz-next"
+                onclick="submitWrittenAnswer()">
+
+                Submit Answer
+
+            </button>
+
+        `;
+
+    }
+
+    }
+    /* =========================
+   CHECK MULTIPLE CHOICE
+   ========================= */
+
+async function checkQuizAnswer(selectedIndex){
+
+    if(quizPaused){
+        return;
+    }
+
+    const online =
+        await checkQuizConnection();
+
+    if(!online){
+
+        showQuizConnectionError("answer");
+
+        return;
+
+    }
+
+    const question =
+        currentQuizQuestions[currentQuizIndex];
+
+    const buttons =
+        document.querySelectorAll(".quiz-option");
+
+    buttons.forEach(function(button){
+
+        button.disabled = true;
+
+    });
+
+
+    let correctIndex =
+        question.correctIndex;
+
+
+    if(
+        typeof correctIndex !== "number" &&
+        typeof question.answerIndex === "number"
+    ){
+
+        correctIndex =
+            question.answerIndex;
+
+    }
+
+
+    const feedback =
+        document.getElementById("quizFeedback");
+
+
+    if(selectedIndex === correctIndex){
+
+        quizScore++;
+
+        if(buttons[selectedIndex]){
+
+            buttons[selectedIndex]
+                .classList.add("correct");
+
+        }
+
+    }else{
+
+        if(buttons[selectedIndex]){
+
+            buttons[selectedIndex]
+                .classList.add("wrong");
+
+        }
+
+        if(
+            correctIndex >= 0 &&
+            buttons[correctIndex]
+        ){
+
+            buttons[correctIndex]
+                .classList.add("correct");
+
+        }
+
+    }
+
+
+    const correctAnswer =
+        question.correctAnswer ||
+        (
+            correctIndex >= 0 &&
+            question.options?.[correctIndex]
+        ) ||
+        "Not provided";
+
+
+    if(feedback){
+
+        feedback.innerHTML = `
+
+            <div class="quiz-feedback">
+
+                <div class="quiz-answer">
+
+                    ${
+                        selectedIndex === correctIndex
+                        ? "Correct!"
+                        : "Incorrect"
+                    }
+
+                </div>
+
+                <p>
+                    <strong>Correct answer:</strong>
+                    ${correctAnswer}
+                </p>
+
+                <p class="quiz-explanation">
+
+                    <strong>Explanation:</strong>
+                    ${
+                        question.explanation ||
+                        "No explanation provided."
+                    }
+
+                </p>
+
+                <button
+                    class="study-button quiz-next"
+                    onclick="nextQuizQuestion()">
+
+                    ${
+                        currentQuizIndex ===
+                        currentQuizQuestions.length - 1
+                        ? "Finish Quiz"
+                        : "Next Question"
+                    }
+
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+
+    saveQuizSession();
+
+}
+
+
+/* =========================
+   NEXT QUESTION
+   ========================= */
+
+async function nextQuizQuestion(){
+
+    if(quizPaused){
+        return;
+    }
+
+    const online =
+        await checkQuizConnection();
+
+    if(!online){
+
+        showQuizConnectionError("next");
+
+        return;
+
+    }
+
+
+    currentQuizIndex++;
+
+    pendingWrittenAnswer = "";
+
+    saveQuizSession();
+
+    renderQuizQuestion();
+
+}
+
+
+/* =========================
+   WRITTEN ANSWER
+   ========================= */
+
+async function submitWrittenAnswer(){
+
+    if(quizPaused){
+        return;
+    }
+
+
+    const answerBox =
+        document.getElementById("writtenAnswer");
+
+
+    const answer =
+        answerBox?.value.trim();
+
+
+    if(!answer){
+
+        alert("Please enter your answer.");
+
+        return;
+
+    }
+
+
+    pendingWrittenAnswer = answer;
+
+    saveQuizSession();
+
+
+    const online =
+        await checkQuizConnection();
+
+
+    if(!online){
+
+        showQuizConnectionError(
+            "submitWritten"
+        );
+
+        return;
+
+    }
+
+
+    const question =
+        currentQuizQuestions[currentQuizIndex];
+
+
+    const feedback =
+        document.getElementById("quizFeedback");
+
+
+    if(feedback){
+
+        feedback.innerHTML = `
+
+            <div class="quiz-feedback">
+
+                Checking your answer...
+
+            </div>
+
+        `;
+
+    }
+
+
+    try{
+
+        const response =
+            await fetch("/api/quiz",{
+
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+
+                    mode:"check",
+
+                    question:
+                        question.question,
+
+                    answer:answer,
+
+                    correctAnswer:
+                        question.correctAnswer,
+
+                    explanation:
+                        question.explanation
+
+                })
+
+            });
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Answer check failed."
+            );
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if(result.correct){
+
+            quizScore++;
+
+        }
+
+
+        if(feedback){
+
+            feedback.innerHTML = `
+
+                <div class="quiz-feedback">
+
+                    <div class="quiz-answer">
+
+                        ${
+                            result.correct
+                            ? "Correct!"
+                            : "Incorrect"
+                        }
+
+                    </div>
+
+                    <p>
+                        <strong>
+                            Correct answer:
+                        </strong>
+
+                        ${
+                            result.correctAnswer ||
+                            question.correctAnswer ||
+                            "See explanation"
+                        }
+
+                    </p>
+
+                    <p class="quiz-explanation">
+
+                        <strong>
+                            Explanation:
+                        </strong>
+
+                        ${
+                            result.explanation ||
+                            question.explanation ||
+                            "No explanation provided."
+                        }
+
+                    </p>
+
+                    <button
+                        class="study-button quiz-next"
+                        onclick="nextQuizQuestion()">
+
+                        ${
+                            currentQuizIndex ===
+                            currentQuizQuestions.length - 1
+                            ? "Finish Quiz"
+                            : "Next Question"
+                        }
+
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+
+
+        pendingWrittenAnswer = "";
+
+        saveQuizSession();
+
+
+    }catch(error){
+
+        pendingWrittenAnswer = answer;
+
+        saveQuizSession();
+
+        showQuizConnectionError(
+            "submitWritten"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   QUIZ RESULT
+   ========================= */
+
+function showQuizResult(){
+
+    const quizArea =
+        document.getElementById("quizArea");
+
+    if(!quizArea){
+        return;
+    }
+
+
+    const total =
+        currentQuizQuestions.length;
+
+
+    const percentage =
+        total > 0
+        ? Math.round(
+            (quizScore / total) * 100
+        )
+        : 0;
+
+
+    quizArea.innerHTML = `
+
+        <div class="quiz-feedback">
+
+            <div class="quiz-answer">
+                Quiz Complete
+            </div>
+
+            <p>
+                Score:
+                <strong>
+                    ${quizScore} / ${total}
+                </strong>
+            </p>
+
+            <p>
+                Percentage:
+                <strong>
+                    ${percentage}%
+                </strong>
+            </p>
+
+            <button
+                class="study-button quiz-next"
+                onclick="startNewQuiz()">
+
+                Start Another Quiz
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    clearQuizSession();
+
+}
+
+
+/* =========================
+   START ANOTHER QUIZ
+   ========================= */
+
+function startNewQuiz(){
+
+    clearQuizSession();
+
+    const quizArea =
+        document.getElementById("quizArea");
+
+    if(quizArea){
+
+        quizArea.innerHTML = `
+
+            <p class="empty-message">
+
+                Choose your class, term and subject
+                to start a quiz.
+
+            </p>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================
+   CLEAR SESSION WHEN LEAVING
+   ========================= */
+
+window.addEventListener(
+    "pagehide",
+    function(){
+
+        clearQuizSession();
+
+    }
+);
 </script>
 
 </body>
