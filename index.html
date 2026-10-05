@@ -1892,7 +1892,44 @@ loadTasks();
 
 }
 
-updateProgress();
+updateProgress():
+
+    /* =========================
+   PLANNER SUBJECTS
+========================= */
+
+function updatePlannerSubjects(){
+
+    const subjectSelect =
+        document.getElementById("taskSubject");
+
+    if(!subjectSelect){
+        return;
+    }
+
+    subjectSelect.innerHTML =
+        '<option value="">Choose subject</option>';
+
+    WAEC_SUBJECTS.forEach(function(subject){
+
+        const option =
+            document.createElement("option");
+
+        option.value = subject;
+
+        option.textContent = subject;
+
+        subjectSelect.appendChild(option);
+
+    });
+
+}
+
+window.addEventListener("load", function(){
+
+    updatePlannerSubjects();
+
+});
 
     /* =========================
    KRON PLANNER SYSTEM
