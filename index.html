@@ -1814,47 +1814,9 @@ updateQuizSubjects();
 
 async function checkQuizConnection(){
 
-    if(!navigator.onLine){
+    return navigator.onLine;
 
-        return false;
-
-    }
-
-    try{
-
-        const controller =
-            new AbortController();
-
-        const timeout =
-            setTimeout(function(){
-
-                controller.abort();
-
-            },5000);
-
-
-        await fetch(
-            window.location.origin + "/favicon.ico",
-            {
-                method:"GET",
-                cache:"no-store",
-                signal:controller.signal
-            }
-        );
-
-
-        clearTimeout(timeout);
-
-        return true;
-
-
-    }catch(error){
-
-        return false;
-
-    }
-
-    }
+}
 
 
 /* =========================
