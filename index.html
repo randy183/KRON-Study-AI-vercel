@@ -1655,10 +1655,16 @@ updateProgress();
 let currentQuizQuestions = [];
 let currentQuizIndex = 0;
 let currentQuizScore = 0;
- function startQuiz(){
+let pendingWrittenAnswer = "";
+function startQuiz(){
 
     const subject =
         document.getElementById("quizSubject").value;
+
+    const count =
+        Number(
+            document.getElementById("quizCount").value
+        );
 
     const area =
         document.getElementById("quizArea");
@@ -1673,72 +1679,107 @@ let currentQuizScore = 0;
         return;
     }
 
-    area.innerHTML =
-        '<p class="empty-message">' +
-        'Generating your quiz...' +
-        '</p>';
-
-    fetch("/api/quiz", {
-
-        method: "POST",
-
-        headers: {
-            "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-            mode:"generate",
-            subject: subject,
-            count: Number(
-    document.getElementById("quizCount").value
-)
-        })
-
-    })
-    .then(function(response){
-
-        if(!response.ok){
-            throw new Error("Quiz request failed.");
-        }
-
-        return response.json();
-
-    })
-    .then(function(data){
-
-        const questions =
-    data.questions ||
-    (data.question ? [data.question] : []);
-
-if(!questions.length){
-    throw new Error("No questions returned.");
-}
-
-currentQuizQuestions = questions;
-currentQuizIndex = 0;
-currentQuizScore = 0;
-
-showNextQuizQuestion();
-
-        currentQuizQuestions = questions;
-currentQuizIndex = 0;
-currentQuizScore = 0;
-
-showNextQuizQuestion();
-
-    })
-    .catch(function(error){
-
-        console.error(error);
+    function sendQuizRequest(){
 
         area.innerHTML =
             '<p class="empty-message">' +
-            'Unable to generate the quiz. ' +
-            'Please check your internet connection.' +
+            'Generating your quiz...' +
             '</p>';
 
-    });
+        fetch("/api/quiz", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                mode: "generate",
+
+                subject: subject,
+
+                count: count
+
+            })
+
+        })
+        .then(function(response){
+
+            if(!response.ok){
+
+                throw new Error(
+                    "Quiz request failed."
+                );
+
+            }
+
+            return response.json();
+
+        })
+        .then(function(data){
+
+            const questions =
+                data.questions ||
+                (data.question
+                    ? [data.question]
+                    : []);
+
+            if(!questions.length){
+
+                throw new Error(
+                    "No questions returned."
+                );
+
+            }
+
+            currentQuizQuestions =
+                questions;
+
+            currentQuizIndex = 0;
+
+            currentQuizScore = 0;
+
+            showNextQuizQuestion();
+
+        })
+        .catch(function(error){
+
+            console.error(error);
+
+            area.innerHTML =
+                '<p class="empty-message">' +
+                'The connection failed, but your quiz ' +
+                'has not been cancelled.' +
+                '</p>' +
+
+                '<button ' +
+                'id="retryQuizGeneration" ' +
+                'class="study-button">' +
+                'Retry Generation' +
+                '</button>';
+
+            document
+                .getElementById(
+                    "retryQuizGeneration"
+                )
+                .addEventListener(
+                    "click",
+                    function(){
+
+                        sendQuizRequest();
+
+                    }
+                );
+
+        });
+
     }
+
+    sendQuizRequest();
+
+}    
     function showNextQuizQuestion(){
 
     const area =
@@ -1944,9 +1985,6 @@ function checkQuizAnswer(button,index){
         }
     function submitWrittenAnswer(){
 
-    const question =
-        currentQuizQuestions[currentQuizIndex];
-
     const input =
         document.getElementById("writtenAnswer");
 
@@ -1959,6 +1997,22 @@ function checkQuizAnswer(button,index){
 
         return;
     }
+
+    pendingWrittenAnswer =
+        studentAnswer;
+
+    checkWrittenAnswer();
+
+}
+
+
+function checkWrittenAnswer(){
+
+    const question =
+        currentQuizQuestions[currentQuizIndex];
+
+    const studentAnswer =
+        pendingWrittenAnswer;
 
     const area =
         document.getElementById("quizArea");
@@ -2030,6 +2084,8 @@ function checkQuizAnswer(button,index){
 
         }
 
+        pendingWrittenAnswer = "";
+
         currentQuizIndex++;
 
         showNextQuizQuestion();
@@ -2041,13 +2097,33 @@ function checkQuizAnswer(button,index){
 
         area.innerHTML =
             '<p class="empty-message">' +
-            'Unable to check the answer. ' +
-            'Please check your internet connection.' +
-            '</p>';
+            'Connection failed. Your answer ' +
+            'is still saved.' +
+            '</p>' +
+
+            '<button ' +
+            'id="retryWrittenAnswer" ' +
+            'class="study-button">' +
+            'Retry Checking Answer' +
+            '</button>';
+
+        const retryButton =
+            document.getElementById(
+                "retryWrittenAnswer"
+            );
+
+        retryButton.addEventListener(
+            "click",
+            function(){
+
+                checkWrittenAnswer();
+
+            }
+        );
 
     });
 
-            }
+    }
 </script>
 
 </body>
