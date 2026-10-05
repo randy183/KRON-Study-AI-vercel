@@ -54,7 +54,7 @@ export default async function handler(req, res) {
 
 
             const choiceCount =
-                Math.ceil(number * 0.6);
+    Math.round(number * 0.6);
 
 
             const writtenCount =
