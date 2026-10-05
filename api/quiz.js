@@ -189,7 +189,7 @@ Do not include code fences.
                 body: JSON.stringify({
 
                     model:
-    "openrouter/free",
+    "qwen/qwen3.8-27b:free",
 
                     messages: [
 
