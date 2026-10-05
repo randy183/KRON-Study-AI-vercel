@@ -34,6 +34,7 @@ body.light{
     --text:#111827;
     --muted:#64748b;
     --border:#d7dee8;
+    --input-text:#ffffff;
 }
 
 body{
@@ -284,7 +285,7 @@ main{
     border:1px solid var(--border);
     border-radius:12px;
     background:var(--card2);
-    color:var(--text);
+    color:var(--input-text);
     font-family:inherit;
     font-size:14px;
     outline:none;
@@ -425,53 +426,78 @@ main{
     }
 
 }
-    /* =========================
+   /* =========================
    QUIZ
    ========================= */
 
-.study-input{
-    appearance:none;
-}
-
-select.study-input{
-    cursor:pointer;
-}
-
-#quizArea{
-    min-height:100px;
-}
-
 .quiz-question{
-    font-size:17px;
+    font-size:18px;
+    font-weight:700;
     line-height:1.5;
-    margin-bottom:16px;
+    margin:16px 0;
+}
+
+.quiz-meta{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+}
+
+.quiz-badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:999px;
+    background:var(--card2);
+    color:var(--muted);
+    font-size:12px;
+    font-weight:700;
 }
 
 .quiz-option{
     width:100%;
-    display:block;
-    text-align:left;
     padding:13px;
-    margin-top:9px;
+    margin-top:10px;
     border:1px solid var(--border);
     border-radius:12px;
     background:var(--card2);
-    color:var(--text);
+    color:var(--input-text);
+    text-align:left;
     font-size:14px;
 }
 
-.quiz-option:active{
-    transform:scale(.99);
-}
-
-.quiz-option.selected{
+.quiz-option:hover{
     border-color:var(--accent);
 }
 
-.quiz-number{
-    color:var(--muted);
-    font-size:12px;
+.quiz-option.correct{
+    border-color:#22c55e;
+}
+
+.quiz-option.wrong{
+    border-color:#ef4444;
+}
+
+.quiz-feedback{
+    margin-top:16px;
+    padding:14px;
+    border-radius:12px;
+    background:var(--card2);
+    border:1px solid var(--border);
+    line-height:1.6;
+}
+
+.quiz-answer{
+    font-weight:700;
     margin-bottom:8px;
+}
+
+.quiz-explanation{
+    color:var(--muted);
+}
+
+.quiz-next{
+    margin-top:12px;
 }
 /* GENERAL CARD */
 
@@ -807,14 +833,9 @@ AI Tutor interface coming next.
 </section>
 
 <!-- QUIZ PAGE -->
+<section id="quizPage" class="page">
 
-<section
-id="quizPage"
-class="page">
-
-<h2 class="page-title">
-Quiz
-</h2>
+<h2 class="page-title">Quiz</h2>
 
 <p class="page-description">
 Practice WAEC and SSCE questions with KRON.
@@ -822,75 +843,75 @@ Practice WAEC and SSCE questions with KRON.
 
 <div class="card">
 
-<label for="quizSubject">
-Subject
-</label>
+<label for="quizLevel">Class / Level</label>
 
-<select
-id="quizSubject"
-class="study-input">
+<select id="quizLevel"
+class="study-input"
+onchange="updateQuizTerms()">
 
-<option value="">
-Choose a subject
-</option>
-
-<option>English Language</option>
-<option>Mathematics</option>
-<option>Physics</option>
-<option>Chemistry</option>
-<option>Biology</option>
-<option>Economics</option>
-<option>Government</option>
-<option>Commerce</option>
-<option>Financial Accounting</option>
-<option>Marketing</option>
-<option>Data Processing</option>
-<option>Office Practice</option>
+<option value="">Choose class / level</option>
+<option value="SS1">SS1</option>
+<option value="SS2">SS2</option>
+<option value="SS3">SS3</option>
+<option value="WAEC">WAEC Syllabus</option>
 
 </select>
 
-    <label for="quizCount">Number of Questions</label>
 
-<select
-id="quizCount"
+<div id="quizTermContainer">
+
+<label for="quizTerm">Term</label>
+
+<select id="quizTerm"
 class="study-input">
 
-<option value="1">1 Question</option>
-<option value="2">2 Questions</option>
-<option value="3">3 Questions</option>
-<option value="4">4 Questions</option>
-<option value="5" selected>5 Questions</option>
-<option value="6">6 Questions</option>
-<option value="7">7 Questions</option>
-<option value="8">8 Questions</option>
-<option value="9">9 Questions</option>
+<option value="">Choose term</option>
+<option value="First Term">First Term</option>
+<option value="Second Term">Second Term</option>
+<option value="Third Term">Third Term</option>
+
+</select>
+
+</div>
+
+
+<label for="quizSubject">Subject</label>
+
+<select id="quizSubject"
+class="study-input">
+
+<option value="">Choose a subject</option>
+
+</select>
+
+
+<label for="quizCount">Number of Questions</label>
+
+<select id="quizCount"
+class="study-input">
+
+<option value="5">5 Questions</option>
 <option value="10">10 Questions</option>
-<option value="11">11 Questions</option>
-<option value="12">12 Questions</option>
-<option value="13">13 Questions</option>
-<option value="14">14 Questions</option>
 <option value="15">15 Questions</option>
-<option value="16">16 Questions</option>
-<option value="17">17 Questions</option>
-<option value="18">18 Questions</option>
-<option value="19">19 Questions</option>
 <option value="20">20 Questions</option>
 
 </select>
-<button
-class="study-button"
+
+
+<button class="study-button"
 onclick="startQuiz()">
+
 Start Quiz
+
 </button>
 
 </div>
 
-<div
-id="quizArea"
-class="card">
+
+<div id="quizArea" class="card">
 
 <p class="empty-message">
-Choose a subject and start a quiz.
+Choose your class, term and subject to start a quiz.
 </p>
 
 </div>
@@ -1652,478 +1673,6 @@ loadTasks();
 
 updateProgress();
 
-let currentQuizQuestions = [];
-let currentQuizIndex = 0;
-let currentQuizScore = 0;
-let pendingWrittenAnswer = "";
-function startQuiz(){
-
-    const subject =
-        document.getElementById("quizSubject").value;
-
-    const count =
-        Number(
-            document.getElementById("quizCount").value
-        );
-
-    const area =
-        document.getElementById("quizArea");
-
-    if(!subject){
-
-        area.innerHTML =
-            '<p class="empty-message">' +
-            'Please choose a subject first.' +
-            '</p>';
-
-        return;
-    }
-
-    function sendQuizRequest(){
-
-        area.innerHTML =
-            '<p class="empty-message">' +
-            'Generating your quiz...' +
-            '</p>';
-
-        fetch("/api/quiz", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-
-                mode: "generate",
-
-                subject: subject,
-
-                count: count
-
-            })
-
-        })
-        .then(function(response){
-
-            if(!response.ok){
-
-                throw new Error(
-                    "Quiz request failed."
-                );
-
-            }
-
-            return response.json();
-
-        })
-        .then(function(data){
-
-            const questions =
-                data.questions ||
-                (data.question
-                    ? [data.question]
-                    : []);
-
-            if(!questions.length){
-
-                throw new Error(
-                    "No questions returned."
-                );
-
-            }
-
-            currentQuizQuestions =
-                questions;
-
-            currentQuizIndex = 0;
-
-            currentQuizScore = 0;
-
-            showNextQuizQuestion();
-
-        })
-        .catch(function(error){
-
-            console.error(error);
-
-            area.innerHTML =
-                '<p class="empty-message">' +
-                'The connection failed, but your quiz ' +
-                'has not been cancelled.' +
-                '</p>' +
-
-                '<button ' +
-                'id="retryQuizGeneration" ' +
-                'class="study-button">' +
-                'Retry Generation' +
-                '</button>';
-
-            document
-                .getElementById(
-                    "retryQuizGeneration"
-                )
-                .addEventListener(
-                    "click",
-                    function(){
-
-                        sendQuizRequest();
-
-                    }
-                );
-
-        });
-
-    }
-
-    sendQuizRequest();
-
-}    
-    function showNextQuizQuestion(){
-
-    const area =
-        document.getElementById("quizArea");
-
-    const question =
-        currentQuizQuestions[currentQuizIndex];
-
-    if(!question){
-
-        showQuizResult();
-
-        return;
-    }
-
-    let html =
-        '<div class="quiz-number">' +
-        'Question ' +
-        (currentQuizIndex + 1) +
-        ' of ' +
-        currentQuizQuestions.length +
-        '</div>';
-
-    html +=
-        '<div class="quiz-question">' +
-        escapeHTML(
-            question.question ||
-            question.text ||
-            ""
-        ) +
-        '</div>';
-
-    if(question.type === "written"){
-
-        html +=
-            '<textarea id="writtenAnswer" ' +
-            'class="study-textarea" ' +
-            'placeholder="Type your answer here..."></textarea>';
-
-        html +=
-            '<button class="study-button" ' +
-            'onclick="submitWrittenAnswer()">' +
-            'Submit Answer' +
-            '</button>';
-
-    }else{
-
-        const options =
-            question.options || [];
-
-        options.forEach(function(option,index){
-
-            html +=
-                '<button ' +
-                'class="quiz-option" ' +
-                'data-option-index="' +
-                index +
-                '">' +
-                escapeHTML(option) +
-                '</button>';
-
-        });
-
-    }
-
-    area.innerHTML = html;
-
-    const optionButtons =
-        area.querySelectorAll(".quiz-option");
-
-    optionButtons.forEach(function(button){
-
-        button.addEventListener(
-            "click",
-            function(){
-
-                const index =
-                    Number(
-                        button.getAttribute(
-                            "data-option-index"
-                        )
-                    );
-
-                checkQuizAnswer(
-                    button,
-                    index
-                );
-
-            }
-        );
-
-    });
-
-}
-
-
-function checkQuizAnswer(button,index){
-
-    const question =
-        currentQuizQuestions[currentQuizIndex];
-
-    const options =
-        question.options || [];
-
-    const correctIndex =
-        Number(question.correct);
-
-    const buttons =
-        document.querySelectorAll(
-            ".quiz-option"
-        );
-
-    buttons.forEach(function(item){
-
-        item.disabled = true;
-
-    });
-
-    if(index === correctIndex){
-
-        button.classList.add("selected");
-
-        button.textContent =
-            button.textContent + " ✓";
-
-        currentQuizScore++;
-
-        alert(
-            "Correct! Well done."
-        );
-
-    }else{
-
-        button.textContent =
-            button.textContent + " ✕";
-
-        const correctAnswer =
-            question.answer ||
-            options[correctIndex] ||
-            "";
-
-        alert(
-            "Not quite. The correct answer is: " +
-            correctAnswer
-        );
-
-    }
-
-    currentQuizIndex =
-        currentQuizIndex + 1;
-
-    setTimeout(function(){
-
-        showNextQuizQuestion();
-
-    }, 100);
-
-}
-    function showQuizResult(){
-
-    const area =
-        document.getElementById("quizArea");
-
-    const total =
-        currentQuizQuestions.length;
-
-    const percentage =
-        total > 0
-        ? Math.round(
-            (currentQuizScore / total) * 100
-        )
-        : 0;
-
-    localStorage.setItem(
-        "KRON_LAST_QUIZ_SCORE",
-        JSON.stringify({
-            score: currentQuizScore,
-            total: total,
-            percentage: percentage,
-            date: Date.now()
-        })
-    );
-
-    area.innerHTML =
-        '<div class="quiz-question">' +
-        'Quiz Complete' +
-        '</div>' +
-
-        '<p class="progress-text">' +
-        'You scored ' +
-        currentQuizScore +
-        ' out of ' +
-        total +
-        ' (' +
-        percentage +
-        '%).' +
-        '</p>' +
-
-        '<button class="study-button" ' +
-        'onclick="startQuiz()">' +
-        'Try Another Quiz' +
-        '</button>';
-        }
-    function submitWrittenAnswer(){
-
-    const input =
-        document.getElementById("writtenAnswer");
-
-    const studentAnswer =
-        input ? input.value.trim() : "";
-
-    if(!studentAnswer){
-
-        alert("Please enter your answer.");
-
-        return;
-    }
-
-    pendingWrittenAnswer =
-        studentAnswer;
-
-    checkWrittenAnswer();
-
-}
-
-
-function checkWrittenAnswer(){
-
-    const question =
-        currentQuizQuestions[currentQuizIndex];
-
-    const studentAnswer =
-        pendingWrittenAnswer;
-
-    const area =
-        document.getElementById("quizArea");
-
-    area.innerHTML =
-        '<p class="empty-message">' +
-        'Checking your answer...' +
-        '</p>';
-
-    fetch("/api/quiz", {
-
-        method: "POST",
-
-        headers: {
-            "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-
-            mode: "check",
-
-            subject:
-                document.getElementById(
-                    "quizSubject"
-                ).value,
-
-            question:
-                question.question,
-
-            correctAnswer:
-                question.answer,
-
-            studentAnswer:
-                studentAnswer
-
-        })
-
-    })
-    .then(function(response){
-
-        if(!response.ok){
-
-            throw new Error(
-                "Answer check failed."
-            );
-
-        }
-
-        return response.json();
-
-    })
-    .then(function(data){
-
-        if(data.correct){
-
-            currentQuizScore++;
-
-            alert(
-                "Correct! " +
-                (data.explanation || "")
-            );
-
-        }else{
-
-            alert(
-                "Not quite. " +
-                (data.explanation || "")
-            );
-
-        }
-
-        pendingWrittenAnswer = "";
-
-        currentQuizIndex++;
-
-        showNextQuizQuestion();
-
-    })
-    .catch(function(error){
-
-        console.error(error);
-
-        area.innerHTML =
-            '<p class="empty-message">' +
-            'Connection failed. Your answer ' +
-            'is still saved.' +
-            '</p>' +
-
-            '<button ' +
-            'id="retryWrittenAnswer" ' +
-            'class="study-button">' +
-            'Retry Checking Answer' +
-            '</button>';
-
-        const retryButton =
-            document.getElementById(
-                "retryWrittenAnswer"
-            );
-
-        retryButton.addEventListener(
-            "click",
-            function(){
-
-                checkWrittenAnswer();
-
-            }
-        );
-
-    });
-
-    }
 </script>
 
 </body>
