@@ -2072,7 +2072,8 @@ async function retryQuizConnection(){
     renderQuizQuestion();
 
     }
-/* =========================
+
+    /* =========================
    START QUIZ
    ========================= */
 
@@ -2230,8 +2231,11 @@ async function startQuiz(){
 
         if(!response.ok){
 
+            const errorText =
+                await response.text();
+
             throw new Error(
-                "Quiz request failed."
+                `HTTP ${response.status}: ${errorText}`
             );
 
         }
@@ -2246,16 +2250,11 @@ async function startQuiz(){
             !Array.isArray(data.questions)
         ){
 
-            if(!response.ok){
+            throw new Error(
+                "No questions returned."
+            );
 
-    const errorText =
-        await response.text();
-
-    throw new Error(
-        `HTTP ${response.status}: ${errorText}`
-    );
-
-            }
+        }
 
 
         currentQuizQuestions =
@@ -2279,38 +2278,43 @@ async function startQuiz(){
 
     }catch(error){
 
-    console.error("KRON QUIZ ERROR:", error);
+        console.error(
+            "KRON QUIZ ERROR:",
+            error
+        );
 
-    if(quizArea){
 
-        quizArea.innerHTML = `
+        if(quizArea){
 
-            <div class="quiz-feedback">
+            quizArea.innerHTML = `
 
-                <div class="quiz-answer">
-                    Unable to generate quiz
+                <div class="quiz-feedback">
+
+                    <div class="quiz-answer">
+                        Unable to generate quiz
+                    </div>
+
+                    <p class="quiz-explanation">
+                        Error:
+                        ${error.message || "Unknown error"}
+                    </p>
+
+                    <button
+                        class="study-button quiz-next"
+                        onclick="startQuiz()">
+
+                        Retry
+
+                    </button>
+
                 </div>
 
-                <p class="quiz-explanation">
-                    Error:
-                    ${error.message || "Unknown error"}
-                </p>
+            `;
 
-                <button
-                    class="study-button quiz-next"
-                    onclick="startQuiz()">
-
-                    Retry
-
-                </button>
-
-            </div>
-
-        `;
+        }
 
     }
 
-    }
 }
 
 /* =========================
