@@ -565,6 +565,117 @@ main{
 
 }
 
+    /* =========================
+   KRON PLANNER STYLES
+========================= */
+
+.planner-task{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:16px;
+
+    padding:16px;
+
+    margin-bottom:12px;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,0.03);
+
+}
+
+
+.planner-task strong{
+
+    display:block;
+
+    font-size:16px;
+
+    margin-bottom:6px;
+
+}
+
+
+.planner-task p{
+
+    margin:5px 0;
+
+    font-size:13px;
+
+    opacity:0.8;
+
+}
+
+
+.planner-task > div:last-child{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    min-width:120px;
+
+}
+
+
+.planner-task .study-button{
+
+    width:100%;
+
+    margin:0;
+
+}
+
+
+.planner-task-completed{
+
+    opacity:0.6;
+
+}
+
+
+.planner-task-completed strong{
+
+    text-decoration:line-through;
+
+}
+
+
+@media(max-width:600px){
+
+    .planner-task{
+
+        flex-direction:column;
+
+    }
+
+
+    .planner-task > div:last-child{
+
+        width:100%;
+
+        flex-direction:row;
+
+    }
+
+
+    .planner-task > div:last-child .study-button{
+
+        flex:1;
+
+    }
+
+}
+    
 </style>
 
 </head>
@@ -1004,42 +1115,148 @@ No notes saved yet.
 
 <!-- PLANNER PAGE -->
 
-<section
-id="plannerPage"
-class="page">
+<section id="plannerPage" class="page">
 
 <h2 class="page-title">
 Planner
 </h2>
 
 <p class="page-description">
-Plan your study sessions and tasks.
+Plan your study sessions and stay organized.
 </p>
 
 <div class="card">
 
+<h3>
+Add Study Task
+</h3>
+
 <label for="taskInput">
-Study Task
+Task
 </label>
 
 <input
 type="text"
 id="taskInput"
 class="study-input"
-placeholder="e.g. Study Chemistry for 1 hour">
+placeholder="e.g. Study Chemistry">
+
+<label for="taskSubject">
+Subject
+</label>
+
+<select
+id="taskSubject"
+class="study-input">
+
+<option value="">
+Choose subject
+</option>
+
+</select>
+
+<label for="taskDate">
+Date
+</label>
+
+<input
+type="date"
+id="taskDate"
+class="study-input">
+
+<label for="taskStartTime">
+Start Time
+</label>
+
+<input
+type="time"
+id="taskStartTime"
+class="study-input">
+
+<label for="taskEndTime">
+End Time
+</label>
+
+<input
+type="time"
+id="taskEndTime"
+class="study-input">
+
+<label for="taskPriority">
+Priority
+</label>
+
+<select
+id="taskPriority"
+class="study-input">
+
+<option value="">
+Choose priority
+</option>
+
+<option value="High">
+High
+</option>
+
+<option value="Medium">
+Medium
+</option>
+
+<option value="Low">
+Low
+</option>
+
+</select>
 
 <button
 class="study-button"
 onclick="addTask()">
-Add Task
+
+Add Study Task
+
 </button>
 
 </div>
 
+
 <div class="card">
 
 <h3>
-My Study Tasks
+Today's Plan
+</h3>
+
+<div id="todayTaskList">
+
+<p class="empty-message">
+No study sessions planned for today.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+Upcoming Study Sessions
+</h3>
+
+<div id="upcomingTaskList">
+
+<p class="empty-message">
+No upcoming study sessions.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+All Study Tasks
 </h3>
 
 <div id="taskList">
@@ -1053,7 +1270,7 @@ No tasks added yet.
 </div>
 
 </section>
-
+    
 <!-- PROGRESS PAGE -->
 
 <section
@@ -1676,6 +1893,553 @@ loadTasks();
 }
 
 updateProgress();
+
+    /* =========================
+   KRON PLANNER SYSTEM
+========================= */
+
+const PLANNER_STORAGE_KEY = "KRON_PLANNER_TASKS";
+
+let plannerTasks = JSON.parse(
+    localStorage.getItem(PLANNER_STORAGE_KEY) || "[]"
+);
+
+
+/* =========================
+   SAVE PLANNER
+========================= */
+
+function savePlannerTasks(){
+
+    localStorage.setItem(
+        PLANNER_STORAGE_KEY,
+        JSON.stringify(plannerTasks)
+    );
+
+}
+
+
+/* =========================
+   GET TODAY
+========================= */
+
+function getTodayDate(){
+
+    const now = new Date();
+
+    const year =
+        now.getFullYear();
+
+    const month =
+        String(now.getMonth() + 1)
+        .padStart(2, "0");
+
+    const day =
+        String(now.getDate())
+        .padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+/* =========================
+   ADD TASK
+========================= */
+
+function addTask(){
+
+    const taskInput =
+        document.getElementById("taskInput");
+
+    const taskSubject =
+        document.getElementById("taskSubject");
+
+    const taskDate =
+        document.getElementById("taskDate");
+
+    const taskStartTime =
+        document.getElementById("taskStartTime");
+
+    const taskEndTime =
+        document.getElementById("taskEndTime");
+
+    const taskPriority =
+        document.getElementById("taskPriority");
+
+
+    const task =
+        taskInput?.value.trim();
+
+    const subject =
+        taskSubject?.value;
+
+    const date =
+        taskDate?.value;
+
+    const startTime =
+        taskStartTime?.value;
+
+    const endTime =
+        taskEndTime?.value;
+
+    const priority =
+        taskPriority?.value;
+
+
+    if(!task){
+
+        alert("Please enter a study task.");
+
+        return;
+
+    }
+
+
+    if(!subject){
+
+        alert("Please choose a subject.");
+
+        return;
+
+    }
+
+
+    if(!date){
+
+        alert("Please choose a date.");
+
+        return;
+
+    }
+
+
+    if(!startTime){
+
+        alert("Please choose a start time.");
+
+        return;
+
+    }
+
+
+    if(!endTime){
+
+        alert("Please choose an end time.");
+
+        return;
+
+    }
+
+
+    if(!priority){
+
+        alert("Please choose a priority.");
+
+        return;
+
+    }
+
+
+    if(endTime <= startTime){
+
+        alert(
+            "End time must be later than start time."
+        );
+
+        return;
+
+    }
+
+
+    plannerTasks.push({
+
+        id: Date.now(),
+
+        task: task,
+
+        subject: subject,
+
+        date: date,
+
+        startTime: startTime,
+
+        endTime: endTime,
+
+        priority: priority,
+
+        completed: false
+
+    });
+
+
+    savePlannerTasks();
+
+    renderPlanner();
+
+
+    taskInput.value = "";
+
+    taskSubject.value = "";
+
+    taskDate.value = "";
+
+    taskStartTime.value = "";
+
+    taskEndTime.value = "";
+
+    taskPriority.value = "";
+
+
+    alert("Study task added successfully.");
+
+}
+
+
+/* =========================
+   FORMAT DATE
+========================= */
+
+function formatPlannerDate(dateString){
+
+    const date =
+        new Date(dateString + "T00:00:00");
+
+    return date.toLocaleDateString(
+        undefined,
+        {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+/* =========================
+   FORMAT TIME
+========================= */
+
+function formatPlannerTime(timeString){
+
+    const parts =
+        timeString.split(":");
+
+    let hour =
+        Number(parts[0]);
+
+    const minute =
+        parts[1];
+
+    const period =
+        hour >= 12 ? "PM" : "AM";
+
+    hour =
+        hour % 12 || 12;
+
+    return `${hour}:${minute} ${period}`;
+
+}
+
+
+/* =========================
+   RENDER PLANNER
+========================= */
+
+function renderPlanner(){
+
+    const todayTaskList =
+        document.getElementById("todayTaskList");
+
+    const upcomingTaskList =
+        document.getElementById("upcomingTaskList");
+
+    const taskList =
+        document.getElementById("taskList");
+
+
+    if(
+        !todayTaskList ||
+        !upcomingTaskList ||
+        !taskList
+    ){
+
+        return;
+
+    }
+
+
+    const today =
+        getTodayDate();
+
+
+    const todayTasks =
+        plannerTasks.filter(function(task){
+
+            return task.date === today;
+
+        });
+
+
+    const upcomingTasks =
+        plannerTasks.filter(function(task){
+
+            return task.date > today;
+
+        });
+
+
+    if(todayTasks.length === 0){
+
+        todayTaskList.innerHTML = `
+            <p class="empty-message">
+                No study sessions planned for today.
+            </p>
+        `;
+
+    }else{
+
+        todayTasks.sort(function(a,b){
+
+            return a.startTime.localeCompare(
+                b.startTime
+            );
+
+        });
+
+        todayTaskList.innerHTML =
+            todayTasks
+                .map(createPlannerTaskHTML)
+                .join("");
+
+    }
+
+
+    if(upcomingTasks.length === 0){
+
+        upcomingTaskList.innerHTML = `
+            <p class="empty-message">
+                No upcoming study sessions.
+            </p>
+        `;
+
+    }else{
+
+        upcomingTasks.sort(function(a,b){
+
+            return (
+                a.date + a.startTime
+            ).localeCompare(
+                b.date + b.startTime
+            );
+
+        });
+
+        upcomingTaskList.innerHTML =
+            upcomingTasks
+                .map(createPlannerTaskHTML)
+                .join("");
+
+    }
+
+
+    if(plannerTasks.length === 0){
+
+        taskList.innerHTML = `
+            <p class="empty-message">
+                No tasks added yet.
+            </p>
+        `;
+
+    }else{
+
+        const allTasks =
+            plannerTasks.slice().sort(function(a,b){
+
+                return (
+                    a.date + a.startTime
+                ).localeCompare(
+                    b.date + b.startTime
+                );
+
+            });
+
+        taskList.innerHTML =
+            allTasks
+                .map(createPlannerTaskHTML)
+                .join("");
+
+    }
+
+}
+
+
+/* =========================
+   TASK HTML
+========================= */
+
+function createPlannerTaskHTML(task){
+
+    const completedClass =
+        task.completed
+        ? " planner-task-completed"
+        : "";
+
+
+    const buttonText =
+        task.completed
+        ? "Completed"
+        : "Mark Complete";
+
+
+    return `
+
+        <div
+            class="planner-task${completedClass}"
+            data-task-id="${task.id}">
+
+            <div>
+
+                <strong>
+                    ${escapePlannerText(task.task)}
+                </strong>
+
+                <p>
+                    ${escapePlannerText(task.subject)}
+                </p>
+
+                <p>
+                    ${formatPlannerDate(task.date)}
+                    •
+                    ${formatPlannerTime(task.startTime)}
+                    -
+                    ${formatPlannerTime(task.endTime)}
+                </p>
+
+                <p>
+                    Priority:
+                    ${escapePlannerText(task.priority)}
+                </p>
+
+            </div>
+
+            <div>
+
+                <button
+                    class="study-button"
+                    onclick="togglePlannerTask(${task.id})">
+
+                    ${buttonText}
+
+                </button>
+
+                <button
+                    class="study-button"
+                    onclick="deletePlannerTask(${task.id})">
+
+                    Delete
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================
+   TOGGLE TASK
+========================= */
+
+function togglePlannerTask(id){
+
+    const task =
+        plannerTasks.find(function(item){
+
+            return item.id === id;
+
+        });
+
+
+    if(!task){
+
+        return;
+
+    }
+
+
+    task.completed =
+        !task.completed;
+
+
+    savePlannerTasks();
+
+    renderPlanner();
+
+}
+
+
+/* =========================
+   DELETE TASK
+========================= */
+
+function deletePlannerTask(id){
+
+    const confirmed =
+        confirm(
+            "Delete this study task?"
+        );
+
+
+    if(!confirmed){
+
+        return;
+
+    }
+
+
+    plannerTasks =
+        plannerTasks.filter(function(task){
+
+            return task.id !== id;
+
+        });
+
+
+    savePlannerTasks();
+
+    renderPlanner();
+
+}
+
+
+/* =========================
+   ESCAPE TEXT
+========================= */
+
+function escapePlannerText(value){
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================
+   LOAD PLANNER
+========================= */
+
+renderPlanner();
+    
     /* =========================
    KRON QUIZ SYSTEM
    ========================= */
