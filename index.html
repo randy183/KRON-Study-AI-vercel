@@ -1808,14 +1808,16 @@ function updateQuizSubjects(){
    ========================= */
 
 updateQuizSubjects();
-    /* =========================
+/* =========================
    QUIZ CONNECTION CHECK
    ========================= */
 
 async function checkQuizConnection(){
 
     if(!navigator.onLine){
+
         return false;
+
     }
 
     try{
@@ -1830,19 +1832,21 @@ async function checkQuizConnection(){
 
             },5000);
 
-        await fetch(window.location.href,{
 
-            method:"HEAD",
+        await fetch(
+            window.location.origin + "/favicon.ico",
+            {
+                method:"GET",
+                cache:"no-store",
+                signal:controller.signal
+            }
+        );
 
-            cache:"no-store",
-
-            signal:controller.signal
-
-        });
 
         clearTimeout(timeout);
 
         return true;
+
 
     }catch(error){
 
@@ -1850,7 +1854,7 @@ async function checkQuizConnection(){
 
     }
 
-}
+    }
 
 
 /* =========================
