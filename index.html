@@ -1739,7 +1739,7 @@ showNextQuizQuestion();
 
     });
     }
-function showNextQuizQuestion(){
+    function showNextQuizQuestion(){
 
     const area =
         document.getElementById("quizArea");
@@ -1789,13 +1789,14 @@ function showNextQuizQuestion(){
         const options =
             question.options || [];
 
-        options.forEach(function(option){
+        options.forEach(function(option,index){
 
             html +=
-                '<button class="quiz-option" ' +
-                'onclick="checkQuizAnswer(this,escapeHTMLForQuiz(\'' +
-                escapeHTML(option) +
-                '\'))">' +
+                '<button ' +
+                'class="quiz-option" ' +
+                'data-option-index="' +
+                index +
+                '">' +
                 escapeHTML(option) +
                 '</button>';
 
@@ -1804,25 +1805,59 @@ function showNextQuizQuestion(){
     }
 
     area.innerHTML = html;
-            }
 
-function checkQuizAnswer(button,answer){
+    const optionButtons =
+        area.querySelectorAll(".quiz-option");
+
+    optionButtons.forEach(function(button){
+
+        button.addEventListener(
+            "click",
+            function(){
+
+                const index =
+                    Number(
+                        button.getAttribute(
+                            "data-option-index"
+                        )
+                    );
+
+                checkQuizAnswer(
+                    button,
+                    index
+                );
+
+            }
+        );
+
+    });
+
+}
+
+
+function checkQuizAnswer(button,index){
 
     const question =
         currentQuizQuestions[currentQuizIndex];
 
     const buttons =
-        document.querySelectorAll(".quiz-option");
+        document.querySelectorAll(
+            ".quiz-option"
+        );
 
     buttons.forEach(function(item){
-        item.disabled=true;
+
+        item.disabled = true;
+
     });
 
-    const correctAnswer =
-        question.answer ||
-        question.correctAnswer;
+    const options =
+        question.options || [];
 
-    if(answer===correctAnswer){
+    const correctIndex =
+        Number(question.correct);
+
+    if(index === correctIndex){
 
         button.classList.add("selected");
 
@@ -1840,6 +1875,12 @@ function checkQuizAnswer(button,answer){
         button.textContent =
             button.textContent + " ✕";
 
+        const correctAnswer =
+            question.answer ||
+            options[correctIndex] ||
+            question.correctAnswer ||
+            "";
+
         alert(
             "Not quite. The correct answer is: " +
             correctAnswer
@@ -1851,7 +1892,7 @@ function checkQuizAnswer(button,answer){
 
     showNextQuizQuestion();
 
-}
+    }
     function showQuizResult(){
 
     const area =
