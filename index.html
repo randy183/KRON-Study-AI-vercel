@@ -2274,34 +2274,34 @@ async function startQuiz(){
 
     }catch(error){
 
-        if(quizArea){
+    console.error("KRON QUIZ ERROR:", error);
 
-            quizArea.innerHTML = `
+    if(quizArea){
 
-                <div class="quiz-feedback">
+        quizArea.innerHTML = `
 
-                    <div class="quiz-answer">
-                        Unable to generate quiz
-                    </div>
+            <div class="quiz-feedback">
 
-                    <p class="quiz-explanation">
-                        Check your internet connection
-                        and try again.
-                    </p>
-
-                    <button
-                        class="study-button quiz-next"
-                        onclick="startQuiz()">
-
-                        Retry
-
-                    </button>
-
+                <div class="quiz-answer">
+                    Unable to generate quiz
                 </div>
 
-            `;
+                <p class="quiz-explanation">
+                    Error:
+                    ${error.message || "Unknown error"}
+                </p>
 
-        }
+                <button
+                    class="study-button quiz-next"
+                    onclick="startQuiz()">
+
+                    Retry
+
+                </button>
+
+            </div>
+
+        `;
 
     }
 
