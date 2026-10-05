@@ -849,6 +849,34 @@ Choose a subject
 
 </select>
 
+    <label for="quizCount">Number of Questions</label>
+
+<select
+id="quizCount"
+class="study-input">
+
+<option value="1">1 Question</option>
+<option value="2">2 Questions</option>
+<option value="3">3 Questions</option>
+<option value="4">4 Questions</option>
+<option value="5" selected>5 Questions</option>
+<option value="6">6 Questions</option>
+<option value="7">7 Questions</option>
+<option value="8">8 Questions</option>
+<option value="9">9 Questions</option>
+<option value="10">10 Questions</option>
+<option value="11">11 Questions</option>
+<option value="12">12 Questions</option>
+<option value="13">13 Questions</option>
+<option value="14">14 Questions</option>
+<option value="15">15 Questions</option>
+<option value="16">16 Questions</option>
+<option value="17">17 Questions</option>
+<option value="18">18 Questions</option>
+<option value="19">19 Questions</option>
+<option value="20">20 Questions</option>
+
+</select>
 <button
 class="study-button"
 onclick="startQuiz()">
@@ -1624,6 +1652,9 @@ loadTasks();
 
 updateProgress();
 
+let currentQuizQuestions = [];
+let currentQuizIndex = 0;
+let currentQuizScore = 0;
  function startQuiz(){
 
     const subject =
@@ -1658,7 +1689,9 @@ updateProgress();
         body: JSON.stringify({
             mode:"generate",
             subject: subject,
-            count: 5
+            count: Number(
+    document.getElementById("quizCount").value
+)
         })
 
     })
@@ -1673,32 +1706,25 @@ updateProgress();
     })
     .then(function(data){
 
-        const question =
-            data.question ||
-            (data.questions && data.questions[0]);
+        const questions =
+    data.questions ||
+    (data.question ? [data.question] : []);
 
-        if(!question){
-            throw new Error("No question returned.");
-        }
+if(!questions.length){
+    throw new Error("No questions returned.");
+}
 
-        currentQuizQuestion = {
+currentQuizQuestions = questions;
+currentQuizIndex = 0;
+currentQuizScore = 0;
 
-            subject: subject,
+showNextQuizQuestion();
 
-            question:
-                question.question ||
-                question.text,
+        currentQuizQuestions = questions;
+currentQuizIndex = 0;
+currentQuizScore = 0;
 
-            options:
-                question.options || [],
-
-            answer:
-                question.answer ||
-                question.correctAnswer
-
-        };
-
-        renderQuizQuestion();
+showNextQuizQuestion();
 
     })
     .catch(function(error){
@@ -1713,84 +1739,270 @@ updateProgress();
 
     });
     }
-function renderQuizQuestion(){
+function showNextQuizQuestion(){
 
     const area =
         document.getElementById("quizArea");
 
     const question =
-        currentQuizQuestion;
+        currentQuizQuestions[currentQuizIndex];
 
-    let html=
-        '<div class="quiz-number">'+
-        question.subject+
+    if(!question){
+
+        showQuizResult();
+
+        return;
+    }
+
+    let html =
+        '<div class="quiz-number">' +
+        'Question ' +
+        (currentQuizIndex + 1) +
+        ' of ' +
+        currentQuizQuestions.length +
         '</div>';
 
-    html+=
-        '<div class="quiz-question">'+
-        escapeHTML(question.question)+
+    html +=
+        '<div class="quiz-question">' +
+        escapeHTML(
+            question.question ||
+            question.text ||
+            ""
+        ) +
         '</div>';
 
-    question.options.forEach(function(option){
+    if(question.type === "written"){
 
-        html+=
-            '<button class="quiz-option" '+
-            'onclick="checkQuizAnswer(this,'+
-            'escapeHTMLForQuiz(\''+
-            escapeHTML(option)+
-            '\'))">'+
-            escapeHTML(option)+
+        html +=
+            '<textarea id="writtenAnswer" ' +
+            'class="study-textarea" ' +
+            'placeholder="Type your answer here..."></textarea>';
+
+        html +=
+            '<button class="study-button" ' +
+            'onclick="submitWrittenAnswer()">' +
+            'Submit Answer' +
             '</button>';
-
-    });
-
-    area.innerHTML=html;
-
-}
-
-function escapeHTMLForQuiz(text){
-
-    return text;
-
-}
-
-function checkQuizAnswer(button,answer){
-
-    const buttons =
-        document.querySelectorAll(
-            ".quiz-option"
-        );
-
-    buttons.forEach(function(item){
-
-        item.disabled=true;
-
-    });
-
-    if(answer===currentQuizQuestion.answer){
-
-        button.classList.add("selected");
-
-        button.textContent=
-            button.textContent+
-            " ✓";
-
-        alert("Correct! Well done.");
 
     }else{
 
-        button.textContent=
-            button.textContent+
-            " ✕";
+        const options =
+            question.options || [];
+
+        options.forEach(function(option){
+
+            html +=
+                '<button class="quiz-option" ' +
+                'onclick="checkQuizAnswer(this,escapeHTMLForQuiz(\'' +
+                escapeHTML(option) +
+                '\'))">' +
+                escapeHTML(option) +
+                '</button>';
+
+        });
+
+    }
+
+    area.innerHTML = html;
+            }
+
+function checkQuizAnswer(button,answer){
+
+    const question =
+        currentQuizQuestions[currentQuizIndex];
+
+    const buttons =
+        document.querySelectorAll(".quiz-option");
+
+    buttons.forEach(function(item){
+        item.disabled=true;
+    });
+
+    const correctAnswer =
+        question.answer ||
+        question.correctAnswer;
+
+    if(answer===correctAnswer){
+
+        button.classList.add("selected");
+
+        button.textContent =
+            button.textContent + " ✓";
+
+        currentQuizScore++;
 
         alert(
-            "Not quite. The correct answer is: "+
-            currentQuizQuestion.answer
+            "Correct! Well done."
+        );
+
+    }else{
+
+        button.textContent =
+            button.textContent + " ✕";
+
+        alert(
+            "Not quite. The correct answer is: " +
+            correctAnswer
         );
 
     }
 
+    currentQuizIndex++;
+
+    showNextQuizQuestion();
+
+}
+    function showQuizResult(){
+
+    const area =
+        document.getElementById("quizArea");
+
+    const total =
+        currentQuizQuestions.length;
+
+    const percentage =
+        total > 0
+        ? Math.round(
+            (currentQuizScore / total) * 100
+        )
+        : 0;
+
+    localStorage.setItem(
+        "KRON_LAST_QUIZ_SCORE",
+        JSON.stringify({
+            score: currentQuizScore,
+            total: total,
+            percentage: percentage,
+            date: Date.now()
+        })
+    );
+
+    area.innerHTML =
+        '<div class="quiz-question">' +
+        'Quiz Complete' +
+        '</div>' +
+
+        '<p class="progress-text">' +
+        'You scored ' +
+        currentQuizScore +
+        ' out of ' +
+        total +
+        ' (' +
+        percentage +
+        '%).' +
+        '</p>' +
+
+        '<button class="study-button" ' +
+        'onclick="startQuiz()">' +
+        'Try Another Quiz' +
+        '</button>';
+        }
+    function submitWrittenAnswer(){
+
+    const question =
+        currentQuizQuestions[currentQuizIndex];
+
+    const input =
+        document.getElementById("writtenAnswer");
+
+    const studentAnswer =
+        input ? input.value.trim() : "";
+
+    if(!studentAnswer){
+
+        alert("Please enter your answer.");
+
+        return;
     }
+
+    const area =
+        document.getElementById("quizArea");
+
+    area.innerHTML =
+        '<p class="empty-message">' +
+        'Checking your answer...' +
+        '</p>';
+
+    fetch("/api/quiz", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+            mode: "check",
+
+            subject:
+                document.getElementById(
+                    "quizSubject"
+                ).value,
+
+            question:
+                question.question,
+
+            correctAnswer:
+                question.answer,
+
+            studentAnswer:
+                studentAnswer
+
+        })
+
+    })
+    .then(function(response){
+
+        if(!response.ok){
+
+            throw new Error(
+                "Answer check failed."
+            );
+
+        }
+
+        return response.json();
+
+    })
+    .then(function(data){
+
+        if(data.correct){
+
+            currentQuizScore++;
+
+            alert(
+                "Correct! " +
+                (data.explanation || "")
+            );
+
+        }else{
+
+            alert(
+                "Not quite. " +
+                (data.explanation || "")
+            );
+
+        }
+
+        currentQuizIndex++;
+
+        showNextQuizQuestion();
+
+    })
+    .catch(function(error){
+
+        console.error(error);
+
+        area.innerHTML =
+            '<p class="empty-message">' +
+            'Unable to check the answer. ' +
+            'Please check your internet connection.' +
+            '</p>';
+
+    });
+
+            }
 </script>
 
 </body>
