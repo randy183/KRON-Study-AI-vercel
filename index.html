@@ -2499,6 +2499,8 @@ async function checkQuizAnswer(selectedIndex){
     });
 
 
+    /* FIND THE CORRECT ANSWER */
+
     let correctIndex =
         question.correctIndex;
 
@@ -2514,11 +2516,40 @@ async function checkQuizAnswer(selectedIndex){
     }
 
 
-    const feedback =
-        document.getElementById("quizFeedback");
+    /* IF AI RETURNED THE ANSWER AS TEXT */
+
+    if(
+        typeof correctIndex !== "number" &&
+        question.correctAnswer &&
+        Array.isArray(question.options)
+    ){
+
+        const answerText =
+            String(question.correctAnswer)
+            .trim()
+            .toLowerCase();
+
+        correctIndex =
+            question.options.findIndex(
+                function(option){
+
+                    return String(option)
+                        .trim()
+                        .toLowerCase() === answerText;
+
+                }
+            );
+
+    }
 
 
-    if(selectedIndex === correctIndex){
+    /* CHECK THE SELECTED ANSWER */
+
+    const isCorrect =
+        selectedIndex === correctIndex;
+
+
+    if(isCorrect){
 
         quizScore++;
 
@@ -2552,12 +2583,16 @@ async function checkQuizAnswer(selectedIndex){
 
 
     const correctAnswer =
-        question.correctAnswer ||
         (
             correctIndex >= 0 &&
             question.options?.[correctIndex]
         ) ||
+        question.correctAnswer ||
         "Not provided";
+
+
+    const feedback =
+        document.getElementById("quizFeedback");
 
 
     if(feedback){
@@ -2569,7 +2604,7 @@ async function checkQuizAnswer(selectedIndex){
                 <div class="quiz-answer">
 
                     ${
-                        selectedIndex === correctIndex
+                        isCorrect
                         ? "Correct!"
                         : "Incorrect"
                     }
@@ -2577,13 +2612,21 @@ async function checkQuizAnswer(selectedIndex){
                 </div>
 
                 <p>
-                    <strong>Correct answer:</strong>
+
+                    <strong>
+                        Correct answer:
+                    </strong>
+
                     ${correctAnswer}
+
                 </p>
 
                 <p class="quiz-explanation">
 
-                    <strong>Explanation:</strong>
+                    <strong>
+                        Explanation:
+                    </strong>
+
                     ${
                         question.explanation ||
                         "No explanation provided."
@@ -2613,8 +2656,7 @@ async function checkQuizAnswer(selectedIndex){
 
     saveQuizSession();
 
-}
-
+    }
 
 /* =========================
    NEXT QUESTION
