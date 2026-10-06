@@ -1,5 +1,7 @@
 export default async function handler(req, res) {
 
+   export default async function handler(req, res) {
+
     // =========================
     // METHOD CHECK
     // =========================
@@ -9,6 +11,7 @@ export default async function handler(req, res) {
             error: "Method not allowed"
         });
     }
+
 
     try {
 
@@ -24,7 +27,8 @@ export default async function handler(req, res) {
             count,
             question,
             correctAnswer,
-            studentAnswer
+            studentAnswer,
+            studyData
         } = req.body || {};
 
 
@@ -52,11 +56,15 @@ export default async function handler(req, res) {
 
 
         // =========================
-        // GENERATE QUIZ
+        // PROMPT
         // =========================
 
         let prompt = "";
 
+
+        // =========================
+        // GENERATE QUIZ
+        // =========================
 
         if (mode === "generate") {
 
@@ -236,12 +244,139 @@ Do NOT write anything before or after the JSON.
 
 
         // =========================
+        // GENERATE WEEKLY TARGET
+        // =========================
+
+        if (mode === "weekly-target") {
+
+            const data =
+                studyData || {};
+
+
+            const studentLevel =
+                data.level ||
+                "Unknown";
+
+
+            const studentTerm =
+                data.term ||
+                "Not specified";
+
+
+            const recentQuizzes =
+                Array.isArray(
+                    data.recentQuizzes
+                )
+                    ? data.recentQuizzes
+                    : [];
+
+
+            const planner =
+                data.planner || {};
+
+
+            const notes =
+                data.notes || {};
+
+
+            const previousWeek =
+                data.previousWeek || {};
+
+
+            prompt = `
+You are KRON Study AI, an intelligent Nigerian secondary-school study planner.
+
+Create ONE realistic weekly study target for the student.
+
+STUDENT LEVEL:
+${studentLevel}
+
+TERM:
+${studentTerm}
+
+RECENT QUIZ DATA:
+${JSON.stringify(recentQuizzes)}
+
+PLANNER DATA:
+${JSON.stringify(planner)}
+
+NOTES/STUDY DATA:
+${JSON.stringify(notes)}
+
+PREVIOUS WEEK:
+${JSON.stringify(previousWeek)}
+
+Your job is to analyze the student's study activity and create a balanced weekly target.
+
+The target should consider:
+
+- Student level
+- Recent quiz performance
+- Weak subjects
+- Recent study activity
+- Planner activity
+- Notes activity
+- Previous weekly-target performance
+- Areas that need improvement
+
+Do NOT create an impossible target.
+
+The target should normally contain:
+
+- 3 to 8 quizzes
+- 3 to 10 planner/study tasks
+- 1 to 6 notes/study topics
+
+Choose sensible numbers based on the student's activity.
+
+Also provide specific subject/topic recommendations.
+
+Return ONLY valid JSON.
+
+Use exactly this structure:
+
+{
+  "target": {
+    "quizzes": 5,
+    "tasks": 6,
+    "notes": 3,
+    "total": 14,
+    "focusSubjects": [
+      "Mathematics",
+      "Chemistry"
+    ],
+    "recommendations": [
+      "Complete two Mathematics practice sessions.",
+      "Revise one weak Chemistry topic.",
+      "Take at least one Chemistry quiz."
+    ],
+    "reason": "Short explanation of why KRON selected this target."
+  }
+}
+
+Rules:
+
+- "quizzes", "tasks", "notes", and "total" MUST be numbers.
+- "total" MUST equal quizzes + tasks + notes.
+- focusSubjects MUST be an array.
+- recommendations MUST be an array.
+- Keep recommendations practical.
+- Do not invent personal information.
+- Do not use markdown.
+- Do not use code fences.
+- Do not write anything before or after the JSON.
+`;
+        }
+
+
+        // =========================
         // INVALID MODE
         // =========================
 
         if (
             mode !== "generate" &&
-            mode !== "check"
+            mode !== "check" &&
+            mode !== "weekly-target"
         ) {
 
             return res.status(400).json({
@@ -254,67 +389,68 @@ Do NOT write anything before or after the JSON.
         // OPENROUTER REQUEST
         // =========================
 
-        const response = await fetch(
-            "https://openrouter.ai/api/v1/chat/completions",
-            {
-                method: "POST",
+        const response =
+            await fetch(
+                "https://openrouter.ai/api/v1/chat/completions",
+                {
+                    method: "POST",
 
-                headers: {
-                    "Content-Type":
-                        "application/json",
+                    headers: {
+                        "Content-Type":
+                            "application/json",
 
-                    "Authorization":
-                        `Bearer ${apiKey}`,
+                        "Authorization":
+                            `Bearer ${apiKey}`,
 
-                    "HTTP-Referer":
-                        "https://randy183.github.io/KRON-Study-AI/",
+                        "HTTP-Referer":
+                            "https://randy183.github.io/KRON-Study-AI/",
 
-                    "X-Title":
-                        "KRON Study AI"
-                },
+                        "X-Title":
+                            "KRON Study AI"
+                    },
 
-                body: JSON.stringify({
+                    body: JSON.stringify({
 
-                    // OpenRouter's free router
-                    // automatically selects an available
-                    // free model.
-                    model:
-                        "openrouter/free",
+                        model:
+                            "openrouter/free",
 
-                    messages: [
+                        messages: [
 
-                        {
-                            role: "system",
+                            {
+                                role: "system",
 
-                            content:
-                                "You are KRON Study AI. Follow the user's requested JSON format exactly. Return valid JSON only."
-                        },
+                                content:
+                                    "You are KRON Study AI. Follow the requested JSON format exactly. Return valid JSON only."
+                            },
 
-                        {
-                            role: "user",
+                            {
+                                role: "user",
 
-                            content: prompt
-                        }
+                                content: prompt
+                            }
 
-                    ],
+                        ],
 
-                    temperature: 0.3,
+                        temperature: 0.3,
 
-                    max_tokens:
-                        mode === "generate"
-                            ? 5000
-                            : 1000
+                        max_tokens:
+                            mode === "generate"
+                                ? 5000
+                                : mode === "weekly-target"
+                                    ? 2000
+                                    : 1000
 
-                })
-            }
-        );
+                    })
+                }
+            );
 
 
         // =========================
-        // READ OPENROUTER RESPONSE
+        // READ RESPONSE
         // =========================
 
         let data;
+
 
         try {
 
@@ -386,14 +522,13 @@ Do NOT write anything before or after the JSON.
 
 
         // =========================
-        // CLEAN AI RESPONSE
+        // CLEAN RESPONSE
         // =========================
 
         let cleaned =
             String(content).trim();
 
 
-        // Remove markdown code fences
         if (cleaned.startsWith("```")) {
 
             cleaned =
@@ -444,7 +579,7 @@ Do NOT write anything before or after the JSON.
 
 
         // =========================
-        // VALIDATE GENERATE RESULT
+        // VALIDATE QUIZ
         // =========================
 
         if (mode === "generate") {
@@ -477,9 +612,6 @@ Do NOT write anything before or after the JSON.
                 });
             }
 
-
-            // Make sure every question
-            // has the fields KRON expects.
 
             result.questions =
                 result.questions.map(
@@ -550,6 +682,95 @@ Do NOT write anything before or after the JSON.
 
 
         // =========================
+        // VALIDATE WEEKLY TARGET
+        // =========================
+
+        if (mode === "weekly-target") {
+
+            if (
+                !result ||
+                !result.target
+            ) {
+
+                return res.status(502).json({
+
+                    error:
+                        "AI response did not contain a valid weekly target."
+
+                });
+            }
+
+
+            const target =
+                result.target;
+
+
+            const quizzes =
+                Number(target.quizzes) || 0;
+
+
+            const tasks =
+                Number(target.tasks) || 0;
+
+
+            const notesCount =
+                Number(target.notes) || 0;
+
+
+            target.quizzes =
+                quizzes;
+
+
+            target.tasks =
+                tasks;
+
+
+            target.notes =
+                notesCount;
+
+
+            target.total =
+                quizzes +
+                tasks +
+                notesCount;
+
+
+            if (
+                !Array.isArray(
+                    target.focusSubjects
+                )
+            ) {
+
+                target.focusSubjects = [];
+
+            }
+
+
+            if (
+                !Array.isArray(
+                    target.recommendations
+                )
+            ) {
+
+                target.recommendations = [];
+
+            }
+
+
+            if (
+                typeof target.reason !==
+                "string"
+            ) {
+
+                target.reason =
+                    "";
+
+            }
+
+        }
+
+
+        // =========================
         // RETURN RESULT
         // =========================
 
@@ -575,4 +796,5 @@ Do NOT write anything before or after the JSON.
         });
 
     }
-                        }
+
+    }
