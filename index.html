@@ -2606,6 +2606,46 @@ function getWeeklyTargetKey(){
 
 
 /* =========================
+   KRON AI WEEKLY TARGET
+   ========================= */
+
+const WEEKLY_TARGET_STORAGE_KEY =
+    "KRON_WEEKLY_TARGET";
+
+let currentWeeklyTarget = null;
+
+
+/* =========================
+   GET WEEK KEY
+   ========================= */
+
+function getWeeklyTargetKey(){
+
+    const now = new Date();
+
+    const year =
+        now.getFullYear();
+
+    const firstDay =
+        new Date(year, 0, 1);
+
+    const days =
+        Math.floor(
+            (now - firstDay) /
+            (24 * 60 * 60 * 1000)
+        );
+
+    const week =
+        Math.ceil(
+            (days + firstDay.getDay() + 1) / 7
+        );
+
+    return year + "-W" + week;
+
+}
+
+
+/* =========================
    LOAD WEEKLY TARGET
    ========================= */
 
@@ -2653,7 +2693,8 @@ function loadWeeklyTarget(){
 
 function saveWeeklyTarget(target){
 
-    currentWeeklyTarget = target;
+    currentWeeklyTarget =
+        target;
 
     localStorage.setItem(
         WEEKLY_TARGET_STORAGE_KEY,
@@ -2693,18 +2734,6 @@ function getWeeklyStudyData(){
         );
 
 
-    const weeklyTarget =
-        JSON.parse(
-            localStorage.getItem(
-                WEEKLY_TARGET_STORAGE_KEY
-            ) || "null"
-        );
-
-
-    /* =========================
-       RECENT QUIZZES
-       ========================= */
-
     const recentQuizzes =
         quizResults
             .slice(-10)
@@ -2738,9 +2767,23 @@ function getWeeklyStudyData(){
             });
 
 
-    /* =========================
-       QUIZ SUMMARY
-       ========================= */
+    const completedTasks =
+        tasks.filter(
+            function(task){
+
+                return task.completed;
+
+            }
+        ).length;
+
+
+    const remainingTasks =
+        Math.max(
+            tasks.length -
+            completedTasks,
+            0
+        );
+
 
     const totalQuizScore =
         quizResults.reduce(
@@ -2765,34 +2808,7 @@ function getWeeklyStudyData(){
             : 0;
 
 
-    /* =========================
-       PLANNER SUMMARY
-       ========================= */
-
-    const completedTasks =
-        tasks.filter(
-            function(task){
-
-                return task.completed;
-
-            }
-        ).length;
-
-
-    const remainingTasks =
-        Math.max(
-            tasks.length -
-            completedTasks,
-            0
-        );
-
-
-    /* =========================
-       NOTES SUMMARY
-       ========================= */
-
-    const noteSubjects =
-        [];
+    const noteSubjects = [];
 
 
     notes.forEach(
@@ -2820,36 +2836,6 @@ function getWeeklyStudyData(){
         }
     );
 
-
-    /* =========================
-       PREVIOUS TARGET
-       ========================= */
-
-    let previousWeek =
-        null;
-
-
-    if(weeklyTarget){
-
-        previousWeek = {
-
-            week:
-                weeklyTarget.week || "",
-
-            target:
-                weeklyTarget.target || {},
-
-            completed:
-                weeklyTarget.completed || 0
-
-        };
-
-    }
-
-
-    /* =========================
-       STUDENT LEVEL
-       ========================= */
 
     const levelElement =
         document.getElementById(
@@ -2921,14 +2907,12 @@ function getWeeklyStudyData(){
             subjects:
                 noteSubjects
 
-        },
-
-        previousWeek:
-            previousWeek
+        }
 
     };
 
-    }
+}
+
 
 /* =========================
    GENERATE AI TARGET
@@ -2940,6 +2924,7 @@ async function generateWeeklyTarget(){
         document.getElementById(
             "weeklyTargetContent"
         );
+
 
     if(!container){
 
@@ -2972,26 +2957,28 @@ async function generateWeeklyTarget(){
     try{
 
         const response =
-    await fetch(
-        "/api/quiz",
-        {
+            await fetch(
+                "/api/quiz",
+                {
 
-                    method:"POST",
+                    method:
+                        "POST",
 
                     headers:{
                         "Content-Type":
                             "application/json"
                     },
 
-                    body:JSON.stringify({
+                    body:
+                        JSON.stringify({
 
-    mode:
-        "weekly-target",
+                            mode:
+                                "weekly-target",
 
-    studyData:
-        studyData
+                            studyData:
+                                studyData
 
-})
+                        })
 
                 }
             );
@@ -3011,7 +2998,10 @@ async function generateWeeklyTarget(){
         }
 
 
-        if(!data || !data.target){
+        if(
+            !data ||
+            !data.target
+        ){
 
             throw new Error(
                 "No weekly target was returned."
@@ -3020,25 +3010,27 @@ async function generateWeeklyTarget(){
         }
 
 
-        const target =
-            {
+        const target = {
 
-                week:
-                    getWeeklyTargetKey(),
+            week:
+                getWeeklyTargetKey(),
 
-                generatedAt:
-                    new Date().toISOString(),
+            generatedAt:
+                new Date().toISOString(),
 
-                target:
-                    data.target,
+            target:
+                data.target,
 
-                completed:
-                    0
+            completed:
+                0
 
-            };
+        };
 
 
-        saveWeeklyTarget(target);
+        saveWeeklyTarget(
+            target
+        );
+
 
         renderWeeklyTarget();
 
@@ -3092,6 +3084,7 @@ function renderWeeklyTarget(){
             "weeklyTargetContent"
         );
 
+
     if(!container){
 
         return;
@@ -3130,41 +3123,28 @@ function renderWeeklyTarget(){
     }
 
 
-    const weeklyData =
-        getWeeklyStudyData();
-
-
     const totalTarget =
         Number(
-            target.target.total ||
-            0
+            target.target?.total || 0
         );
 
 
-    const completed =
-        Math.min(
-            weeklyData.quizzes +
-            weeklyData.completedTasks +
-            weeklyData.notes,
-            totalTarget
+    const quizzes =
+        Number(
+            target.target?.quizzes || 0
         );
 
 
-    const remaining =
-        Math.max(
-            totalTarget -
-            completed,
-            0
+    const tasks =
+        Number(
+            target.target?.tasks || 0
         );
 
 
-    const percentage =
-        totalTarget > 0
-        ? Math.round(
-            (completed /
-            totalTarget) * 100
-        )
-        : 0;
+    const notesCount =
+        Number(
+            target.target?.notes || 0
+        );
 
 
     container.innerHTML = `
@@ -3186,18 +3166,8 @@ function renderWeeklyTarget(){
                 </div>
 
                 <strong>
-                    ${percentage}%
+                    ${totalTarget}
                 </strong>
-
-            </div>
-
-
-            <div class="progress-bar">
-
-                <div
-                    class="progress-fill"
-                    style="width:${percentage}%">
-                </div>
 
             </div>
 
@@ -3207,11 +3177,11 @@ function renderWeeklyTarget(){
                 <div>
 
                     <strong>
-                        ${totalTarget}
+                        ${quizzes}
                     </strong>
 
                     <span>
-                        Target
+                        Quizzes
                     </span>
 
                 </div>
@@ -3220,11 +3190,11 @@ function renderWeeklyTarget(){
                 <div>
 
                     <strong>
-                        ${completed}
+                        ${tasks}
                     </strong>
 
                     <span>
-                        Done
+                        Planner
                     </span>
 
                 </div>
@@ -3233,11 +3203,11 @@ function renderWeeklyTarget(){
                 <div>
 
                     <strong>
-                        ${remaining}
+                        ${notesCount}
                     </strong>
 
                     <span>
-                        Remaining
+                        Notes
                     </span>
 
                 </div>
@@ -3247,20 +3217,60 @@ function renderWeeklyTarget(){
 
             <div class="weekly-target-details">
 
-                <p>
-                    🧠 Quizzes:
-                    ${target.target.quizzes || 0}
-                </p>
+                ${
+                    Array.isArray(
+                        target.target?.focusSubjects
+                    )
+                    ?
+                    target.target.focusSubjects
+                        .map(function(subject){
 
-                <p>
-                    📅 Planner:
-                    ${target.target.tasks || 0}
-                </p>
+                            return `
+                                <p>
+                                    Focus:
+                                    ${subject}
+                                </p>
+                            `;
 
-                <p>
-                    📝 Notes:
-                    ${target.target.notes || 0}
-                </p>
+                        })
+                        .join("")
+                    :
+                    ""
+                }
+
+
+                ${
+                    Array.isArray(
+                        target.target?.recommendations
+                    )
+                    ?
+                    target.target.recommendations
+                        .map(function(item){
+
+                            return `
+                                <p>
+                                    ${item}
+                                </p>
+                            `;
+
+                        })
+                        .join("")
+                    :
+                    ""
+                }
+
+
+                ${
+                    target.target?.reason
+                    ?
+                    `
+                        <p>
+                            ${target.target.reason}
+                        </p>
+                    `
+                    :
+                    ""
+                }
 
             </div>
 
@@ -3303,13 +3313,17 @@ function checkWeeklyTarget(){
         getWeeklyTargetKey();
 
 
-    if(saved.week !== currentWeek){
+    if(
+        saved.week !==
+        currentWeek
+    ){
 
         localStorage.removeItem(
             WEEKLY_TARGET_STORAGE_KEY
         );
 
-        currentWeeklyTarget = null;
+        currentWeeklyTarget =
+            null;
 
     }
 
