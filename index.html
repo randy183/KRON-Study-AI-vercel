@@ -2574,6 +2574,545 @@ function escapePlannerText(value){
 ========================= */
 
 renderPlanner();
+
+    /* =========================
+   KRON AI WEEKLY TARGET
+   ========================= */
+
+const WEEKLY_TARGET_STORAGE_KEY = "KRON_WEEKLY_TARGET";
+
+let currentWeeklyTarget = null;
+
+
+/* =========================
+   GET WEEK KEY
+   ========================= */
+
+function getWeeklyTargetKey(){
+
+    const now = new Date();
+
+    const year =
+        now.getFullYear();
+
+    const firstDay =
+        new Date(year, 0, 1);
+
+    const days =
+        Math.floor(
+            (now - firstDay) /
+            (24 * 60 * 60 * 1000)
+        );
+
+    const week =
+        Math.ceil(
+            (days + firstDay.getDay() + 1) / 7
+        );
+
+    return year + "-W" + week;
+
+}
+
+
+/* =========================
+   LOAD WEEKLY TARGET
+   ========================= */
+
+function loadWeeklyTarget(){
+
+    const saved =
+        localStorage.getItem(
+            WEEKLY_TARGET_STORAGE_KEY
+        );
+
+    if(!saved){
+
+        currentWeeklyTarget = null;
+
+        return null;
+
+    }
+
+    try{
+
+        currentWeeklyTarget =
+            JSON.parse(saved);
+
+        return currentWeeklyTarget;
+
+    }catch(error){
+
+        console.error(
+            "KRON WEEKLY TARGET ERROR:",
+            error
+        );
+
+        currentWeeklyTarget = null;
+
+        return null;
+
+    }
+
+}
+
+
+/* =========================
+   SAVE WEEKLY TARGET
+   ========================= */
+
+function saveWeeklyTarget(target){
+
+    currentWeeklyTarget = target;
+
+    localStorage.setItem(
+        WEEKLY_TARGET_STORAGE_KEY,
+        JSON.stringify(target)
+    );
+
+}
+
+
+/* =========================
+   GET STUDY DATA
+   ========================= */
+
+function getWeeklyStudyData(){
+
+    const quizResults =
+        JSON.parse(
+            localStorage.getItem(
+                "KRON_QUIZ_RESULTS"
+            ) || "[]"
+        );
+
+    const tasks =
+        JSON.parse(
+            localStorage.getItem(
+                "KRON_TASKS"
+            ) || "[]"
+        );
+
+    const notes =
+        JSON.parse(
+            localStorage.getItem(
+                "KRON_NOTES"
+            ) || "[]"
+        );
+
+    const completedTasks =
+        tasks.filter(function(task){
+
+            return task.completed;
+
+        }).length;
+
+
+    return {
+
+        quizzes:
+            quizResults.length,
+
+        completedTasks:
+            completedTasks,
+
+        totalTasks:
+            tasks.length,
+
+        notes:
+            notes.length
+
+    };
+
+}
+
+
+/* =========================
+   GENERATE AI TARGET
+   ========================= */
+
+async function generateWeeklyTarget(){
+
+    const container =
+        document.getElementById(
+            "weeklyTargetContent"
+        );
+
+    if(!container){
+
+        return;
+
+    }
+
+
+    container.innerHTML = `
+
+        <div class="quiz-feedback">
+
+            <div class="quiz-answer">
+                Creating your weekly target...
+            </div>
+
+            <p class="quiz-explanation">
+                KRON AI is analyzing your study activity.
+            </p>
+
+        </div>
+
+    `;
+
+
+    const studyData =
+        getWeeklyStudyData();
+
+
+    try{
+
+        const response =
+            await fetch(
+                "/api/weekly-target",
+                {
+
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        studyData:
+                            studyData
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if(!response.ok){
+
+            throw new Error(
+                data?.error ||
+                "Weekly target generation failed."
+            );
+
+        }
+
+
+        if(!data || !data.target){
+
+            throw new Error(
+                "No weekly target was returned."
+            );
+
+        }
+
+
+        const target =
+            {
+
+                week:
+                    getWeeklyTargetKey(),
+
+                generatedAt:
+                    new Date().toISOString(),
+
+                target:
+                    data.target,
+
+                completed:
+                    0
+
+            };
+
+
+        saveWeeklyTarget(target);
+
+        renderWeeklyTarget();
+
+
+    }catch(error){
+
+        console.error(
+            "KRON WEEKLY TARGET ERROR:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="quiz-feedback">
+
+                <div class="quiz-answer">
+                    Unable to create weekly target
+                </div>
+
+                <p class="quiz-explanation">
+                    ${error.message ||
+                    "Please try again."}
+                </p>
+
+                <button
+                    class="study-button"
+                    onclick="generateWeeklyTarget()">
+
+                    Try Again
+
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================
+   RENDER WEEKLY TARGET
+   ========================= */
+
+function renderWeeklyTarget(){
+
+    const container =
+        document.getElementById(
+            "weeklyTargetContent"
+        );
+
+    if(!container){
+
+        return;
+
+    }
+
+
+    const target =
+        loadWeeklyTarget();
+
+
+    if(!target){
+
+        container.innerHTML = `
+
+            <div class="weekly-target-empty">
+
+                <p>
+                    No weekly target has been created yet.
+                </p>
+
+                <button
+                    class="study-button"
+                    onclick="generateWeeklyTarget()">
+
+                    Generate My Weekly Target
+
+                </button>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const weeklyData =
+        getWeeklyStudyData();
+
+
+    const totalTarget =
+        Number(
+            target.target.total ||
+            0
+        );
+
+
+    const completed =
+        Math.min(
+            weeklyData.quizzes +
+            weeklyData.completedTasks +
+            weeklyData.notes,
+            totalTarget
+        );
+
+
+    const remaining =
+        Math.max(
+            totalTarget -
+            completed,
+            0
+        );
+
+
+    const percentage =
+        totalTarget > 0
+        ? Math.round(
+            (completed /
+            totalTarget) * 100
+        )
+        : 0;
+
+
+    container.innerHTML = `
+
+        <div class="weekly-target-card">
+
+            <div class="weekly-target-header">
+
+                <div>
+
+                    <h3>
+                        This Week's Target
+                    </h3>
+
+                    <p>
+                        AI-generated by KRON
+                    </p>
+
+                </div>
+
+                <strong>
+                    ${percentage}%
+                </strong>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+                <div
+                    class="progress-fill"
+                    style="width:${percentage}%">
+                </div>
+
+            </div>
+
+
+            <div class="weekly-target-stats">
+
+                <div>
+
+                    <strong>
+                        ${totalTarget}
+                    </strong>
+
+                    <span>
+                        Target
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        ${completed}
+                    </strong>
+
+                    <span>
+                        Done
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        ${remaining}
+                    </strong>
+
+                    <span>
+                        Remaining
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="weekly-target-details">
+
+                <p>
+                    🧠 Quizzes:
+                    ${target.target.quizzes || 0}
+                </p>
+
+                <p>
+                    📅 Planner:
+                    ${target.target.tasks || 0}
+                </p>
+
+                <p>
+                    📝 Notes:
+                    ${target.target.notes || 0}
+                </p>
+
+            </div>
+
+
+            <button
+                class="study-button"
+                onclick="generateWeeklyTarget()">
+
+                Generate New Target
+
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================
+   CHECK WEEK
+   ========================= */
+
+function checkWeeklyTarget(){
+
+    const saved =
+        loadWeeklyTarget();
+
+
+    if(!saved){
+
+        renderWeeklyTarget();
+
+        return;
+
+    }
+
+
+    const currentWeek =
+        getWeeklyTargetKey();
+
+
+    if(saved.week !== currentWeek){
+
+        localStorage.removeItem(
+            WEEKLY_TARGET_STORAGE_KEY
+        );
+
+        currentWeeklyTarget = null;
+
+    }
+
+
+    renderWeeklyTarget();
+
+}
+
+
+checkWeeklyTarget();
     
     /* =========================
    KRON QUIZ SYSTEM
