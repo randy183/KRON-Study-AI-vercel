@@ -2006,7 +2006,7 @@ window.addEventListener("load", function(){
 
 });
 
-    /* =========================
+ /* =========================
    KRON PLANNER SYSTEM
 ========================= */
 
@@ -2055,7 +2055,71 @@ function getTodayDate(){
 }
 
 
-ert("Please choose a date.");
+/* =========================
+   ADD PLANNER TASK
+========================= */
+
+function addTask(){
+
+    const taskInput =
+        document.getElementById("taskInput");
+
+    const taskSubject =
+        document.getElementById("taskSubject");
+
+    const taskDate =
+        document.getElementById("taskDate");
+
+    const taskStartTime =
+        document.getElementById("taskStartTime");
+
+    const taskEndTime =
+        document.getElementById("taskEndTime");
+
+    const taskPriority =
+        document.getElementById("taskPriority");
+
+
+    const task =
+        taskInput?.value.trim();
+
+    const subject =
+        taskSubject?.value;
+
+    const date =
+        taskDate?.value;
+
+    const startTime =
+        taskStartTime?.value;
+
+    const endTime =
+        taskEndTime?.value;
+
+    const priority =
+        taskPriority?.value;
+
+
+    if(!task){
+
+        alert("Please enter a study task.");
+
+        return;
+
+    }
+
+
+    if(!subject){
+
+        alert("Please choose a subject.");
+
+        return;
+
+    }
+
+
+    if(!date){
+
+        alert("Please choose a date.");
 
         return;
 
@@ -2126,17 +2190,29 @@ ert("Please choose a date.");
     renderPlanner();
 
 
-    taskInput.value = "";
+    if(taskInput){
+        taskInput.value = "";
+    }
 
-    taskSubject.value = "";
+    if(taskSubject){
+        taskSubject.value = "";
+    }
 
-    taskDate.value = "";
+    if(taskDate){
+        taskDate.value = "";
+    }
 
-    taskStartTime.value = "";
+    if(taskStartTime){
+        taskStartTime.value = "";
+    }
 
-    taskEndTime.value = "";
+    if(taskEndTime){
+        taskEndTime.value = "";
+    }
 
-    taskPriority.value = "";
+    if(taskPriority){
+        taskPriority.value = "";
+    }
 
 
     alert("Study task added successfully.");
@@ -2429,6 +2505,8 @@ function togglePlannerTask(id){
 
     renderPlanner();
 
+    updateProgress();
+
 }
 
 
@@ -2462,6 +2540,8 @@ function deletePlannerTask(id){
     savePlannerTasks();
 
     renderPlanner();
+
+    updateProgress();
 
 }
 
@@ -2765,7 +2845,7 @@ async function retryQuizConnection(){
 
         quizArea.innerHTML = `
 
-            <div class="quiz-feedback">
+           uiz-feedback">
 
                 <div class="quiz-answer">
                     Checking connection...
