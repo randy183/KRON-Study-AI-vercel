@@ -1909,12 +1909,21 @@ loadTasks();
             localStorage.getItem("KRON_TASKS") || "[]"
         );
 
-    const completed =
+    const quizResults =
+        JSON.parse(
+            localStorage.getItem("KRON_QUIZ_RESULTS") || "[]"
+        );
+
+    const completedTasks =
         tasks.filter(function(task){
-
             return task.completed;
-
         }).length;
+
+    const completed =
+        completedTasks + quizResults.length;
+
+    const totalActivities =
+        tasks.length + quizResults.length;
 
     const noteCount =
         document.getElementById("progressNotes");
@@ -1932,43 +1941,41 @@ loadTasks();
         document.getElementById("studyProgressText");
 
     if(noteCount){
-        noteCount.textContent=notes.length;
+        noteCount.textContent = notes.length;
     }
 
     if(taskCount){
-        taskCount.textContent=tasks.length;
+        taskCount.textContent = tasks.length;
     }
 
     if(completedCount){
-        completedCount.textContent=completed;
+        completedCount.textContent = completed;
     }
 
-    let percentage=0;
+    let percentage = 0;
 
-    if(tasks.length>0){
+    if(totalActivities > 0){
 
         percentage =
             Math.round(
-                (completed/tasks.length)*100
+                (completed / totalActivities) * 100
             );
 
     }
 
     if(progressBar){
-        progressBar.style.width=
-            percentage+"%";
+        progressBar.style.width =
+            percentage + "%";
     }
 
     if(progressText){
-        progressText.textContent=
-            percentage+
+        progressText.textContent =
+            percentage +
             "% study progress";
     }
 
-}
-
-updateProgress();
-
+    }
+    
     /* =========================
    PLANNER SUBJECTS
 ========================= */
@@ -3891,17 +3898,12 @@ function showQuizResult(){
     const quizArea =
         document.getElementById("quizArea");
 
-
     if(!quizArea){
-
         return;
-
     }
-
 
     const total =
         currentQuizQuestions.length;
-
 
     const percentage =
         total > 0
@@ -3910,6 +3912,45 @@ function showQuizResult(){
         )
         : 0;
 
+    /* SAVE COMPLETED QUIZ */
+
+    const quizResults =
+        JSON.parse(
+            localStorage.getItem("KRON_QUIZ_RESULTS") || "[]"
+        );
+
+    quizResults.push({
+
+        date: new Date().toISOString(),
+
+        level:
+            document.getElementById("quizLevel")?.value || "",
+
+        term:
+            document.getElementById("quizTerm")?.value || "",
+
+        subject:
+            document.getElementById("quizSubject")?.value || "",
+
+        score:
+            quizScore,
+
+        total:
+            total,
+
+        percentage:
+            percentage
+
+    });
+
+    localStorage.setItem(
+        "KRON_QUIZ_RESULTS",
+        JSON.stringify(quizResults)
+    );
+
+    /* UPDATE PROGRESS */
+
+    updateProgress();
 
     quizArea.innerHTML = `
 
@@ -3919,28 +3960,19 @@ function showQuizResult(){
                 Quiz Complete
             </div>
 
-
             <p>
-
                 Score:
-
                 <strong>
                     ${quizScore} / ${total}
                 </strong>
-
             </p>
 
-
             <p>
-
                 Percentage:
-
                 <strong>
                     ${percentage}%
                 </strong>
-
             </p>
-
 
             <button
                 class="study-button quiz-next"
@@ -3954,11 +3986,9 @@ function showQuizResult(){
 
     `;
 
-
     clearQuizSession();
 
-}
-
+    }
 
 /* =========================
    START ANOTHER QUIZ
