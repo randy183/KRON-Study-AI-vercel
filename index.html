@@ -2685,12 +2685,14 @@ function getWeeklyStudyData(){
             ) || "[]"
         );
 
+
     const tasks =
         JSON.parse(
             localStorage.getItem(
                 "KRON_TASKS"
             ) || "[]"
         );
+
 
     const notes =
         JSON.parse(
@@ -2699,32 +2701,243 @@ function getWeeklyStudyData(){
             ) || "[]"
         );
 
+
+    const weeklyTarget =
+        JSON.parse(
+            localStorage.getItem(
+                WEEKLY_TARGET_STORAGE_KEY
+            ) || "null"
+        );
+
+
+    /* =========================
+       RECENT QUIZZES
+       ========================= */
+
+    const recentQuizzes =
+        quizResults
+            .slice(-10)
+            .map(function(quiz){
+
+                return {
+
+                    subject:
+                        quiz.subject || "",
+
+                    level:
+                        quiz.level || "",
+
+                    term:
+                        quiz.term || "",
+
+                    score:
+                        quiz.score || 0,
+
+                    total:
+                        quiz.total || 0,
+
+                    percentage:
+                        quiz.percentage || 0,
+
+                    date:
+                        quiz.date || ""
+
+                };
+
+            });
+
+
+    /* =========================
+       QUIZ SUMMARY
+       ========================= */
+
+    const totalQuizScore =
+        quizResults.reduce(
+            function(total, quiz){
+
+                return total +
+                    Number(
+                        quiz.percentage || 0
+                    );
+
+            },
+            0
+        );
+
+
+    const averageQuizScore =
+        quizResults.length > 0
+            ? Math.round(
+                totalQuizScore /
+                quizResults.length
+            )
+            : 0;
+
+
+    /* =========================
+       PLANNER SUMMARY
+       ========================= */
+
     const completedTasks =
-        tasks.filter(function(task){
+        tasks.filter(
+            function(task){
 
-            return task.completed;
+                return task.completed;
 
-        }).length;
+            }
+        ).length;
+
+
+    const remainingTasks =
+        Math.max(
+            tasks.length -
+            completedTasks,
+            0
+        );
+
+
+    /* =========================
+       NOTES SUMMARY
+       ========================= */
+
+    const noteSubjects =
+        [];
+
+
+    notes.forEach(
+        function(note){
+
+            const subject =
+                note.subject ||
+                note.topic ||
+                "";
+
+
+            if(
+                subject &&
+                !noteSubjects.includes(
+                    subject
+                )
+            ){
+
+                noteSubjects.push(
+                    subject
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       PREVIOUS TARGET
+       ========================= */
+
+    let previousWeek =
+        null;
+
+
+    if(weeklyTarget){
+
+        previousWeek = {
+
+            week:
+                weeklyTarget.week || "",
+
+            target:
+                weeklyTarget.target || {},
+
+            completed:
+                weeklyTarget.completed || 0
+
+        };
+
+    }
+
+
+    /* =========================
+       STUDENT LEVEL
+       ========================= */
+
+    const levelElement =
+        document.getElementById(
+            "quizLevel"
+        );
+
+
+    const termElement =
+        document.getElementById(
+            "quizTerm"
+        );
+
+
+    const level =
+        levelElement?.value ||
+        localStorage.getItem(
+            "KRON_STUDENT_LEVEL"
+        ) ||
+        "Unknown";
+
+
+    const term =
+        termElement?.value ||
+        localStorage.getItem(
+            "KRON_STUDENT_TERM"
+        ) ||
+        "Not specified";
 
 
     return {
 
-        quizzes:
-            quizResults.length,
+        level:
+            level,
 
-        completedTasks:
-            completedTasks,
+        term:
+            term,
 
-        totalTasks:
-            tasks.length,
+        recentQuizzes:
+            recentQuizzes,
 
-        notes:
-            notes.length
+        quizSummary: {
+
+            total:
+                quizResults.length,
+
+            averageScore:
+                averageQuizScore
+
+        },
+
+        planner: {
+
+            total:
+                tasks.length,
+
+            completed:
+                completedTasks,
+
+            remaining:
+                remainingTasks
+
+        },
+
+        notes: {
+
+            total:
+                notes.length,
+
+            subjects:
+                noteSubjects
+
+        },
+
+        previousWeek:
+            previousWeek
 
     };
 
-}
-
+    }
 
 /* =========================
    GENERATE AI TARGET
@@ -2768,8 +2981,8 @@ async function generateWeeklyTarget(){
     try{
 
         const response =
-            await fetch(
-                "/api/weekly-target",
+    await fetch(
+        "/api/quiz"
                 {
 
                     method:"POST",
@@ -2781,10 +2994,13 @@ async function generateWeeklyTarget(){
 
                     body:JSON.stringify({
 
-                        studyData:
-                            studyData
+    mode:
+        "weekly-target",
 
-                    })
+    studyData:
+        studyData
+
+})
 
                 }
             );
