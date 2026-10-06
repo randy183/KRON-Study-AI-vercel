@@ -2965,7 +2965,6 @@ async function retryQuizConnection(){
 
     }
 
-
 /* =========================
    START QUIZ
    ========================= */
@@ -3122,19 +3121,45 @@ async function startQuiz(){
             });
 
 
+        /* =========================
+           READ SERVER RESPONSE
+           ========================= */
+
+        let data = null;
+
+        try{
+
+            data =
+                await response.json();
+
+        }catch(jsonError){
+
+            data = null;
+
+        }
+
+
+        /* =========================
+           SHOW REAL SERVER ERROR
+           ========================= */
+
         if(!response.ok){
 
+            const serverError =
+                data?.error ||
+                data?.message ||
+                `Server returned ${response.status}`;
+
             throw new Error(
-                "Quiz generation failed. Server returned " +
-                response.status
+                serverError
             );
 
         }
 
 
-        const data =
-            await response.json();
-
+        /* =========================
+           VALIDATE QUIZ
+           ========================= */
 
         if(
             !data ||
@@ -3186,7 +3211,16 @@ async function startQuiz(){
 
                     <p class="quiz-explanation">
                         Error:
-                        ${error.message || "Unknown error"}
+                        ${String(
+                            error?.message ||
+                            "Unknown error"
+                        ).replace(
+                            /</g,
+                            "&lt;"
+                        ).replace(
+                            />/g,
+                            "&gt;"
+                        )}
                     </p>
 
                     <button
@@ -3205,8 +3239,7 @@ async function startQuiz(){
 
     }
 
-}
-
+    }
 
 /* =========================
    RENDER QUIZ QUESTION
