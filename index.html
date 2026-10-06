@@ -2557,15 +2557,6 @@ function deletePlannerTask(id){
    ESCAPE TEXT
 ========================= */
 
-function escapePlannerText(value){
-
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
 }
 
 
@@ -2982,8 +2973,8 @@ async function generateWeeklyTarget(){
 
         const response =
     await fetch(
-        "/api/quiz"
-                {
+        "/api/quiz",
+        {
 
                     method:"POST",
 
