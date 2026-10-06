@@ -1,15 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<meta
+    name="theme-color"
+    content="#7f1d1d"
+>
 
 <title>KRON Study AI</title>
 
 <style>
+
+/* =========================================================
+   KRON STUDY AI
+   CLEAN REBUILD
+   CHUNK 1
+   ========================================================= */
 
 *{
     box-sizing:border-box;
@@ -18,2521 +32,2690 @@ content="width=device-width, initial-scale=1.0">
 }
 
 :root{
-    --bg:#07111f;
-    --card:#0d1b2e;
-    --card2:#12243a;
-    --text:#ffffff;
-    --muted:#94a3b8;
-    --border:#20344d;
-    --accent:#2563eb;
+
+    --bg:#09090b;
+    --surface:#111113;
+    --surface2:#18181b;
+    --surface3:#27272a;
+
+    --border:#3f3f46;
+
+    --text:#f4f4f5;
+    --muted:#a1a1aa;
+
+    --primary:#dc2626;
+    --primary-dark:#991b1b;
+
+    --success:#22c55e;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+
+    --input-bg:#18181b;
+    --input-text:#ffffff;
+
+    --shadow:
+        0 10px 30px rgba(0,0,0,.25);
 }
 
 body.light{
-    --bg:#f5f7fb;
-    --card:#ffffff;
-    --card2:#e9eef5;
-    --text:#111827;
-    --muted:#64748b;
-    --border:#d7dee8;
-    --input-text:#ffffff;
+
+    --bg:#f4f4f5;
+    --surface:#ffffff;
+    --surface2:#fafafa;
+    --surface3:#e4e4e7;
+
+    --border:#d4d4d8;
+
+    --text:#18181b;
+    --muted:#52525b;
+
+    --input-bg:#ffffff;
+    --input-text:#18181b;
+
+}
+
+html{
+    scroll-behavior:smooth;
 }
 
 body{
-    font-family:Arial,sans-serif;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
     background:var(--bg);
+
     color:var(--text);
+
     min-height:100vh;
-    transition:.2s;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
+}
+
+button,
+input,
+select,
+textarea{
+
+    font:inherit;
 }
 
 button{
-    font-family:inherit;
+
     cursor:pointer;
 }
 
-/* HEADER */
+button:disabled{
 
-header{
-    position:sticky;
-    top:0;
-    z-index:10;
-    background:var(--card);
-    border-bottom:1px solid var(--border);
-    padding:14px 16px;
+    cursor:not-allowed;
+
+    opacity:.6;
 }
 
-.header{
-    max-width:700px;
+a{
+
+    color:inherit;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+    width:100%;
+
+    background:
+        rgba(9,9,11,.95);
+
+    border-bottom:
+        1px solid var(--border);
+
+    backdrop-filter:
+        blur(12px);
+}
+
+body.light header{
+
+    background:
+        rgba(255,255,255,.95);
+}
+
+.header-inner{
+
+    max-width:1100px;
+
     margin:auto;
+
+    padding:
+        15px
+        18px;
+
     display:flex;
-    justify-content:space-between;
+
     align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
 }
 
 .logo{
-    font-size:25px;
-    font-weight:800;
+
+    font-size:26px;
+
+    font-weight:900;
+
     letter-spacing:1px;
+
+    color:
+        var(--primary);
 }
 
-.header-buttons{
+.logo-subtitle{
+
+    font-size:11px;
+
+    color:var(--muted);
+
+    margin-top:2px;
+}
+
+.header-actions{
+
     display:flex;
+
+    align-items:center;
+
     gap:8px;
 }
 
-.icon-btn{
+.icon-button{
+
     width:40px;
+
     height:40px;
-    border:0;
-    border-radius:12px;
-    background:var(--card2);
-    color:var(--text);
+
+    border-radius:10px;
+
+    border:
+        1px solid var(--border);
+
+    background:
+        var(--surface2);
+
+    color:
+        var(--text);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
     font-size:18px;
 }
 
-/* MAIN */
+
+/* =========================================================
+   MAIN
+   ========================================================= */
 
 main{
-    max-width:700px;
+
+    width:100%;
+
+    max-width:1100px;
+
     margin:auto;
-    padding:20px 15px 90px;
+
+    padding:
+        20px
+        16px
+        100px;
 }
 
 .page{
+
     display:none;
+
+    animation:
+        pageIn .2s ease;
 }
 
 .page.active{
+
     display:block;
 }
 
+@keyframes pageIn{
+
+    from{
+        opacity:0;
+        transform:translateY(4px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
 .page-title{
+
     font-size:27px;
+
+    font-weight:800;
+
     margin-bottom:7px;
 }
 
 .page-description{
+
     color:var(--muted);
+
     line-height:1.5;
+
     margin-bottom:20px;
 }
 
-/* HOME */
 
-.welcome{
-    background:var(--card);
-    border:1px solid var(--border);
+/* =========================================================
+   HOME
+   ========================================================= */
+
+.welcome-card{
+
+    padding:25px;
+
+    border:
+        1px solid var(--border);
+
     border-radius:20px;
-    padding:20px;
-    margin-bottom:18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            var(--surface2),
+            var(--surface)
+        );
+
+    box-shadow:var(--shadow);
+
+    margin-bottom:20px;
 }
 
-.welcome h1{
-    font-size:27px;
-    margin-bottom:8px;
+.welcome-card h1{
+
+    font-size:29px;
+
+    margin-bottom:9px;
 }
 
-.welcome p{
+.welcome-card p{
+
     color:var(--muted);
-    line-height:1.5;
+
+    line-height:1.6;
 }
 
-.features{
+.feature-grid{
+
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+
+    grid-template-columns:
+        repeat(2,1fr);
+
     gap:12px;
 }
 
 .feature{
-    border:1px solid var(--border);
-    background:var(--card);
-    color:var(--text);
-    border-radius:18px;
-    padding:16px;
+
+    border:
+        1px solid var(--border);
+
+    background:
+        var(--surface);
+
+    color:
+        var(--text);
+
+    border-radius:16px;
+
+    padding:18px;
+
     text-align:left;
-    min-height:120px;
+
+    min-height:130px;
+
+    transition:
+        transform .15s ease,
+        border-color .15s ease;
 }
 
-.feature:active{
-    transform:scale(.98);
+.feature:hover{
+
+    transform:
+        translateY(-2px);
+
+    border-color:
+        var(--primary);
 }
 
 .feature-icon{
-    font-size:25px;
-    margin-bottom:10px;
+
+    font-size:27px;
+
+    margin-bottom:12px;
 }
 
 .feature h3{
-    font-size:16px;
-    margin-bottom:6px;
-}
 
-.feature p{
-    color:var(--muted);
-    font-size:12px;
-    line-height:1.4;
-}
-/* =========================
-   AUTHENTICATION
-   ========================= */
+    font-size:17px;
 
-.auth-card{
-    max-width:500px;
-    margin:0 auto;
-}
-
-.auth-card label{
-    display:block;
-    margin:14px 0 7px;
-    font-size:14px;
-    font-weight:600;
-}
-
-.auth-card input{
-    width:100%;
-    padding:14px;
-    border:1px solid var(--border);
-    border-radius:12px;
-    background:var(--card2);
-    color:var(--text);
-    font-size:15px;
-    outline:none;
-}
-
-.auth-card input:focus{
-    border-color:var(--accent);
-}
-
-.auth-card input::placeholder{
-    color:var(--muted);
-}
-
-.auth-button{
-    width:100%;
-    margin-top:20px;
-    padding:14px;
-    border:0;
-    border-radius:12px;
-    background:var(--accent);
-    color:#ffffff;
-    font-size:15px;
-    font-weight:700;
-}
-
-.auth-button:active{
-    transform:scale(.98);
-}
-
-.auth-switch{
-    text-align:center;
-    margin-top:18px;
-    color:var(--muted);
-    font-size:14px;
-}
-
-.auth-switch button{
-    border:0;
-    background:transparent;
-    color:var(--accent);
-    font-size:14px;
-    font-weight:700;
-      }
-      /* ACCOUNT SETTINGS */
-
-.account-card h3{
-    font-size:18px;
-    margin-bottom:8px;
-}
-
-.account-card p{
-    color:var(--muted);
-    font-size:14px;
-    margin-bottom:16px;
-}
-
-.settings-button{
-    width:100%;
-    padding:13px;
-    margin-top:9px;
-    border:0;
-    border-radius:12px;
-    background:var(--accent);
-    color:#ffffff;
-    font-size:14px;
-    font-weight:700;
-}
-
-.settings-button.secondary{
-    background:var(--card2);
-    color:var(--text);
-    border:1px solid var(--border);
-}
-
-.settings-button.danger{
-    background:#b91c1c;
-}
-
-.settings-button:active{
-    transform:scale(.98);
-}
-      /* =========================
-   STUDY INPUTS
-   ========================= */
-
-.study-input,
-.study-textarea{
-    width:100%;
-    border:1px solid var(--border);
-    border-radius:12px;
-    background:var(--card2);
-    color:var(--input-text);
-    font-family:inherit;
-    font-size:14px;
-    outline:none;
-}
-
-.study-input{
-    padding:13px;
-    margin:8px 0 14px;
-}
-
-.study-textarea{
-    min-height:160px;
-    padding:13px;
-    margin-top:8px;
-    resize:vertical;
-}
-
-.study-input:focus,
-.study-textarea:focus{
-    border-color:var(--accent);
-}
-
-.study-input::placeholder,
-.study-textarea::placeholder{
-    color:var(--muted);
-}
-
-.card label{
-    display:block;
-    font-size:14px;
-    font-weight:600;
-}
-
-.study-button{
-    width:100%;
-    margin-top:14px;
-    padding:13px;
-    border:0;
-    border-radius:12px;
-    background:var(--accent);
-    color:#ffffff;
-    font-size:14px;
-    font-weight:700;
-}
-
-.study-button:active{
-    transform:scale(.98);
-}
-
-.empty-message{
-    color:var(--muted);
-    font-size:14px;
-    margin-top:12px;
-}
-
-#savedNotes h4{
-    font-size:16px;
-    margin-bottom:6px;
-}
-
-#savedNotes p{
-    color:var(--muted);
-    line-height:1.5;
-    font-size:14px;
-}
-
-.note-item{
-    border:1px solid var(--border);
-    border-radius:13px;
-    padding:14px;
-    margin-top:10px;
-    background:var(--card2);
-}
-    /* =========================
-   PROGRESS
-   ========================= */
-
-.progress-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-    margin-bottom:15px;
-}
-
-.progress-card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:16px;
-    text-align:center;
-}
-
-.progress-icon{
-    display:block;
-    font-size:25px;
-    margin-bottom:8px;
-}
-
-.progress-card strong{
-    display:block;
-    font-size:25px;
     margin-bottom:5px;
 }
 
-.progress-card p{
+.feature p{
+
     color:var(--muted);
-    font-size:12px;
-}
-
-.progress-text{
-    color:var(--muted);
-    font-size:14px;
-    line-height:1.5;
-    margin-top:10px;
-}
-
-.progress-bar{
-    width:100%;
-    height:12px;
-    margin-top:18px;
-    background:var(--card2);
-    border-radius:20px;
-    overflow:hidden;
-}
-
-.progress-fill{
-    width:0%;
-    height:100%;
-    background:var(--accent);
-    border-radius:20px;
-    transition:width .3s;
-}
-
-@media(min-width:500px){
-
-    .progress-grid{
-        grid-template-columns:repeat(4,1fr);
-    }
-
-}
-   /* =========================
-   QUIZ
-   ========================= */
-
-.quiz-question{
-    font-size:18px;
-    font-weight:700;
-    line-height:1.5;
-    margin:16px 0;
-}
-
-.quiz-meta{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    margin-bottom:10px;
-}
-
-.quiz-badge{
-    display:inline-block;
-    padding:6px 10px;
-    border-radius:999px;
-    background:var(--card2);
-    color:var(--muted);
-    font-size:12px;
-    font-weight:700;
-}
-
-.quiz-option{
-    width:100%;
-    padding:13px;
-    margin-top:10px;
-    border:1px solid var(--border);
-    border-radius:12px;
-    background:var(--card2);
-    color:var(--input-text);
-    text-align:left;
-    font-size:14px;
-}
-
-.quiz-option:hover{
-    border-color:var(--accent);
-}
-
-.quiz-option.correct{
-    border-color:#22c55e;
-}
-
-.quiz-option.wrong{
-    border-color:#ef4444;
-}
-
-.quiz-feedback{
-    margin-top:16px;
-    padding:14px;
-    border-radius:12px;
-    background:var(--card2);
-    border:1px solid var(--border);
-    line-height:1.6;
-}
-
-.quiz-answer{
-    font-weight:700;
-    margin-bottom:8px;
-}
-
-.quiz-explanation{
-    color:var(--muted);
-}
-
-.quiz-next{
-    margin-top:12px;
-}
-/* GENERAL CARD */
-
-.card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:18px;
-    margin-bottom:15px;
-}
-
-/* AD SPACE */
-
-.ad-space{
-    min-height:60px;
-    border:1px dashed var(--border);
-    border-radius:14px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:var(--muted);
-    font-size:12px;
-    margin-top:20px;
-}
-
-/* BOTTOM NAV */
-
-.bottom-nav{
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:0;
-    z-index:20;
-    background:var(--card);
-    border-top:1px solid var(--border);
-    display:flex;
-    justify-content:space-around;
-    padding:7px 3px;
-}
-
-.nav-button{
-    border:0;
-    background:transparent;
-    color:var(--muted);
-    font-size:11px;
-    padding:5px;
-    min-width:55px;
-}
-
-.nav-button span{
-    display:block;
-    font-size:20px;
-    margin-bottom:3px;
-}
-
-.nav-button.active{
-    color:var(--accent);
-}
-
-@media(min-width:700px){
-
-    .features{
-        grid-template-columns:repeat(3,1fr);
-    }
-
-}
-
-    /* =========================
-   KRON PLANNER STYLES
-========================= */
-
-.planner-task{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:flex-start;
-
-    gap:16px;
-
-    padding:16px;
-
-    margin-bottom:12px;
-
-    border:1px solid rgba(255,255,255,0.08);
-
-    border-radius:12px;
-
-    background:rgba(255,255,255,0.03);
-
-}
-
-
-.planner-task strong{
-
-    display:block;
-
-    font-size:16px;
-
-    margin-bottom:6px;
-
-}
-
-
-.planner-task p{
-
-    margin:5px 0;
 
     font-size:13px;
 
-    opacity:0.8;
-
+    line-height:1.5;
 }
 
 
-.planner-task > div:last-child{
+/* =========================================================
+   GENERAL CARD
+   ========================================================= */
+
+.card{
+
+    background:
+        var(--surface);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:18px;
+
+    margin-bottom:15px;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,.12);
+}
+
+.card-title{
+
+    font-size:19px;
+
+    font-weight:800;
+
+    margin-bottom:8px;
+}
+
+.card-description{
+
+    color:var(--muted);
+
+    line-height:1.5;
+
+    margin-bottom:15px;
+}
+
+
+/* =========================================================
+   FORMS
+   ========================================================= */
+
+.form-group{
+
+    margin-bottom:15px;
+}
+
+.form-label{
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:var(--muted);
+
+    margin-bottom:6px;
+}
+
+input,
+select,
+textarea{
+
+    width:100%;
+
+    border:
+        1px solid var(--border);
+
+    background:
+        var(--input-bg);
+
+    color:
+        var(--input-text);
+
+    border-radius:10px;
+
+    padding:
+        12px;
+
+    outline:none;
+
+    transition:
+        border-color .15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+
+    border-color:
+        var(--primary);
+}
+
+textarea{
+
+    min-height:120px;
+
+    resize:vertical;
+
+    line-height:1.5;
+}
+
+.study-button{
+
+    border:none;
+
+    border-radius:10px;
+
+    background:
+        var(--primary);
+
+    color:white;
+
+    padding:
+        12px
+        17px;
+
+    font-weight:700;
+
+    transition:
+        background .15s ease,
+        transform .15s ease;
+}
+
+.study-button:hover{
+
+    background:
+        var(--primary-dark);
+
+    transform:
+        translateY(-1px);
+}
+
+.study-button.secondary{
+
+    background:
+        var(--surface3);
+
+    color:
+        var(--text);
+
+    border:
+        1px solid var(--border);
+}
+
+.study-button.danger{
+
+    background:
+        var(--danger);
+}
+
+.study-button.success{
+
+    background:
+        var(--success);
+}
+
+.button-row{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:9px;
+
+    margin-top:12px;
+}
+
+
+/* =========================================================
+   HOME AUTH AREA
+   ========================================================= */
+
+.auth-home{
+
+    margin-top:20px;
+
+    padding:18px;
+
+    border-radius:16px;
+
+    background:
+        var(--surface);
+
+    border:
+        1px solid var(--border);
+}
+
+.auth-home-button{
+
+    width:100%;
+
+    margin-top:9px;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    border:
+        1px solid var(--border);
+
+    background:
+        var(--surface2);
+
+    color:
+        var(--text);
+}
+
+
+/* =========================================================
+   NOTES
+   ========================================================= */
+
+.notes-list{
 
     display:flex;
 
     flex-direction:column;
 
-    gap:8px;
+    gap:12px;
 
-    min-width:120px;
+    margin-top:15px;
+}
 
+.note-item{
+
+    border:
+        1px solid var(--border);
+
+    background:
+        var(--surface2);
+
+    border-radius:13px;
+
+    padding:15px;
+}
+
+.note-title{
+
+    font-weight:800;
+
+    margin-bottom:6px;
+}
+
+.note-content{
+
+    color:var(--muted);
+
+    line-height:1.55;
+
+    white-space:pre-wrap;
+}
+
+.note-meta{
+
+    color:
+        var(--muted);
+
+    font-size:11px;
+
+    margin-top:10px;
+}
+
+.empty-message{
+
+    color:
+        var(--muted);
+
+    text-align:center;
+
+    padding:25px 10px;
+
+    line-height:1.5;
 }
 
 
-.planner-task .study-button{
+/* =========================================================
+   PLANNER
+   ========================================================= */
+
+.planner-form{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:12px;
+}
+
+.planner-form .full{
+
+    grid-column:
+        1 / -1;
+}
+
+.planner-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    margin-top:18px;
+}
+
+.planner-task{
+
+    border:
+        1px solid var(--border);
+
+    border-radius:14px;
+
+    background:
+        var(--surface2);
+
+    padding:15px;
+}
+
+.planner-task.completed{
+
+    opacity:.65;
+}
+
+.planner-task.completed
+.planner-task-title{
+
+    text-decoration:
+        line-through;
+}
+
+.planner-task-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    align-items:flex-start;
+}
+
+.planner-task-title{
+
+    font-weight:800;
+
+    font-size:16px;
+}
+
+.priority-badge{
+
+    padding:
+        4px
+        8px;
+
+    border-radius:20px;
+
+    font-size:10px;
+
+    font-weight:800;
+
+    background:
+        var(--surface3);
+}
+
+.priority-high{
+
+    color:
+        #fca5a5;
+}
+
+.priority-medium{
+
+    color:
+        #fcd34d;
+}
+
+.priority-low{
+
+    color:
+        #86efac;
+}
+
+.planner-task-meta{
+
+    color:
+        var(--muted);
+
+    font-size:12px;
+
+    line-height:1.6;
+
+    margin-top:8px;
+}
+
+.planner-task-actions{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-top:12px;
+}
+
+.small-button{
+
+    padding:
+        8px
+        11px;
+
+    border-radius:8px;
+
+    border:
+        1px solid var(--border);
+
+    background:
+        var(--surface3);
+
+    color:
+        var(--text);
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+
+/* =========================================================
+   WEEKLY TARGET
+   ========================================================= */
+
+.target-summary{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:10px;
+
+    margin:
+        15px
+        0;
+}
+
+.target-stat{
+
+    border:
+        1px solid var(--border);
+
+    background:
+        var(--surface2);
+
+    border-radius:12px;
+
+    padding:13px;
+
+    text-align:center;
+}
+
+.target-stat-number{
+
+    font-size:22px;
+
+    font-weight:900;
+
+    color:
+        var(--primary);
+}
+
+.target-stat-label{
+
+    font-size:11px;
+
+    color:
+        var(--muted);
+
+    margin-top:4px;
+}
+
+.target-section{
+
+    margin-top:18px;
+}
+
+.target-section h3{
+
+    font-size:15px;
+
+    margin-bottom:8px;
+}
+
+.target-list{
+
+    padding-left:18px;
+
+    color:var(--muted);
+
+    line-height:1.7;
+}
+
+
+/* =========================================================
+   QUIZ
+   ========================================================= */
+
+.quiz-setup{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:12px;
+}
+
+.quiz-setup .full{
+
+    grid-column:
+        1 / -1;
+}
+
+.quiz-area{
+
+    margin-top:18px;
+}
+
+.quiz-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-bottom:15px;
+}
+
+.quiz-badge{
+
+    background:
+        var(--surface3);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:20px;
+
+    padding:
+        7px
+        10px;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+.quiz-question{
+
+    background:
+        var(--surface2);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:18px;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    line-height:1.55;
+
+    margin-bottom:13px;
+}
+
+.quiz-option{
+
+    display:block;
 
     width:100%;
 
-    margin:0;
+    text-align:left;
 
+    border:
+        1px solid var(--border);
+
+    background:
+        var(--surface2);
+
+    color:
+        var(--text);
+
+    border-radius:11px;
+
+    padding:13px;
+
+    margin-bottom:9px;
+
+    line-height:1.45;
+}
+
+.quiz-option:hover{
+
+    border-color:
+        var(--primary);
+}
+
+.quiz-option.correct{
+
+    border-color:
+        var(--success);
+
+    background:
+        rgba(34,197,94,.12);
+}
+
+.quiz-option.wrong{
+
+    border-color:
+        var(--danger);
+
+    background:
+        rgba(239,68,68,.12);
+}
+
+.quiz-feedback{
+
+    margin-top:14px;
+
+    padding:16px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:14px;
+
+    background:
+        var(--surface2);
+
+    line-height:1.6;
+}
+
+.quiz-answer{
+
+    font-size:18px;
+
+    font-weight:900;
+
+    margin-bottom:8px;
+}
+
+.quiz-explanation{
+
+    color:
+        var(--muted);
+
+    line-height:1.6;
+
+    margin-top:7px;
+}
+
+.quiz-next{
+
+    margin-top:13px;
 }
 
 
-.planner-task-completed{
+/* =========================================================
+   BOTTOM NAVIGATION
+   ========================================================= */
 
-    opacity:0.6;
+.bottom-nav{
 
+    position:fixed;
+
+    left:0;
+
+    right:0;
+
+    bottom:0;
+
+    z-index:200;
+
+    background:
+        rgba(9,9,11,.97);
+
+    border-top:
+        1px solid var(--border);
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    padding:
+        7px
+        5px
+        calc(7px + env(safe-area-inset-bottom));
+
+    backdrop-filter:
+        blur(12px);
+}
+
+body.light .bottom-nav{
+
+    background:
+        rgba(255,255,255,.97);
+}
+
+.nav-button{
+
+    border:none;
+
+    background:transparent;
+
+    color:
+        var(--muted);
+
+    padding:
+        7px
+        3px;
+
+    font-size:10px;
+
+    font-weight:700;
+
+    border-radius:8px;
+}
+
+.nav-button.active{
+
+    color:
+        var(--primary);
+
+    background:
+        rgba(220,38,38,.08);
+}
+
+.nav-icon{
+
+    display:block;
+
+    font-size:18px;
+
+    margin-bottom:2px;
 }
 
 
-.planner-task-completed strong{
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
-    text-decoration:line-through;
+@media(max-width:700px){
 
-}
+    main{
 
-
-@media(max-width:600px){
-
-    .planner-task{
-
-        flex-direction:column;
-
+        padding:
+            17px
+            12px
+            95px;
     }
 
+    .welcome-card h1{
 
-    .planner-task > div:last-child{
-
-        width:100%;
-
-        flex-direction:row;
-
+        font-size:24px;
     }
 
+    .feature-grid{
 
-    .planner-task > div:last-child .study-button{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
 
-        flex:1;
+    .planner-form,
+    .quiz-setup{
 
+        grid-template-columns:
+            1fr;
+    }
+
+    .planner-form .full,
+    .quiz-setup .full{
+
+        grid-column:auto;
+    }
+
+    .target-summary{
+
+        grid-template-columns:
+            repeat(2,1fr);
     }
 
 }
-    
+
+@media(max-width:420px){
+
+    .feature-grid{
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .feature{
+
+        min-height:auto;
+    }
+
+    .header-inner{
+
+        padding:
+            12px;
+    }
+
+    .logo{
+
+        font-size:23px;
+    }
+
+}
+
+
+/* =========================================================
+   UTILITY
+   ========================================================= */
+
+.hidden{
+
+    display:none !important;
+}
+
+.text-muted{
+
+    color:
+        var(--muted);
+}
+
+.success-text{
+
+    color:
+        var(--success);
+}
+
+.danger-text{
+
+    color:
+        var(--danger);
+}
+
+.warning-text{
+
+    color:
+        var(--warning);
+}
+
+.divider{
+
+    height:1px;
+
+    background:
+        var(--border);
+
+    margin:
+        18px
+        0;
+}
+
 </style>
 
 </head>
 
+
 <body>
 
-<div id="app">
+
+<!-- =======================================================
+     HEADER
+     ======================================================= -->
 
 <header>
 
-<div class="header">
+    <div class="header-inner">
 
-<div class="logo">
-KRON
-</div>
+        <div>
 
-<div class="header-buttons">
+            <div class="logo">
+                KRON
+            </div>
 
-<button
-class="icon-btn"
-id="themeButton"
-onclick="toggleTheme()">
-☾
-</button>
+            <div class="logo-subtitle">
+                Study AI • Learn. Practice. Improve.
+            </div>
 
-<button
-class="icon-btn"
-onclick="showPage('settingsPage')">
-⚙
-</button>
+        </div>
 
-</div>
 
-</div>
+        <div class="header-actions">
+
+            <button
+                class="icon-button"
+                id="themeButton"
+                onclick="toggleTheme()"
+                aria-label="Toggle theme"
+            >
+                ☾
+            </button>
+
+        </div>
+
+    </div>
 
 </header>
 
+
+<!-- =======================================================
+     MAIN
+     ======================================================= -->
+
 <main>
 
-<!-- HOME PAGE -->
+
+<!-- =======================================================
+     HOME PAGE
+     ======================================================= -->
 
 <section
-id="homePage"
-class="page active">
+    id="homePage"
+    class="page active"
+>
 
-<div class="welcome">
+    <div class="welcome-card">
 
-<h1>
-Welcome to KRON
-</h1>
+        <h1>
+            Welcome to KRON Study AI
+        </h1>
 
-<p>
-Your AI-powered study companion.
-</p>
+        <p>
+            Your study space for learning,
+            practice, quizzes, notes and
+            planning your school work.
+        </p>
 
-</div>
-<div class="auth-home">
+    </div>
 
-<button
-class="auth-home-button"
-onclick="showPage('loginPage')">
 
-Log In
+    <div class="feature-grid">
 
-</button>
 
-<button
-class="auth-home-button secondary"
-onclick="showPage('signupPage')">
+        <button
+            class="feature"
+            onclick="showPage('tutorPage')"
+        >
 
-Create Account
+            <div class="feature-icon">
+                🤖
+            </div>
 
-</button>
+            <h3>
+                AI Tutor
+            </h3>
 
-</div>
-<div class="features">
+            <p>
+                Ask questions and get help
+                with your studies.
+            </p>
 
-<button
-class="feature"
-onclick="showPage('tutorPage')">
+        </button>
 
-<div class="feature-icon">
-🤖
-</div>
 
-<h3>
-AI Tutor
-</h3>
+        <button
+            class="feature"
+            onclick="showPage('quizPage')"
+        >
 
-<p>
-Learn with your personal AI tutor.
-</p>
+            <div class="feature-icon">
+                📝
+            </div>
 
-</button>
+            <h3>
+                Quiz
+            </h3>
 
-<button
-class="feature"
-onclick="showPage('quizPage')">
+            <p>
+                Practice with class and
+                WAEC-style questions.
+            </p>
 
-<div class="feature-icon">
-📝
-</div>
+        </button>
 
-<h3>
-Quiz
-</h3>
 
-<p>
-Practice your WAEC subjects.
-</p>
+        <button
+            class="feature"
+            onclick="showPage('searchPage')"
+        >
 
-</button>
+            <div class="feature-icon">
+                🔎
+            </div>
 
-<button
-class="feature"
-onclick="showPage('searchPage')">
+            <h3>
+                Web Search
+            </h3>
 
-<div class="feature-icon">
-🔎
-</div>
+            <p>
+                Search the web for study
+                information and sources.
+            </p>
 
-<h3>
-Web Search
-</h3>
+        </button>
 
-<p>
-Search for useful information.
-</p>
 
-</button>
+        <button
+            class="feature"
+            onclick="showPage('notesPage')"
+        >
 
-<button
-class="feature"
-onclick="showPage('notesPage')">
+            <div class="feature-icon">
+                📚
+            </div>
 
-<div class="feature-icon">
-📚
-</div>
+            <h3>
+                Notes
+            </h3>
 
-<h3>
-Notes
-</h3>
+            <p>
+                Save important study notes
+                for later.
+            </p>
 
-<p>
-Create and save study notes.
-</p>
+        </button>
 
-</button>
 
-<button
-class="feature"
-onclick="showPage('plannerPage')">
+        <button
+            class="feature"
+            onclick="showPage('plannerPage')"
+        >
 
-<div class="feature-icon">
-📅
-</div>
+            <div class="feature-icon">
+                📅
+            </div>
 
-<h3>
-Planner
-</h3>
+            <h3>
+                Planner
+            </h3>
 
-<p>
-Organize your study sessions.
-</p>
+            <p>
+                Organize your study tasks
+                and schedule.
+            </p>
 
-</button>
+        </button>
 
-<button
-class="feature"
-onclick="showPage('progressPage')">
 
-<div class="feature-icon">
-📊
-</div>
+        <button
+            class="feature"
+            onclick="showPage('targetPage')"
+        >
 
-<h3>
-Progress
-</h3>
+            <div class="feature-icon">
+                🎯
+            </div>
 
-<p>
-Track your learning progress.
-</p>
+            <h3>
+                Weekly Target
+            </h3>
 
-</button>
+            <p>
+                Set and track your weekly
+                study goal.
+            </p>
 
-<button
-class="feature"
-onclick="showPage('chatPage')">
+        </button>
 
-<div class="feature-icon">
-💬
-</div>
 
-<h3>
-Chat
-</h3>
+        <button
+            class="feature"
+            onclick="showPage('progressPage')"
+        >
 
-<p>
-Continue your AI conversations.
-</p>
+            <div class="feature-icon">
+                📊
+            </div>
 
-</button>
+            <h3>
+                Progress
+            </h3>
 
-<button
-class="feature"
-onclick="showPage('summaryPage')">
+            <p>
+                Your complete progress
+                dashboard will be added later.
+            </p>
 
-<div class="feature-icon">
-📈
-</div>
+        </button>
 
-<h3>
-Daily Summary
-</h3>
 
-<p>
-See your daily study activity.
-</p>
+        <button
+            class="feature"
+            onclick="showPage('settingsPage')"
+        >
 
-</button>
+            <div class="feature-icon">
+                ⚙️
+            </div>
 
-<button
-class="feature"
-onclick="showPage('targetPage')">
+            <h3>
+                Settings
+            </h3>
 
-<div class="feature-icon">
-🎯
-</div>
+            <p>
+                Manage your KRON preferences.
+            </p>
 
-<h3>
-Weekly Target
-</h3>
+        </button>
 
-<p>
-Set and track your weekly goal.
-</p>
 
-</button>
+    </div>
 
-</div>
 
-<div class="ad-space">
-Banner Ad Space
-</div>
+    <div class="auth-home">
+
+        <strong>
+            KRON Study AI
+        </strong>
+
+        <p
+            class="text-muted"
+            style="margin-top:6px;"
+        >
+            Keep learning consistently.
+            Small progress every day adds up.
+        </p>
+
+    </div>
 
 </section>
 
-<!-- AI TUTOR PAGE -->
+
+<!-- =======================================================
+     AI TUTOR PAGE
+     ======================================================= -->
 
 <section
-id="tutorPage"
-class="page">
+    id="tutorPage"
+    class="page"
+>
 
-<h2 class="page-title">
-AI Tutor
-</h2>
+    <h2 class="page-title">
+        AI Tutor
+    </h2>
 
-<p class="page-description">
-Ask questions and learn with KRON.
-</p>
-
-<div class="card">
-AI Tutor interface coming next.
-</div>
-
-</section>
-
-<!-- QUIZ PAGE -->
-<section id="quizPage" class="page">
-
-<h2 class="page-title">Quiz</h2>
-
-<p class="page-description">
-Practice WAEC and SSCE questions with KRON.
-</p>
-
-<div class="card">
-
-<label for="quizLevel">Class / Level</label>
-
-<select id="quizLevel"
-class="study-input"
-onchange="updateQuizTerms()">
-
-<option value="">Choose class / level</option>
-<option value="SS1">SS1</option>
-<option value="SS2">SS2</option>
-<option value="SS3">SS3</option>
-<option value="WAEC">WAEC Syllabus</option>
-
-</select>
+    <p class="page-description">
+        Ask KRON a study question.
+    </p>
 
 
-<div id="quizTermContainer">
+    <div class="card">
 
-<label for="quizTerm">Term</label>
+        <div class="form-group">
 
-<select id="quizTerm"
-class="study-input">
+            <label
+                class="form-label"
+                for="tutorQuestion"
+            >
+                Your question
+            </label>
 
-<option value="">Choose term</option>
-<option value="First Term">First Term</option>
-<option value="Second Term">Second Term</option>
-<option value="Third Term">Third Term</option>
+          </div>
 
-</select>
-
-</div>
-
-
-<label for="quizSubject">Subject</label>
-
-<select id="quizSubject"
-class="study-input">
-
-<option value="">Choose a subject</option>
-
-</select>
+    <textarea
+        id="tutorQuestion"
+        class="study-textarea"
+        placeholder="Type your study question here..."
+    ></textarea>
 
 
-<label for="quizCount">Number of Questions</label>
+    <div class="button-row">
 
-<select id="quizCount" class="study-input">
-<option value="">Choose number of questions</option>
-<option value="1">1 Question</option>
-<option value="2">2 Questions</option>
-<option value="3">3 Questions</option>
-<option value="4">4 Questions</option>
-<option value="5">5 Questions</option>
-<option value="6">6 Questions</option>
-<option value="7">7 Questions</option>
-<option value="8">8 Questions</option>
-<option value="9">9 Questions</option>
-<option value="10">10 Questions</option>
-</select>
+        <button
+            class="primary-button"
+            onclick="askTutor()"
+        >
+            Ask KRON
+        </button>
 
+        <button
+            class="secondary-button"
+            onclick="clearTutor()"
+        >
+            Clear
+        </button>
 
-<button class="study-button"
-onclick="startQuiz()">
+    </div>
 
-Start Quiz
-
-</button>
-
-</div>
+  </div>
 
 
-<div id="quizArea" class="card">
+  <div
+      id="tutorLoading"
+      class="card hidden"
+  >
 
-<p class="empty-message">
-Choose your class, term and subject to start a quiz.
-</p>
+      <p>
+          KRON is thinking...
+      </p>
 
-</div>
+  </div>
+
+
+  <div
+      id="tutorResponse"
+      class="card hidden"
+  >
+
+      <h3>
+          KRON's Answer
+      </h3>
+
+      <div
+          id="tutorAnswer"
+          class="note-body"
+      ></div>
+
+  </div>
 
 </section>
 
-<!-- WEB SEARCH PAGE -->
+
+
+<!-- =======================================================
+     SEARCH PAGE
+     ======================================================= -->
 
 <section
-id="searchPage"
-class="page">
+    id="searchPage"
+    class="page"
+>
 
-<h2 class="page-title">
-Web Search
-</h2>
+    <h2 class="page-title">
+        Web Search
+    </h2>
 
-<p class="page-description">
-Search the web for learning resources.
-</p>
+    <p class="page-description">
+        Search the web for study information.
+    </p>
 
-<div class="card">
-Web Search interface coming next.
-</div>
+
+    <div class="card">
+
+        <div class="form-group">
+
+            <label
+                class="form-label"
+                for="searchQuestion"
+            >
+                Search
+            </label>
+
+            <input
+                id="searchQuestion"
+                class="study-input"
+                type="text"
+                placeholder="Search for a topic..."
+            >
+
+        </div>
+
+
+        <button
+            class="primary-button"
+            onclick="performSearch()"
+        >
+            Search
+        </button>
+
+    </div>
+
+
+    <div
+        id="searchLoading"
+        class="card hidden"
+    >
+
+        <p>
+            Searching...
+        </p>
+
+    </div>
+
+
+    <div
+        id="searchResults"
+        class="card"
+    >
+
+        <div
+            class="empty-state"
+        >
+            Search results will appear here.
+        </div>
+
+    </div>
 
 </section>
 
-<!-- NOTES PAGE -->
+
+
+<!-- =======================================================
+     NOTES PAGE
+     ======================================================= -->
 
 <section
-id="notesPage"
-class="page">
+    id="notesPage"
+    class="page"
+>
 
-<h2 class="page-title">
-Notes
-</h2>
+    <h2 class="page-title">
+        Notes
+    </h2>
 
-<p class="page-description">
-Create and save your study notes.
-</p>
+    <p class="page-description">
+        Save important things you learn.
+    </p>
 
-<div class="card">
 
-<label for="noteTitle">
-Note Title
-</label>
+    <div class="card">
 
-<input
-type="text"
-id="noteTitle"
-class="study-input"
-placeholder="e.g. Chemistry - Acids and Bases">
+        <div class="form-group">
 
-<label for="noteContent">
-Note
-</label>
+            <label
+                class="form-label"
+                for="noteTitle"
+            >
+                Note title
+            </label>
 
-<textarea
-id="noteContent"
-class="study-textarea"
-placeholder="Write your study note here...">
-</textarea>
+            <input
+                id="noteTitle"
+                class="study-input"
+                type="text"
+                placeholder="Example: Chemistry - Organic Compounds"
+            >
 
-<button
-class="study-button"
-onclick="saveNote()">
-Save Note
-</button>
+        </div>
 
-</div>
 
-<div class="card">
+        <div class="form-group">
 
-<h3>
-Saved Notes
-</h3>
+            <label
+                class="form-label"
+                for="noteContent"
+            >
+                Note
+            </label>
 
-<div id="savedNotes">
-<p class="empty-message">
-No notes saved yet.
-</p>
-</div>
+            <textarea
+                id="noteContent"
+                class="study-textarea"
+                placeholder="Write your study note..."
+            ></textarea>
 
-</div>
+        </div>
+
+
+        <button
+            class="primary-button"
+            onclick="saveNote()"
+        >
+            Save Note
+        </button>
+
+    </div>
+
+
+    <div
+        id="notesList"
+        class="notes-list"
+    ></div>
 
 </section>
 
-<!-- PLANNER PAGE -->
-
-<section id="plannerPage" class="page">
-
-<h2 class="page-title">
-Planner
-</h2>
-
-<p class="page-description">
-Plan your study sessions and stay organized.
-</p>
-
-<div class="card">
-
-<h3>
-Add Study Task
-</h3>
-
-<label for="taskInput">
-Task
-</label>
-
-<input
-type="text"
-id="taskInput"
-class="study-input"
-placeholder="e.g. Study Chemistry">
-
-<label for="taskSubject">
-Subject
-</label>
-
-<select
-id="taskSubject"
-class="study-input">
-
-<option value="">
-Choose subject
-</option>
-
-</select>
-
-<label for="taskDate">
-Date
-</label>
-
-<input
-type="date"
-id="taskDate"
-class="study-input">
-
-<label for="taskStartTime">
-Start Time
-</label>
-
-<input
-type="time"
-id="taskStartTime"
-class="study-input">
-
-<label for="taskEndTime">
-End Time
-</label>
-
-<input
-type="time"
-id="taskEndTime"
-class="study-input">
-
-<label for="taskPriority">
-Priority
-</label>
-
-<select
-id="taskPriority"
-class="study-input">
-
-<option value="">
-Choose priority
-</option>
-
-<option value="High">
-High
-</option>
-
-<option value="Medium">
-Medium
-</option>
-
-<option value="Low">
-Low
-</option>
-
-</select>
-
-<button
-class="study-button"
-onclick="addTask()">
-
-Add Study Task
-
-</button>
-
-</div>
 
 
-<div class="card">
-
-<h3>
-Today's Plan
-</h3>
-
-<div id="todayTaskList">
-
-<p class="empty-message">
-No study sessions planned for today.
-</p>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h3>
-Upcoming Study Sessions
-</h3>
-
-<div id="upcomingTaskList">
-
-<p class="empty-message">
-No upcoming study sessions.
-</p>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h3>
-All Study Tasks
-</h3>
-
-<div id="taskList">
-
-<p class="empty-message">
-No tasks added yet.
-</p>
-
-</div>
-
-</div>
-
-</section>
-    
-<!-- PROGRESS PAGE -->
+<!-- =======================================================
+     PLANNER PAGE
+     ======================================================= -->
 
 <section
-id="progressPage"
-class="page">
+    id="plannerPage"
+    class="page"
+>
 
-<h2 class="page-title">
-Progress
-</h2>
+    <h2 class="page-title">
+        Planner
+    </h2>
 
-<p class="page-description">
-Track your learning activity and study progress.
-</p>
-
-<div class="progress-grid">
-
-<div class="progress-card">
-
-<span class="progress-icon">
-📝
-</span>
-
-<strong id="progressNotes">
-0
-</strong>
-
-<p>
-Notes
-</p>
-
-</div>
+    <p class="page-description">
+        Organize your study tasks.
+    </p>
 
 
-<div class="progress-card">
+    <div class="card">
 
-<span class="progress-icon">
-📚
-</span>
+        <div class="form-group">
 
-<strong id="progressTasks">
-0
-</strong>
+            <label
+                class="form-label"
+                for="plannerSubject"
+            >
+                Subject
+            </label>
 
-<p>
-Study Tasks
-</p>
+            <select
+                id="plannerSubject"
+                class="study-select"
+            ></select>
 
-</div>
-
-
-<div class="progress-card">
-
-<span class="progress-icon">
-✅
-</span>
-
-<strong id="progressCompleted">
-0
-</strong>
-
-<p>
-Completed
-</p>
-
-</div>
+        </div>
 
 
-<div class="progress-card">
+        <div class="form-group">
 
-<span class="progress-icon">
-📊
-</span>
+            <label
+                class="form-label"
+                for="plannerTask"
+            >
+                Task
+            </label>
 
-<strong id="progressPercentage">
-0%
-</strong>
+            <input
+                id="plannerTask"
+                class="study-input"
+                type="text"
+                placeholder="Example: Revise quadratic equations"
+            >
 
-<p>
-Progress
-</p>
-
-</div>
-
-</div>
+        </div>
 
 
-<div class="card">
+        <div class="setup-grid">
 
-<h3>
-Study Progress
-</h3>
+            <div class="form-group">
 
-<div class="progress-bar">
+                <label
+                    class="form-label"
+                    for="plannerDate"
+                >
+                    Date
+                </label>
 
-<div
-id="studyProgressBar"
-class="progress-fill">
-</div>
+                <input
+                    id="plannerDate"
+                    class="study-input"
+                    type="date"
+                >
 
-</div>
+            </div>
 
-<p
-id="studyProgressText"
-class="progress-text">
 
-0% study progress
+            <div class="form-group">
 
-</p>
+                <label
+                    class="form-label"
+                    for="plannerPriority"
+                >
+                    Priority
+                </label>
 
-</div>
+                <select
+                    id="plannerPriority"
+                    class="study-select"
+                >
 
-</section>
-<!-- WEEKLY TARGET PAGE -->
+                    <option value="Low">
+                        Low
+                    </option>
 
-<section
-id="targetPage"
-class="page">
+                    <option
+                        value="Medium"
+                        selected
+                    >
+                        Medium
+                    </option>
 
-<h2 class="page-title">
-Weekly Target
-</h2>
+                    <option value="High">
+                        High
+                    </option>
 
-<p class="page-description">
-Set and track your weekly target.
-</p>
+                </select>
 
-<div
-id="weeklyTargetContent">
+            </div>
 
-</div>
+        </div>
 
-</section>
-<!-- LOGIN PAGE -->
 
-<section
-id="loginPage"
-class="page">
+        <div class="setup-grid">
 
-<h2 class="page-title">
-Welcome Back
-</h2>
+            <div class="form-group">
 
-<p class="page-description">
-Log in to continue your KRON study journey.
-</p>
+                <label
+                    class="form-label"
+                    for="plannerStart"
+                >
+                    Start time
+                </label>
 
-<div class="card auth-card">
+                <input
+                    id="plannerStart"
+                    class="study-input"
+                    type="time"
+                >
 
-<label for="loginEmail">
-Email
-</label>
+            </div>
 
-<input
-type="email"
-id="loginEmail"
-placeholder="Enter your email">
 
-<label for="loginPassword">
-Password
-</label>
+            <div class="form-group">
 
-<input
-type="password"
-id="loginPassword"
-placeholder="Enter your password">
+                <label
+                    class="form-label"
+                    for="plannerEnd"
+                >
+                    End time
+                </label>
 
-<button
-class="auth-button"
-onclick="loginUser()">
-Log In
-</button>
+                <input
+                    id="plannerEnd"
+                    class="study-input"
+                    type="time"
+                >
 
-<p class="auth-switch">
-Don't have an account?
-<button onclick="showPage('signupPage')">
-Sign Up
-</button>
-</p>
+            </div>
 
-</div>
+        </div>
+
+
+        <button
+            class="primary-button"
+            onclick="addTask()"
+        >
+            Add Task
+        </button>
+
+    </div>
+
+
+    <div
+        id="plannerList"
+        class="planner-list"
+    ></div>
 
 </section>
 
 
-<!-- SIGN UP PAGE -->
+
+<!-- =======================================================
+     WEEKLY TARGET PAGE
+     ======================================================= -->
 
 <section
-id="signupPage"
-class="page">
+    id="targetPage"
+    class="page"
+>
 
-<h2 class="page-title">
-Create Account
-</h2>
+    <h2 class="page-title">
+        Weekly Target
+    </h2>
 
-<p class="page-description">
-Create your KRON account.
-</p>
+    <p class="page-description">
+        Set and track your weekly target.
+    </p>
 
-<div class="card auth-card">
 
-<label for="signupName">
-Full Name
-</label>
-
-<input
-type="text"
-id="signupName"
-placeholder="Enter your name">
-
-<label for="signupEmail">
-Email
-</label>
-
-<input
-type="email"
-id="signupEmail"
-placeholder="Enter your email">
-
-<label for="signupPassword">
-Password
-</label>
-
-<input
-type="password"
-id="signupPassword"
-placeholder="Create a password">
-
-<label for="signupConfirm">
-Confirm Password
-</label>
-
-<input
-type="password"
-id="signupConfirm"
-placeholder="Confirm your password">
-
-<button
-class="auth-button"
-onclick="signupUser()">
-Create Account
-</button>
-
-<p class="auth-switch">
-Already have an account?
-<button onclick="showPage('loginPage')">
-Log In
-</button>
-</p>
-
-</div>
-
-      </section>
-<!-- SETTINGS PAGE -->
-    
-<section
-id="settingsPage"
-class="page">
-
-<h2 class="page-title">
-Settings
-</h2>
-
-<p class="page-description">
-Customize your KRON experience.
-</p>
-
-<div class="card account-card">
-
-<h3>
-Account
-</h3>
-
-<p id="accountStatus">
-You are not logged in.
-</p>
-
-<button
-class="settings-button"
-onclick="showPage('loginPage')">
-Log In
-</button>
-
-<button
-class="settings-button secondary"
-onclick="showPage('signupPage')">
-Create Account
-</button>
-
-<button
-class="settings-button danger"
-onclick="logoutUser()">
-Log Out
-</button>
-
-</div>
+    <div
+        id="weeklyTargetContent"
+    ></div>
 
 </section>
 
-</main>
 
-<nav class="bottom-nav">
 
-<button
-class="nav-button active"
-onclick="showPage('homePage',this)">
+<!-- =======================================================
+     PROGRESS PAGE
+     ======================================================= -->
 
-<span>⌂</span>
-Home
+<section
+    id="progressPage"
+    class="page"
+>
 
-</button>
+    <h2 class="page-title">
+        Progress
+    </h2>
 
-<button
-class="nav-button"
-onclick="showPage('tutorPage',this)">
+    <p class="page-description">
+        Your complete study progress will appear here later.
+    </p>
 
-<span>🤖</span>
-Tutor
 
-</button>
+    <div class="card">
 
-<button
-class="nav-button"
-onclick="showPage('quizPage',this)">
+        <div class="empty-state">
 
-<span>📝</span>
-Quiz
+            Progress is reserved for the final integration
+            stage.
 
-</button>
+        </div>
 
-<button
-class="nav-button"
-onclick="showPage('progressPage',this)">
+    </div>
 
-<span>📊</span>
-Progress
+</section>
 
-</button>
 
-<button
-class="nav-button"
-onclick="showPage('settingsPage',this)">
 
-<span>⚙</span>
-Settings
+<!-- =======================================================
+     SETTINGS PAGE
+     ======================================================= -->
 
-</button>
+<section
+    id="settingsPage"
+    class="page"
+>
 
-</nav>
+    <h2 class="page-title">
+        Settings
+    </h2>
 
-</div>
+    <p class="page-description">
+        Manage your KRON preferences.
+    </p>
+
+
+    <div class="card">
+
+        <h3>
+            Appearance
+        </h3>
+
+        <p class="note-body">
+            Switch between dark and light mode.
+        </p>
+
+        <br>
+
+        <button
+            class="primary-button"
+            onclick="toggleTheme()"
+        >
+            Toggle Theme
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h3>
+            Study Data
+        </h3>
+
+        <p class="note-body">
+            Your notes, planner tasks and quiz sessions
+            are stored on this device.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =======================================================
+     QUIZ PAGE
+     ======================================================= -->
+
+<section
+    id="quizPage"
+    class="page"
+>
+
+    <h2 class="page-title">
+        Quiz
+    </h2>
+
+    <p class="page-description">
+        Choose your level, term and subject.
+    </p>
+
+
+    <div
+        id="quizSetup"
+        class="card"
+    >
+
+        <div class="form-group">
+
+            <label
+                class="form-label"
+                for="quizLevel"
+            >
+                Level
+            </label>
+
+            <select
+                id="quizLevel"
+                class="study-select"
+                onchange="updateQuizTerms()"
+            >
+
+                <option value="">
+                    Select level
+                </option>
+
+                <option value="SS1">
+                    SS1
+                </option>
+
+                <option value="SS2">
+                    SS2
+                </option>
+
+                <option value="SS3">
+                    SS3
+                </option>
+
+                <option value="WAEC">
+                    WAEC Syllabus
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            id="quizTermGroup"
+            class="form-group"
+        >
+
+            <label
+                class="form-label"
+                for="quizTerm"
+            >
+                Term
+            </label>
+
+            <select
+                id="quizTerm"
+                class="study-select"
+            >
+
+                <option value="">
+                    Select term
+                </option>
+
+                <option value="First Term">
+                    First Term
+                </option>
+
+                <option value="Second Term">
+                    Second Term
+                </option>
+
+                <option value="Third Term">
+                    Third Term
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label
+                class="form-label"
+                for="quizSubject"
+            >
+                Subject
+            </label>
+
+            <select
+                id="quizSubject"
+                class="study-select"
+            >
+
+                <option value="">
+                    Select subject
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label
+                class="form-label"
+                for="quizCount"
+            >
+                Number of questions
+            </label>
+
+            <select
+                id="quizCount"
+                class="study-select"
+            >
+
+                <option value="5">
+                    5
+                </option>
+
+                <option value="10">
+                    10
+                </option>
+
+                <option value="15">
+                    15
+                </option>
+
+                <option value="20">
+                    20
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button
+            id="startQuizButton"
+            class="primary-button"
+            type="button"
+            onclick="startQuiz()"
+        >
+            Start Quiz
+        </button>
+
+    </div>
+
+
+    <div
+        id="quizArea"
+        class="card"
+        style="display:none;"
+    >
+
+        <div
+            id="quizProgress"
+            class="quiz-progress"
+        >
+            Question 1
+        </div>
+
+
+        <div
+            id="quizQuestion"
+            class="quiz-question"
+        >
+            Loading question...
+        </div>
+
+
+        <div
+            id="quizOptions"
+            class="quiz-options"
+        >
+        </div>
+
+
+        <button
+            id="nextQuestionButton"
+            class="primary-button"
+            type="button"
+            onclick="nextQuestion()"
+        >
+            Next Question
+        </button>
+
+    </div>
+
+
+    <div
+        id="quizResult"
+        class="card"
+        style="display:none;"
+    >
+
+        <h3>
+            Quiz Complete
+        </h3>
+
+        <p>
+            Your score:
+        </p>
+
+        <div
+            id="quizScore"
+            class="quiz-score"
+        >
+            0%
+        </div>
+
+
+        <p
+            id="quizResultMessage"
+        >
+            Well done.
+        </p>
+
+
+        <button
+            class="primary-button"
+            type="button"
+            onclick="restartQuiz()"
+        >
+            Take Another Quiz
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     PLANNER SUBJECT UPDATE
+     ======================================================= -->
 
 <script>
-
-function showPage(pageId,button){
-
-document.querySelectorAll(".page")
-.forEach(function(page){
-
-page.classList.remove("active");
-
-});
-
-const page=document.getElementById(pageId);
-
-if(page){
-page.classList.add("active");
-}
-
-document.querySelectorAll(".nav-button")
-.forEach(function(nav){
-
-nav.classList.remove("active");
-
-});
-
-if(button){
-button.classList.add("active");
-}
-
-window.scrollTo(0,0);
-
-}
-
-function toggleTheme(){
-
-document.body.classList.toggle("light");
-
-const light=
-document.body.classList.contains("light");
-
-localStorage.setItem(
-"KRON_THEME",
-light ? "light" : "dark"
-);
-
-document.getElementById(
-"themeButton"
-).textContent=light ? "☀" : "☾";
-
-}
-
-const savedTheme=
-localStorage.getItem("KRON_THEME");
-
-if(savedTheme==="light"){
-
-document.body.classList.add("light");
-
-document.getElementById(
-"themeButton"
-).textContent="☀";
-
-}
-function saveNote(){
-
-    const title =
-        document.getElementById("noteTitle").value.trim();
-
-    const content =
-        document.getElementById("noteContent").value.trim();
-
-    if(!title || !content){
-
-        alert("Please enter a title and note.");
-
-        return;
-
-    }
-
-    const notes =
-        JSON.parse(
-            localStorage.getItem("KRON_NOTES") || "[]"
-        );
-
-    notes.unshift({
-
-        id:Date.now(),
-
-        title:title,
-
-        content:content
-
-    });
-
-    localStorage.setItem(
-        "KRON_NOTES",
-        JSON.stringify(notes)
-    );
-
-    document.getElementById("noteTitle").value="";
-    document.getElementById("noteContent").value="";
-
-    loadNotes();
-
-    alert("Note saved successfully.");
-
-}
-
-function loadNotes(){
-
-    const container =
-        document.getElementById("savedNotes");
-
-    if(!container){
-        return;
-    }
-
-    const notes =
-        JSON.parse(
-            localStorage.getItem("KRON_NOTES") || "[]"
-        );
-
-    if(notes.length===0){
-
-        container.innerHTML=
-            '<p class="empty-message">No notes saved yet.</p>';
-
-        return;
-
-    }
-
-    container.innerHTML="";
-
-    notes.forEach(function(note){
-
-        const item =
-            document.createElement("div");
-
-        item.className="note-item";
-
-        item.innerHTML=
-            "<h4>"+escapeHTML(note.title)+"</h4>"+
-            "<p>"+escapeHTML(note.content)+"</p>";
-
-        container.appendChild(item);
-
-    });
-
-}
-
-function escapeHTML(text){
-
-    const div =
-        document.createElement("div");
-
-    div.textContent=text;
-
-    return div.innerHTML;
-
-}
-
-loadNotes();
-    function addTask(){
-
-    const input =
-        document.getElementById("taskInput");
-
-    const task =
-        input.value.trim();
-
-    if(!task){
-
-        alert("Please enter a study task.");
-
-        return;
-
-    }
-
-    const tasks =
-        JSON.parse(
-            localStorage.getItem("KRON_TASKS") || "[]"
-        );
-
-    tasks.unshift({
-
-        id:Date.now(),
-
-        text:task,
-
-        completed:false
-
-    });
-
-    localStorage.setItem(
-        "KRON_TASKS",
-        JSON.stringify(tasks)
-    );
-
-    input.value="";
-
-    loadTasks();
-
-}
-
-function loadTasks(){
-
-    const container =
-        document.getElementById("taskList");
-
-    if(!container){
-        return;
-    }
-
-    const tasks =
-        JSON.parse(
-            localStorage.getItem("KRON_TASKS") || "[]"
-        );
-
-    if(tasks.length===0){
-
-        container.innerHTML=
-            '<p class="empty-message">No tasks added yet.</p>';
-
-        return;
-
-    }
-
-    container.innerHTML="";
-
-    tasks.forEach(function(task){
-
-        const item =
-            document.createElement("div");
-
-        item.className="note-item";
-
-        item.innerHTML=
-            '<label style="display:flex;gap:10px;align-items:center;">'+
-            '<input type="checkbox" '+
-            (task.completed ? "checked" : "")+
-            ' onchange="toggleTask('+task.id+')">'+
-            '<span>'+escapeHTML(task.text)+'</span>'+
-            '</label>';
-
-        container.appendChild(item);
-
-    });
-
-}
-
-function toggleTask(id){
-
-    const tasks =
-        JSON.parse(
-            localStorage.getItem("KRON_TASKS") || "[]"
-        );
-
-    const task =
-        tasks.find(function(item){
-
-            return item.id===id;
-
-        });
-
-    if(task){
-
-        task.completed =
-            !task.completed;
-
-    }
-
-    localStorage.setItem(
-        "KRON_TASKS",
-        JSON.stringify(tasks)
-    );
-
-    loadTasks();
-
-}
-
-loadTasks();
-    function updateProgress(){
-
-    const notes =
-        JSON.parse(
-            localStorage.getItem("KRON_NOTES") || "[]"
-        );
-
-    const tasks =
-        JSON.parse(
-            localStorage.getItem("KRON_TASKS") || "[]"
-        );
-
-    const quizResults =
-        JSON.parse(
-            localStorage.getItem("KRON_QUIZ_RESULTS") || "[]"
-        );
-
-    const completedTasks =
-        tasks.filter(function(task){
-            return task.completed;
-        }).length;
-
-    const completed =
-        completedTasks + quizResults.length;
-
-    const totalActivities =
-        tasks.length + quizResults.length;
-
-    const noteCount =
-        document.getElementById("progressNotes");
-
-    const taskCount =
-        document.getElementById("progressTasks");
-
-    const completedCount =
-        document.getElementById("progressCompleted");
-
-    const progressBar =
-        document.getElementById("studyProgressBar");
-
-    const progressText =
-        document.getElementById("studyProgressText");
-
-    if(noteCount){
-        noteCount.textContent = notes.length;
-    }
-
-    if(taskCount){
-        taskCount.textContent = tasks.length;
-    }
-
-    if(completedCount){
-        completedCount.textContent = completed;
-    }
-
-    let percentage = 0;
-
-    if(totalActivities > 0){
-
-        percentage =
-            Math.round(
-                (completed / totalActivities) * 100
-            );
-
-    }
-
-    if(progressBar){
-        progressBar.style.width =
-            percentage + "%";
-    }
-
-    if(progressText){
-        progressText.textContent =
-            percentage +
-            "% study progress";
-    }
-
-    }
-    
-    /* =========================
-   PLANNER SUBJECTS
-========================= */
 
 function updatePlannerSubjects(){
 
     const subjectSelect =
-        document.getElementById("taskSubject");
+        document.getElementById(
+            "plannerSubject"
+        );
 
     if(!subjectSelect){
         return;
     }
 
     subjectSelect.innerHTML =
-        '<option value="">Choose subject</option>';
+        '<option value="">Select subject</option>';
 
-    WAEC_SUBJECTS.forEach(function(subject){
+    WAEC_SUBJECTS.forEach(
+        function(subject){
 
-        const option =
-            document.createElement("option");
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-        option.value = subject;
+            option.value =
+                subject;
 
-        option.textContent = subject;
+            option.textContent =
+                subject;
 
-        subjectSelect.appendChild(option);
+            subjectSelect.appendChild(
+                option
+            );
 
-    });
+        }
+    );
 
 }
 
-window.addEventListener("load", function(){
-
-    updatePlannerSubjects();
-
-});
-
- /* =========================
-   KRON PLANNER SYSTEM
-========================= */
-
-const PLANNER_STORAGE_KEY = "KRON_PLANNER_TASKS";
-
-let plannerTasks = JSON.parse(
-    localStorage.getItem(PLANNER_STORAGE_KEY) || "[]"
-);
+</script>
 
 
-/* =========================
-   SAVE PLANNER
-========================= */
+<!-- =======================================================
+     PLANNER LOADING
+     ======================================================= -->
 
-function savePlannerTasks(){
+<script>
+
+function loadPlanner(){
+
+    const saved =
+        localStorage.getItem(
+            "KRON_PLANNER_TASKS"
+        );
+
+    if(!saved){
+
+        plannerTasks = [];
+
+        renderPlanner();
+
+        return;
+
+    }
+
+    try{
+
+        plannerTasks =
+            JSON.parse(saved);
+
+        if(!Array.isArray(plannerTasks)){
+
+            plannerTasks = [];
+
+        }
+
+    }catch(error){
+
+        plannerTasks = [];
+
+    }
+
+    renderPlanner();
+
+}
+
+
+function savePlanner(){
 
     localStorage.setItem(
-        PLANNER_STORAGE_KEY,
-        JSON.stringify(plannerTasks)
+        "KRON_PLANNER_TASKS",
+        JSON.stringify(
+            plannerTasks
+        )
     );
 
 }
 
 
-/* =========================
-   GET TODAY
-========================= */
-
-function getTodayDate(){
-
-    const now = new Date();
-
-    const year =
-        now.getFullYear();
-
-    const month =
-        String(now.getMonth() + 1)
-        .padStart(2, "0");
-
-    const day =
-        String(now.getDate())
-        .padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-
-}
-
-
-/* =========================
-   ADD PLANNER TASK
-========================= */
-
-function addTask(){
-
-    const taskInput =
-        document.getElementById("taskInput");
-
-    const taskSubject =
-        document.getElementById("taskSubject");
-
-    const taskDate =
-        document.getElementById("taskDate");
-
-    const taskStartTime =
-        document.getElementById("taskStartTime");
-
-    const taskEndTime =
-        document.getElementById("taskEndTime");
-
-    const taskPriority =
-        document.getElementById("taskPriority");
-
-
-    const task =
-        taskInput?.value.trim();
+function addPlannerTask(){
 
     const subject =
-        taskSubject?.value;
+        document.getElementById(
+            "plannerSubject"
+        ).value;
+
+    const task =
+        document.getElementById(
+            "plannerTask"
+        ).value.trim();
 
     const date =
-        taskDate?.value;
+        document.getElementById(
+            "plannerDate"
+        ).value;
 
-    const startTime =
-        taskStartTime?.value;
-
-    const endTime =
-        taskEndTime?.value;
-
-    const priority =
-        taskPriority?.value;
-
-
-    if(!task){
-
-        alert("Please enter a study task.");
-
-        return;
-
-    }
-
-
-    if(!subject){
-
-        alert("Please choose a subject.");
-
-        return;
-
-    }
-
-
-    if(!date){
-
-        alert("Please choose a date.");
-
-        return;
-
-    }
-
-
-    if(!startTime){
-
-        alert("Please choose a start time.");
-
-        return;
-
-    }
-
-
-    if(!endTime){
-
-        alert("Please choose an end time.");
-
-        return;
-
-    }
-
-
-    if(!priority){
-
-        alert("Please choose a priority.");
-
-        return;
-
-    }
-
-
-    if(endTime <= startTime){
+    if(!subject || !task){
 
         alert(
-            "End time must be later than start time."
+            "Please select a subject and enter a task."
         );
 
         return;
 
     }
 
-
     plannerTasks.push({
 
-        id: Date.now(),
+        id:
+            Date.now(),
 
-        task: task,
+        subject:
+            subject,
 
-        subject: subject,
+        task:
+            task,
 
-        date: date,
+        date:
+            date,
 
-        startTime: startTime,
-
-        endTime: endTime,
-
-        priority: priority,
-
-        completed: false
+        completed:
+            false
 
     });
 
-
-    savePlannerTasks();
+    savePlanner();
 
     renderPlanner();
 
-
-    if(taskInput){
-        taskInput.value = "";
-    }
-
-    if(taskSubject){
-        taskSubject.value = "";
-    }
-
-    if(taskDate){
-        taskDate.value = "";
-    }
-
-    if(taskStartTime){
-        taskStartTime.value = "";
-    }
-
-    if(taskEndTime){
-        taskEndTime.value = "";
-    }
-
-    if(taskPriority){
-        taskPriority.value = "";
-    }
-
-
-    alert("Study task added successfully.");
+    document.getElementById(
+        "plannerTask"
+    ).value = "";
 
 }
 
 
-/* =========================
-   FORMAT DATE
-========================= */
+function togglePlannerTask(id){
 
-function formatPlannerDate(dateString){
+    plannerTasks =
+        plannerTasks.map(
+            function(item){
 
-    const date =
-        new Date(dateString + "T00:00:00");
+                if(item.id === id){
 
-    return date.toLocaleDateString(
-        undefined,
-        {
-            weekday: "short",
-            day: "numeric",
-            month: "short",
-            year: "numeric"
+                    return {
+
+                        ...item,
+
+                        completed:
+                            !item.completed
+
+                    };
+
+                }
+
+                return item;
+
+            }
+        );
+
+    savePlanner();
+
+    renderPlanner();
+
+}
+
+
+function deletePlannerTask(id){
+
+    plannerTasks =
+        plannerTasks.filter(
+            function(item){
+
+                return item.id !== id;
+
+            }
+        );
+
+    savePlanner();
+
+    renderPlanner();
+
+}
+
+</script>
+
+
+<!-- =======================================================
+     PLANNER RENDERING
+     ======================================================= -->
+
+<script>
+
+function renderPlanner(){
+
+    const container =
+        document.getElementById(
+            "plannerList"
+        );
+
+    if(!container){
+        return;
+    }
+
+    if(
+        !plannerTasks ||
+        plannerTasks.length === 0
+    ){
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                <div class="empty-state-icon">
+                    📚
+                </div>
+
+                <h3>
+                    No study tasks yet
+                </h3>
+
+                <p>
+                    Add a study task to start planning your week.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML = "";
+
+    plannerTasks.forEach(
+        function(item){
+
+            const taskCard =
+                document.createElement(
+                    "div"
+                );
+
+            taskCard.className =
+                "planner-task";
+
+            if(item.completed){
+
+                taskCard.classList.add(
+                    "completed"
+                );
+
+            }
+
+            taskCard.innerHTML = `
+
+                <div class="planner-task-main">
+
+                    <div class="planner-task-check">
+
+                        <input
+                            type="checkbox"
+                            ${item.completed ? "checked" : ""}
+                            onchange="togglePlannerTask(${item.id})"
+                        >
+
+                    </div>
+
+                    <div class="planner-task-info">
+
+                        <h4>
+                            ${escapeHTML(item.subject)}
+                        </h4>
+
+                        <p>
+                            ${escapeHTML(item.task)}
+                        </p>
+
+                        ${
+                            item.date
+                            ?
+                            `<small>
+                                ${escapeHTML(item.date)}
+                            </small>`
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                </div>
+
+                <button
+                    class="delete-task"
+                    onclick="deletePlannerTask(${item.id})"
+                    aria-label="Delete task"
+                >
+                    ×
+                </button>
+
+            `;
+
+            container.appendChild(
+                taskCard
+            );
+
         }
     );
 
 }
 
 
-/* =========================
-   FORMAT TIME
-========================= */
+function escapeHTML(value){
 
-function formatPlannerTime(timeString){
+    if(
+        value === null ||
+        value === undefined
+    ){
 
-    const parts =
-        timeString.split(":");
+        return "";
 
-    let hour =
-        Number(parts[0]);
+    }
 
-    const minute =
-        parts[1];
-
-    const period =
-        hour >= 12 ? "PM" : "AM";
-
-    hour =
-        hour % 12 || 12;
-
-    return `${hour}:${minute} ${period}`;
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
 
-/* =========================
-   RENDER PLANNER
-========================= */
-
-function renderPlanner(){
-
-    const todayTaskList =
-        document.getElementById("todayTaskList");
-
-    const upcomingTaskList =
-        document.getElementById("upcomingTaskList");
-
-    const taskList =
-        document.getElementById("taskList");
-
+function clearPlanner(){
 
     if(
-        !todayTaskList ||
-        !upcomingTaskList ||
-        !taskList
+        !plannerTasks ||
+        plannerTasks.length === 0
     ){
 
         return;
 
     }
 
-
-    const today =
-        getTodayDate();
-
-
-    const todayTasks =
-        plannerTasks.filter(function(task){
-
-            return task.date === today;
-
-        });
-
-
-    const upcomingTasks =
-        plannerTasks.filter(function(task){
-
-            return task.date > today;
-
-        });
-
-
-    if(todayTasks.length === 0){
-
-        todayTaskList.innerHTML = `
-            <p class="empty-message">
-                No study sessions planned for today.
-            </p>
-        `;
-
-    }else{
-
-        todayTasks.sort(function(a,b){
-
-            return a.startTime.localeCompare(
-                b.startTime
-            );
-
-        });
-
-        todayTaskList.innerHTML =
-            todayTasks
-                .map(createPlannerTaskHTML)
-                .join("");
-
-    }
-
-
-    if(upcomingTasks.length === 0){
-
-        upcomingTaskList.innerHTML = `
-            <p class="empty-message">
-                No upcoming study sessions.
-            </p>
-        `;
-
-    }else{
-
-        upcomingTasks.sort(function(a,b){
-
-            return (
-                a.date + a.startTime
-            ).localeCompare(
-                b.date + b.startTime
-            );
-
-        });
-
-        upcomingTaskList.innerHTML =
-            upcomingTasks
-                .map(createPlannerTaskHTML)
-                .join("");
-
-    }
-
-
-    if(plannerTasks.length === 0){
-
-        taskList.innerHTML = `
-            <p class="empty-message">
-                No tasks added yet.
-            </p>
-        `;
-
-    }else{
-
-        const allTasks =
-            plannerTasks.slice().sort(function(a,b){
-
-                return (
-                    a.date + a.startTime
-                ).localeCompare(
-                    b.date + b.startTime
-                );
-
-            });
-
-        taskList.innerHTML =
-            allTasks
-                .map(createPlannerTaskHTML)
-                .join("");
-
-    }
-
-}
-
-
-/* =========================
-   TASK HTML
-========================= */
-
-function createPlannerTaskHTML(task){
-
-    const completedClass =
-        task.completed
-        ? " planner-task-completed"
-        : "";
-
-
-    const buttonText =
-        task.completed
-        ? "Completed"
-        : "Mark Complete";
-
-
-    return `
-
-        <div
-            class="planner-task${completedClass}"
-            data-task-id="${task.id}">
-
-            <div>
-
-                <strong>
-                    ${escapePlannerText(task.task)}
-                </strong>
-
-                <p>
-                    ${escapePlannerText(task.subject)}
-                </p>
-
-                <p>
-                    ${formatPlannerDate(task.date)}
-                    •
-                    ${formatPlannerTime(task.startTime)}
-                    -
-                    ${formatPlannerTime(task.endTime)}
-                </p>
-
-                <p>
-                    Priority:
-                    ${escapePlannerText(task.priority)}
-                </p>
-
-            </div>
-
-            <div>
-
-                <button
-                    class="study-button"
-                    onclick="togglePlannerTask(${task.id})">
-
-                    ${buttonText}
-
-                </button>
-
-                <button
-                    class="study-button"
-                    onclick="deletePlannerTask(${task.id})">
-
-                    Delete
-
-                </button>
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-
-/* =========================
-   TOGGLE TASK
-========================= */
-
-function togglePlannerTask(id){
-
-    const task =
-        plannerTasks.find(function(item){
-
-            return item.id === id;
-
-        });
-
-
-    if(!task){
-
-        return;
-
-    }
-
-
-    task.completed =
-        !task.completed;
-
-
-    savePlannerTasks();
-
-    renderPlanner();
-
-    updateProgress();
-
-}
-
-
-/* =========================
-   DELETE TASK
-========================= */
-
-function deletePlannerTask(id){
-
     const confirmed =
         confirm(
-            "Delete this study task?"
+            "Clear all planner tasks?"
         );
-
 
     if(!confirmed){
 
@@ -2540,119 +2723,164 @@ function deletePlannerTask(id){
 
     }
 
+    plannerTasks = [];
 
-    plannerTasks =
-        plannerTasks.filter(function(task){
-
-            return task.id !== id;
-
-        });
-
-
-    savePlannerTasks();
+    savePlanner();
 
     renderPlanner();
 
-    updateProgress();
+}
+
+</script>
+
+
+<!-- =======================================================
+     PLANNER PROGRESS
+     ======================================================= -->
+
+<script>
+
+function getPlannerCompletedCount(){
+
+    if(!Array.isArray(plannerTasks)){
+
+        return 0;
+
+    }
+
+    return plannerTasks.filter(
+        function(item){
+
+            return item.completed === true;
+
+        }
+    ).length;
 
 }
 
 
-/* =========================
-   ESCAPE TEXT
-========================= */
+function getPlannerTotalCount(){
+
+    if(!Array.isArray(plannerTasks)){
+
+        return 0;
+
+    }
+
+    return plannerTasks.length;
 
 }
 
 
-/* =========================
-   LOAD PLANNER
-========================= */
+function getPlannerProgress(){
 
-renderPlanner();
+    const total =
+        getPlannerTotalCount();
 
-    /* =========================
-   KRON AI WEEKLY TARGET
-   ========================= */
+    const completed =
+        getPlannerCompletedCount();
 
-const WEEKLY_TARGET_STORAGE_KEY = "KRON_WEEKLY_TARGET";
+    if(total === 0){
 
-let currentWeeklyTarget = null;
+        return 0;
+
+    }
+
+    return Math.round(
+        (completed / total) * 100
+    );
+
+}
 
 
-/* =========================
-   GET WEEK KEY
-   ========================= */
+function getWeeklyPlannerData(){
+
+    const total =
+        getPlannerTotalCount();
+
+    const completed =
+        getPlannerCompletedCount();
+
+    return {
+
+        total:
+            total,
+
+        completed:
+            completed,
+
+        remaining:
+            Math.max(
+                total - completed,
+                0
+            ),
+
+        progress:
+            getPlannerProgress()
+
+    };
+
+}
+
 
 function getWeeklyTargetKey(){
 
-    const now = new Date();
+    const now =
+        new Date();
 
     const year =
         now.getFullYear();
 
-    const firstDay =
-        new Date(year, 0, 1);
+    const weekStart =
+        new Date(now);
 
-    const days =
-        Math.floor(
-            (now - firstDay) /
-            (24 * 60 * 60 * 1000)
+    const day =
+        weekStart.getDay();
+
+    const difference =
+        day === 0
+            ? 6
+            : day - 1;
+
+    weekStart.setDate(
+        weekStart.getDate() -
+        difference
+    );
+
+    const month =
+        String(
+            weekStart.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
         );
 
-    const week =
-        Math.ceil(
-            (days + firstDay.getDay() + 1) / 7
+    const date =
+        String(
+            weekStart.getDate()
+        ).padStart(
+            2,
+            "0"
         );
 
-    return year + "-W" + week;
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        date
+    );
 
 }
 
-
-/* =========================
-   KRON AI WEEKLY TARGET
-   ========================= */
-
-const WEEKLY_TARGET_STORAGE_KEY =
-    "KRON_WEEKLY_TARGET";
-
-let currentWeeklyTarget = null;
+</script>
 
 
-/* =========================
-   GET WEEK KEY
-   ========================= */
+<!-- =======================================================
+     WEEKLY TARGET
+     ======================================================= -->
 
-function getWeeklyTargetKey(){
-
-    const now = new Date();
-
-    const year =
-        now.getFullYear();
-
-    const firstDay =
-        new Date(year, 0, 1);
-
-    const days =
-        Math.floor(
-            (now - firstDay) /
-            (24 * 60 * 60 * 1000)
-        );
-
-    const week =
-        Math.ceil(
-            (days + firstDay.getDay() + 1) / 7
-        );
-
-    return year + "-W" + week;
-
-}
-
-
-/* =========================
-   LOAD WEEKLY TARGET
-   ========================= */
+<script>
 
 function loadWeeklyTarget(){
 
@@ -2663,9 +2891,12 @@ function loadWeeklyTarget(){
 
     if(!saved){
 
-        currentWeeklyTarget = null;
+        currentWeeklyTarget =
+            null;
 
-        return null;
+        renderWeeklyTarget();
+
+        return;
 
     }
 
@@ -2674,292 +2905,174 @@ function loadWeeklyTarget(){
         currentWeeklyTarget =
             JSON.parse(saved);
 
-        return currentWeeklyTarget;
-
     }catch(error){
 
-        console.error(
-            "KRON WEEKLY TARGET ERROR:",
-            error
-        );
-
-        currentWeeklyTarget = null;
-
-        return null;
+        currentWeeklyTarget =
+            null;
 
     }
 
+    if(
+        currentWeeklyTarget &&
+        currentWeeklyTarget.weekKey !==
+            getWeeklyTargetKey()
+    ){
+
+        currentWeeklyTarget =
+            null;
+
+        localStorage.removeItem(
+            WEEKLY_TARGET_STORAGE_KEY
+        );
+
+    }
+
+    renderWeeklyTarget();
+
 }
 
 
-/* =========================
-   SAVE WEEKLY TARGET
-   ========================= */
+function saveWeeklyTarget(){
 
-function saveWeeklyTarget(target){
+    if(!currentWeeklyTarget){
 
-    currentWeeklyTarget =
-        target;
+        return;
+
+    }
+
+    currentWeeklyTarget.weekKey =
+        getWeeklyTargetKey();
 
     localStorage.setItem(
         WEEKLY_TARGET_STORAGE_KEY,
-        JSON.stringify(target)
+        JSON.stringify(
+            currentWeeklyTarget
+        )
     );
 
 }
 
 
-/* =========================
-   GET STUDY DATA
-   ========================= */
-
 function getWeeklyStudyData(){
 
-    const quizResults =
-        JSON.parse(
-            localStorage.getItem(
-                "KRON_QUIZ_RESULTS"
-            ) || "[]"
+    const quizData =
+        localStorage.getItem(
+            QUIZ_STORAGE_KEY
         );
 
+    let quizCount =
+        0;
 
-    const tasks =
-        JSON.parse(
-            localStorage.getItem(
-                "KRON_TASKS"
-            ) || "[]"
-        );
+    if(quizData){
 
+        try{
 
-    const notes =
-        JSON.parse(
-            localStorage.getItem(
-                "KRON_NOTES"
-            ) || "[]"
-        );
-
-
-    const recentQuizzes =
-        quizResults
-            .slice(-10)
-            .map(function(quiz){
-
-                return {
-
-                    subject:
-                        quiz.subject || "",
-
-                    level:
-                        quiz.level || "",
-
-                    term:
-                        quiz.term || "",
-
-                    score:
-                        quiz.score || 0,
-
-                    total:
-                        quiz.total || 0,
-
-                    percentage:
-                        quiz.percentage || 0,
-
-                    date:
-                        quiz.date || ""
-
-                };
-
-            });
-
-
-    const completedTasks =
-        tasks.filter(
-            function(task){
-
-                return task.completed;
-
-            }
-        ).length;
-
-
-    const remainingTasks =
-        Math.max(
-            tasks.length -
-            completedTasks,
-            0
-        );
-
-
-    const totalQuizScore =
-        quizResults.reduce(
-            function(total, quiz){
-
-                return total +
-                    Number(
-                        quiz.percentage || 0
-                    );
-
-            },
-            0
-        );
-
-
-    const averageQuizScore =
-        quizResults.length > 0
-            ? Math.round(
-                totalQuizScore /
-                quizResults.length
-            )
-            : 0;
-
-
-    const noteSubjects = [];
-
-
-    notes.forEach(
-        function(note){
-
-            const subject =
-                note.subject ||
-                note.topic ||
-                "";
-
+            const parsedQuiz =
+                JSON.parse(
+                    quizData
+                );
 
             if(
-                subject &&
-                !noteSubjects.includes(
-                    subject
+                parsedQuiz &&
+                Array.isArray(
+                    parsedQuiz.questions
                 )
             ){
 
-                noteSubjects.push(
-                    subject
-                );
+                quizCount =
+                    parsedQuiz.questions.length;
 
             }
 
+        }catch(error){
+
+            quizCount =
+                0;
+
         }
-    );
 
+    }
 
-    const levelElement =
-        document.getElementById(
-            "quizLevel"
+    const plannerData =
+        getWeeklyPlannerData();
+
+    const notesData =
+        localStorage.getItem(
+            "KRON_NOTES"
         );
 
+    let notesCount =
+        0;
 
-    const termElement =
-        document.getElementById(
-            "quizTerm"
-        );
+    if(notesData){
 
+        try{
 
-    const level =
-        levelElement?.value ||
-        localStorage.getItem(
-            "KRON_STUDENT_LEVEL"
-        ) ||
-        "Unknown";
+            const parsedNotes =
+                JSON.parse(
+                    notesData
+                );
 
+            if(
+                Array.isArray(
+                    parsedNotes
+                )
+            ){
 
-    const term =
-        termElement?.value ||
-        localStorage.getItem(
-            "KRON_STUDENT_TERM"
-        ) ||
-        "Not specified";
+                notesCount =
+                    parsedNotes.length;
 
+            }
+
+        }catch(error){
+
+            notesCount =
+                0;
+
+        }
+
+    }
 
     return {
 
-        level:
-            level,
+        quizzes:
+            quizCount,
 
-        term:
-            term,
+        tasks:
+            plannerData.completed,
 
-        recentQuizzes:
-            recentQuizzes,
+        plannerTotal:
+            plannerData.total,
 
-        quizSummary: {
-
-            total:
-                quizResults.length,
-
-            averageScore:
-                averageQuizScore
-
-        },
-
-        planner: {
-
-            total:
-                tasks.length,
-
-            completed:
-                completedTasks,
-
-            remaining:
-                remainingTasks
-
-        },
-
-        notes: {
-
-            total:
-                notes.length,
-
-            subjects:
-                noteSubjects
-
-        }
+        notes:
+            notesCount
 
     };
 
 }
 
 
-/* =========================
-   GENERATE AI TARGET
-   ========================= */
-
 async function generateWeeklyTarget(){
 
-    const container =
+    const button =
         document.getElementById(
-            "weeklyTargetContent"
+            "generateTargetButton"
         );
 
+    if(button){
 
-    if(!container){
+        button.disabled =
+            true;
 
-        return;
+        button.textContent =
+            "Generating...";
 
     }
 
-
-    container.innerHTML = `
-
-        <div class="quiz-feedback">
-
-            <div class="quiz-answer">
-                Creating your weekly target...
-            </div>
-
-            <p class="quiz-explanation">
-                KRON AI is analyzing your study activity.
-            </p>
-
-        </div>
-
-    `;
-
-
-    const studyData =
-        getWeeklyStudyData();
-
-
     try{
+
+        const studyData =
+            getWeeklyStudyData();
 
         const response =
             await fetch(
@@ -2988,20 +3101,16 @@ async function generateWeeklyTarget(){
                 }
             );
 
-
-        const data =
-            await response.json();
-
-
         if(!response.ok){
 
             throw new Error(
-                data?.error ||
-                "Weekly target generation failed."
+                "Weekly target request failed."
             );
 
         }
 
+        const data =
+            await response.json();
 
         if(
             !data ||
@@ -3009,933 +3118,574 @@ async function generateWeeklyTarget(){
         ){
 
             throw new Error(
-                "No weekly target was returned."
+                "Invalid weekly target response."
             );
 
         }
 
+        currentWeeklyTarget = {
 
-        const target = {
-
-            week:
+            weekKey:
                 getWeeklyTargetKey(),
-
-            generatedAt:
-                new Date().toISOString(),
 
             target:
                 data.target,
 
-            completed:
-                0
+            generatedAt:
+                new Date().toISOString()
 
         };
 
-
-        saveWeeklyTarget(
-            target
-        );
-
+        saveWeeklyTarget();
 
         renderWeeklyTarget();
-
 
     }catch(error){
 
         console.error(
-            "KRON WEEKLY TARGET ERROR:",
+            "Weekly target error:",
             error
         );
 
+        alert(
+            "Could not generate your weekly target. Please check your connection and try again."
+        );
 
-        container.innerHTML = `
+    }finally{
 
-            <div class="quiz-feedback">
+        if(button){
 
-                <div class="quiz-answer">
-                    Unable to create weekly target
-                </div>
+            button.disabled =
+                false;
 
-                <p class="quiz-explanation">
-                    ${error.message ||
-                    "Please try again."}
-                </p>
+            button.textContent =
+                "Generate New Target";
 
-                <button
-                    class="study-button"
-                    onclick="generateWeeklyTarget()">
-
-                    Try Again
-
-                </button>
-
-            </div>
-
-        `;
+        }
 
     }
 
 }
 
+</script>
 
-/* =========================
-   RENDER WEEKLY TARGET
-   ========================= */
 
-function renderWeeklyTarget(){
+<!-- =======================================================
+     PLANNER PROGRESS DISPLAY
+     ======================================================= -->
 
-    const container =
+<script>
+
+function updatePlannerProgressDisplay(){
+
+    const data =
+        getWeeklyPlannerData();
+
+    const progressBar =
         document.getElementById(
-            "weeklyTargetContent"
+            "plannerProgressBar"
         );
 
+    const progressText =
+        document.getElementById(
+            "plannerProgressText"
+        );
 
-    if(!container){
+    const plannerCompleted =
+        document.getElementById(
+            "plannerCompleted"
+        );
 
-        return;
+    const plannerRemaining =
+        document.getElementById(
+            "plannerRemaining"
+        );
+
+    if(progressBar){
+
+        progressBar.style.width =
+            data.progress + "%";
 
     }
 
+    if(progressText){
 
-    const target =
-        loadWeeklyTarget();
-
-
-    if(!target){
-
-        container.innerHTML = `
-
-            <div class="weekly-target-empty">
-
-                <p>
-                    No weekly target has been created yet.
-                </p>
-
-                <button
-                    class="study-button"
-                    onclick="generateWeeklyTarget()">
-
-                    Generate My Weekly Target
-
-                </button>
-
-            </div>
-
-        `;
-
-        return;
+        progressText.textContent =
+            data.progress + "%";
 
     }
 
+    if(plannerCompleted){
 
-    const totalTarget =
-        Number(
-            target.target?.total || 0
-        );
+        plannerCompleted.textContent =
+            data.completed;
 
+    }
 
-    const quizzes =
-        Number(
-            target.target?.quizzes || 0
-        );
+    if(plannerRemaining){
 
+        plannerRemaining.textContent =
+            data.remaining;
 
-    const tasks =
-        Number(
-            target.target?.tasks || 0
-        );
-
-
-    const notesCount =
-        Number(
-            target.target?.notes || 0
-        );
-
-
-    container.innerHTML = `
-
-        <div class="weekly-target-card">
-
-            <div class="weekly-target-header">
-
-                <div>
-
-                    <h3>
-                        This Week's Target
-                    </h3>
-
-                    <p>
-                        AI-generated by KRON
-                    </p>
-
-                </div>
-
-                <strong>
-                    ${totalTarget}
-                </strong>
-
-            </div>
-
-
-            <div class="weekly-target-stats">
-
-                <div>
-
-                    <strong>
-                        ${quizzes}
-                    </strong>
-
-                    <span>
-                        Quizzes
-                    </span>
-
-                </div>
-
-
-                <div>
-
-                    <strong>
-                        ${tasks}
-                    </strong>
-
-                    <span>
-                        Planner
-                    </span>
-
-                </div>
-
-
-                <div>
-
-                    <strong>
-                        ${notesCount}
-                    </strong>
-
-                    <span>
-                        Notes
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="weekly-target-details">
-
-                ${
-                    Array.isArray(
-                        target.target?.focusSubjects
-                    )
-                    ?
-                    target.target.focusSubjects
-                        .map(function(subject){
-
-                            return `
-                                <p>
-                                    Focus:
-                                    ${subject}
-                                </p>
-                            `;
-
-                        })
-                        .join("")
-                    :
-                    ""
-                }
-
-
-                ${
-                    Array.isArray(
-                        target.target?.recommendations
-                    )
-                    ?
-                    target.target.recommendations
-                        .map(function(item){
-
-                            return `
-                                <p>
-                                    ${item}
-                                </p>
-                            `;
-
-                        })
-                        .join("")
-                    :
-                    ""
-                }
-
-
-                ${
-                    target.target?.reason
-                    ?
-                    `
-                        <p>
-                            ${target.target.reason}
-                        </p>
-                    `
-                    :
-                    ""
-                }
-
-            </div>
-
-
-            <button
-                class="study-button"
-                onclick="generateWeeklyTarget()">
-
-                Generate New Target
-
-            </button>
-
-        </div>
-
-    `;
+    }
 
 }
 
-
-/* =========================
-   CHECK WEEK
-   ========================= */
-
-function checkWeeklyTarget(){
-
-    const saved =
-        loadWeeklyTarget();
+</script>
 
 
-    if(!saved){
+<!-- =======================================================
+     AUTO-UPDATE PLANNER PROGRESS
+     ======================================================= -->
 
-        renderWeeklyTarget();
+<script>
 
-        return;
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        updatePlannerProgressDisplay();
 
     }
+);
 
 
-    const currentWeek =
-        getWeeklyTargetKey();
+function refreshPlannerProgress(){
 
+    try{
 
-    if(
-        saved.week !==
-        currentWeek
-    ){
+        updatePlannerProgressDisplay();
 
-        localStorage.removeItem(
-            WEEKLY_TARGET_STORAGE_KEY
+    }catch(error){
+
+        console.log(
+            "Planner progress update error:",
+            error
         );
 
-        currentWeeklyTarget =
-            null;
-
     }
-
-
-    renderWeeklyTarget();
 
 }
 
-
-checkWeeklyTarget();
-    
-    /* =========================
-   KRON QUIZ SYSTEM
-   ========================= */
-
-const QUIZ_STORAGE_KEY = "KRON_ACTIVE_QUIZ";
-const QUIZ_RECOVERY_TIME = 5 * 60 * 1000;
-
-let currentQuizQuestions = [];
-let currentQuizIndex = 0;
-let quizScore = 0;
-let quizPaused = false;
-let quizPauseAction = null;
-let pendingWrittenAnswer = "";
+</script>
 
 
-/* =========================
-   SUBJECT LIST
-   ========================= */
+<!-- =======================================================
+     PLANNER SAVE + PROGRESS REFRESH
+     ======================================================= -->
 
-const WAEC_SUBJECTS = [
-    "English Language",
-    "Mathematics",
-    "Biology",
-    "Chemistry",
-    "Physics",
-    "Agricultural Science",
-    "Economics",
-    "Government",
-    "Geography",
-    "Commerce",
-    "Financial Accounting",
-    "Marketing",
-    "Christian Religious Studies",
-    "Islamic Studies",
-    "Literature in English",
-    "Civic Education",
-    "Data Processing",
-    "Computer Studies",
-    "Office Practice",
-    "Insurance",
-    "Store Management",
-    "Animal Husbandry",
-    "Fishery",
-    "Further Mathematics",
-    "Technical Drawing",
-    "Basic Electricity",
-    "Basic Technology",
-    "Building Construction",
-    "Auto Mechanics",
-    "Woodwork",
-    "Metalwork",
-    "Visual Art",
-    "Music",
-    "French",
-    "Yoruba",
-    "Igbo",
-    "Hausa",
-    "Home Management",
-    "Food and Nutrition",
-    "Clothing and Textiles",
-    "Physical Education"
-];
+<script>
+
+function savePlannerProgress(){
+
+    try{
+
+        if(
+            typeof savePlannerData ===
+            "function"
+        ){
+
+            savePlannerData();
+
+        }
+
+        if(
+            typeof updateProgress ===
+            "function"
+        ){
+
+            updateProgress();
+
+        }
+
+        if(
+            typeof refreshPlannerProgress ===
+            "function"
+        ){
+
+            refreshPlannerProgress();
+
+        }
+
+    }catch(error){
+
+        console.log(
+            "Planner save error:",
+            error
+        );
+
+    }
+
+}
+
+</script>
 
 
-/* =========================
-   UPDATE TERM
-========================= */
+<!-- =======================================================
+     PLANNER PROGRESS EVENTS
+     ======================================================= -->
+
+<script>
+
+document.addEventListener(
+    "click",
+    function(e){
+
+        if(
+            e.target.matches(
+                ".planner-check"
+            ) ||
+            e.target.matches(
+                ".planner-checkbox"
+            ) ||
+            e.target.closest(
+                ".planner-check"
+            ) ||
+            e.target.closest(
+                ".planner-checkbox"
+            )
+        ){
+
+            setTimeout(
+                function(){
+
+                    refreshPlannerProgress();
+
+                },
+                100
+            );
+
+        }
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     KRON QUIZ SYSTEM
+     ======================================================= -->
+
+<script>
+
+const QUIZ_STORAGE_KEY =
+    "KRON_ACTIVE_QUIZ";
+
+const QUIZ_RECOVERY_TIME =
+    5 * 60 * 1000;
+
+let currentQuizQuestions =
+    [];
+
+let currentQuizIndex =
+    0;
+
+let quizScore =
+    0;
+
+let quizPaused =
+    false;
+
+let quizStartedAt =
+    null;
+
+let quizFinished =
+    false;
+
+let selectedQuizAnswer =
+    null;
+
+let quizAnswerLocked =
+    false;
+
+
+/* =======================================================
+   QUIZ LEVEL / TERM
+   ======================================================= */
 
 function updateQuizTerms(){
 
     const level =
-        document.getElementById("quizLevel");
+        document.getElementById(
+            "quizLevel"
+        );
 
-    const termContainer =
-        document.getElementById("quizTermContainer");
+    const termGroup =
+        document.getElementById(
+            "quizTermGroup"
+        );
 
-    if(!level || !termContainer){
+    const termSelect =
+        document.getElementById(
+            "quizTerm"
+        );
+
+    if(!level){
+
         return;
+
     }
 
-    if(level.value === "WAEC"){
+    if(
+        level.value ===
+        "WAEC"
+    ){
 
-        termContainer.style.display = "none";
+        if(termGroup){
+
+            termGroup.style.display =
+                "none";
+
+        }
+
+        if(termSelect){
+
+            termSelect.value =
+                "";
+
+        }
 
     }else{
 
-        termContainer.style.display = "block";
+        if(termGroup){
+
+            termGroup.style.display =
+                "block";
+
+        }
 
     }
 
     updateQuizSubjects();
 
-          }
-   
+}
 
-/* =========================
-   UPDATE SUBJECTS
-   ========================= */
+
+/* =======================================================
+   QUIZ SUBJECTS
+   ======================================================= */
 
 function updateQuizSubjects(){
 
     const subjectSelect =
-        document.getElementById("quizSubject");
+        document.getElementById(
+            "quizSubject"
+        );
 
     if(!subjectSelect){
+
         return;
+
     }
 
     subjectSelect.innerHTML =
-        '<option value="">Choose a subject</option>';
+        '<option value="">Select subject</option>';
 
-    WAEC_SUBJECTS.forEach(function(subject){
+    if(
+        typeof WAEC_SUBJECTS ===
+        "undefined"
+    ){
 
-        const option =
-            document.createElement("option");
+        return;
 
-        option.value = subject;
+    }
 
-        option.textContent = subject;
+    WAEC_SUBJECTS.forEach(
+        function(subject){
 
-        subjectSelect.appendChild(option);
+            const option =
+                document.createElement(
+                    "option"
+                );
 
-    });
+            option.value =
+                subject;
+
+            option.textContent =
+                subject;
+
+            subjectSelect.appendChild(
+                option
+            );
+
+        }
+    );
 
 }
 
 
-/* =========================
-   LOAD SUBJECTS
-   ========================= */
+/* =======================================================
+   QUIZ SETUP VALIDATION
+   ======================================================= */
 
-updateQuizSubjects();
-/* =========================
-   QUIZ CONNECTION CHECK
-   ========================= */
+function getQuizSetup(){
 
-async function checkQuizConnection(){
+    const level =
+        document.getElementById(
+            "quizLevel"
+        );
 
-    return navigator.onLine;
+    const term =
+        document.getElementById(
+            "quizTerm"
+        );
 
-}
+    const subject =
+        document.getElementById(
+            "quizSubject"
+        );
 
+    const count =
+        document.getElementById(
+            "quizCount"
+        );
 
-/* =========================
-   SAVE TEMPORARY QUIZ
-   ========================= */
+    if(!level || !subject || !count){
 
-function saveQuizSession(){
+        return null;
 
-    const state = {
+    }
 
-        questions:currentQuizQuestions,
+    if(!level.value){
 
-        index:currentQuizIndex,
+        alert(
+            "Please select your level."
+        );
 
-        score:quizScore,
+        return null;
+
+    }
+
+    if(
+        level.value !== "WAEC" &&
+        (!term || !term.value)
+    ){
+
+        alert(
+            "Please select your term."
+        );
+
+        return null;
+
+    }
+
+    if(!subject.value){
+
+        alert(
+            "Please select your subject."
+        );
+
+        return null;
+
+    }
+
+    return {
 
         level:
-            document.getElementById("quizLevel")?.value || "",
+            level.value,
 
         term:
-            document.getElementById("quizTerm")?.value || "",
+            term
+            ? term.value
+            : "",
 
         subject:
-            document.getElementById("quizSubject")?.value || "",
+            subject.value,
 
         count:
-            document.getElementById("quizCount")?.value || "",
-
-        pendingWrittenAnswer:
-            pendingWrittenAnswer,
-
-        paused:
-            quizPaused,
-
-        pauseTime:
-            quizPaused ? Date.now() : null,
-
-        pauseAction:
-            quizPauseAction
+            Number(
+                count.value
+            ) || 5
 
     };
 
-    sessionStorage.setItem(
-        QUIZ_STORAGE_KEY,
-        JSON.stringify(state)
-    );
-
 }
 
-
-/* =========================
-   CLEAR QUIZ SESSION
-   ========================= */
-
-function clearQuizSession(){
-
-    sessionStorage.removeItem(
-        QUIZ_STORAGE_KEY
-    );
-
-    currentQuizQuestions = [];
-
-    currentQuizIndex = 0;
-
-    quizScore = 0;
-
-    quizPaused = false;
-
-    quizPauseAction = null;
-
-    pendingWrittenAnswer = "";
-
-}
-
-
-/* =========================
-   CONNECTION LOST
-   ========================= */
-
-function showQuizConnectionError(action){
-
-    quizPaused = true;
-
-    quizPauseAction = action;
-
-    saveQuizSession();
-
-    const quizArea =
-        document.getElementById("quizArea");
-
-    if(!quizArea){
-        return;
-    }
-
-    quizArea.innerHTML = `
-
-        <div class="quiz-feedback">
-
-            <div class="quiz-answer">
-                Connection lost
-            </div>
-
-            <p class="quiz-explanation">
-                Your quiz is temporarily saved.
-                You are still on Question
-                ${currentQuizIndex + 1}.
-            </p>
-
-            <button
-                class="study-button quiz-next"
-                onclick="retryQuizConnection()">
-
-                Retry
-
-            </button>
-
-        </div>
-
-    `;
-
-}
-
-
-/* =========================
-   RETRY QUIZ CONNECTION
-   ========================= */
-
-async function retryQuizConnection(){
-
-    const quizArea =
-        document.getElementById("quizArea");
-
-    if(quizArea){
-
-        quizArea.innerHTML = `
-
-           uiz-feedback">
-
-                <div class="quiz-answer">
-                    Checking connection...
-                </div>
-
-                <p class="quiz-explanation">
-                    Please wait.
-                </p>
-
-            </div>
-
-        `;
-
-    }
-
-    const saved =
-        sessionStorage.getItem(
-            QUIZ_STORAGE_KEY
-        );
-
-    if(!saved){
-
-        clearQuizSession();
-
-        if(quizArea){
-
-            quizArea.innerHTML = `
-
-                <div class="quiz-feedback">
-
-                    <div class="quiz-answer">
-                        Quiz session expired
-                    </div>
-
-                    <p class="quiz-explanation">
-                        Please start the quiz again.
-                    </p>
-
-                </div>
-
-            `;
-
-        }
-
-        return;
-
-    }
-
-    const state =
-        JSON.parse(saved);
-
-    if(
-        state.pauseTime &&
-        Date.now() - state.pauseTime >
-        QUIZ_RECOVERY_TIME
-    ){
-
-        clearQuizSession();
-
-        if(quizArea){
-
-            quizArea.innerHTML = `
-
-                <div class="quiz-feedback">
-
-                    <div class="quiz-answer">
-                        Recovery time expired
-                    </div>
-
-                    <p class="quiz-explanation">
-                        The 5-minute recovery period
-                        has expired. Please start again.
-                    </p>
-
-                </div>
-
-            `;
-
-        }
-
-        return;
-
-    }
-
-    const online =
-        await checkQuizConnection();
-
-    if(!online){
-
-        showQuizConnectionError(
-            state.pauseAction
-        );
-
-        return;
-
-    }
-
-    currentQuizQuestions =
-        state.questions || [];
-
-    currentQuizIndex =
-        state.index || 0;
-
-    quizScore =
-        state.score || 0;
-
-    pendingWrittenAnswer =
-        state.pendingWrittenAnswer || "";
-
-    quizPaused = false;
-
-    quizPauseAction = null;
-
-    saveQuizSession();
-
-    renderQuizQuestion();
-
-    }
-
-/* =========================
-   START QUIZ
-   ========================= */
+</script>
+<!-- =======================================================
+     QUIZ GENERATION
+     ======================================================= -->
+
+<script>
 
 async function startQuiz(){
 
-    const level =
-        document.getElementById("quizLevel")?.value;
+    const setup =
+        getQuizSetup();
 
-    const term =
-        document.getElementById("quizTerm")?.value;
+    if(!setup){
 
-    const subject =
-        document.getElementById("quizSubject")?.value;
+        return;
 
-    const count =
-        Number(
-            document.getElementById("quizCount")?.value
+    }
+
+    const button =
+        document.getElementById(
+            "startQuizButton"
         );
 
-    const quizArea =
-        document.getElementById("quizArea");
+    if(button){
 
+        button.disabled =
+            true;
 
-    if(!level){
-
-        alert("Please choose a class / level.");
-
-        return;
+        button.textContent =
+            "Generating Quiz...";
 
     }
-
-
-    if(level !== "WAEC" && !term){
-
-        alert("Please choose a term.");
-
-        return;
-
-    }
-
-
-    if(!subject){
-
-        alert("Please choose a subject.");
-
-        return;
-
-    }
-
-
-    if(!count || count < 1 || count > 10){
-
-        alert("Please choose between 1 and 10 questions.");
-
-        return;
-
-    }
-
-
-    if(quizArea){
-
-        quizArea.innerHTML = `
-
-            <div class="quiz-feedback">
-
-                <div class="quiz-answer">
-                    Generating your quiz...
-                </div>
-
-                <p class="quiz-explanation">
-                    Please wait.
-                </p>
-
-            </div>
-
-        `;
-
-    }
-
-
-    const online =
-        await checkQuizConnection();
-
-
-    if(!online){
-
-        if(quizArea){
-
-            quizArea.innerHTML = `
-
-                <div class="quiz-feedback">
-
-                    <div class="quiz-answer">
-                        Connection lost
-                    </div>
-
-                    <p class="quiz-explanation">
-                        Internet connection is required
-                        to generate this quiz.
-                    </p>
-
-                    <button
-                        class="study-button quiz-next"
-                        onclick="startQuiz()">
-
-                        Retry
-
-                    </button>
-
-                </div>
-
-            `;
-
-        }
-
-        return;
-
-    }
-
 
     try{
 
         const response =
-            await fetch("/api/quiz",{
+            await fetch(
+                "/api/quiz",
+                {
+                    method:
+                        "POST",
 
-                method:"POST",
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
 
-                headers:{
-                    "Content-Type":"application/json"
-                },
+                    body:
+                        JSON.stringify({
 
-                body:JSON.stringify({
+                            mode:
+                                "quiz",
 
-                    mode:"generate",
+                            level:
+                                setup.level,
 
-                    level:level,
+                            term:
+                                setup.term,
 
-                    term:
-                        level === "WAEC"
-                        ? ""
-                        : term,
+                            subject:
+                                setup.subject,
 
-                    subject:subject,
+                            count:
+                                setup.count
 
-                    count:count,
+                        })
 
-                    requireExplanation:true,
-
-                    explanationRequired:true
-
-                })
-
-            });
-
-
-        /* =========================
-           READ SERVER RESPONSE
-           ========================= */
-
-        let data = null;
-
-        try{
-
-            data =
-                await response.json();
-
-        }catch(jsonError){
-
-            data = null;
-
-        }
-
-
-        /* =========================
-           SHOW REAL SERVER ERROR
-           ========================= */
+                }
+            );
 
         if(!response.ok){
 
-            const serverError =
-                data?.error ||
-                data?.message ||
-                `Server returned ${response.status}`;
-
             throw new Error(
-                serverError
+                "Quiz request failed."
             );
 
         }
 
-
-        /* =========================
-           VALIDATE QUIZ
-           ========================= */
+        const data =
+            await response.json();
 
         if(
             !data ||
-            !Array.isArray(data.questions) ||
+            !Array.isArray(
+                data.questions
+            ) ||
             data.questions.length === 0
         ){
 
@@ -3945,258 +3695,417 @@ async function startQuiz(){
 
         }
 
-
         currentQuizQuestions =
             data.questions;
 
-        currentQuizIndex = 0;
+        currentQuizIndex =
+            0;
 
-        quizScore = 0;
+        quizScore =
+            0;
 
-        quizPaused = false;
+        quizPaused =
+            false;
 
-        pendingWrittenAnswer = "";
+        quizFinished =
+            false;
 
+        selectedQuizAnswer =
+            null;
 
-        saveQuizSession();
+        quizAnswerLocked =
+            false;
 
-        renderQuizQuestion();
+        quizStartedAt =
+            Date.now();
 
+        saveActiveQuiz();
+
+        showQuizArea();
+
+        renderCurrentQuestion();
 
     }catch(error){
 
         console.error(
-            "KRON QUIZ ERROR:",
+            "Quiz generation error:",
             error
         );
 
+        alert(
+            "Could not generate the quiz. Please check your connection and try again."
+        );
 
-        if(quizArea){
+    }finally{
 
-            quizArea.innerHTML = `
+        if(button){
 
-                <div class="quiz-feedback">
+            button.disabled =
+                false;
 
-                    <div class="quiz-answer">
-                        Unable to generate quiz
-                    </div>
-
-                    <p class="quiz-explanation">
-                        Error:
-                        ${String(
-                            error?.message ||
-                            "Unknown error"
-                        ).replace(
-                            /</g,
-                            "&lt;"
-                        ).replace(
-                            />/g,
-                            "&gt;"
-                        )}
-                    </p>
-
-                    <button
-                        class="study-button quiz-next"
-                        onclick="startQuiz()">
-
-                        Retry
-
-                    </button>
-
-                </div>
-
-            `;
+            button.textContent =
+                "Start Quiz";
 
         }
-
-    }
-
-    }
-
-/* =========================
-   RENDER QUIZ QUESTION
-   ========================= */
-
-function renderQuizQuestion(){
-
-    const quizArea =
-        document.getElementById("quizArea");
-
-
-    if(!quizArea){
-
-        return;
-
-    }
-
-
-    if(
-        !Array.isArray(currentQuizQuestions) ||
-        currentQuizQuestions.length === 0
-    ){
-
-        quizArea.innerHTML = `
-
-            <div class="quiz-feedback">
-
-                <div class="quiz-answer">
-                    No questions available
-                </div>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    if(
-        currentQuizIndex >=
-        currentQuizQuestions.length
-    ){
-
-        showQuizResult();
-
-        return;
-
-    }
-
-
-    const question =
-        currentQuizQuestions[currentQuizIndex];
-
-
-    const total =
-        currentQuizQuestions.length;
-
-
-    const options =
-        Array.isArray(question.options)
-        ? question.options
-        : [];
-
-
-    let optionsHTML = "";
-
-
-    if(options.length > 0){
-
-        optionsHTML =
-            options.map(
-                function(option,index){
-
-                    return `
-
-                        <button
-                            class="quiz-option"
-                            onclick="checkQuizAnswer(${index})">
-
-                            ${String.fromCharCode(65 + index)}.
-                            ${option}
-
-                        </button>
-
-                    `;
-
-                }
-            ).join("");
-
-    }
-
-
-    quizArea.innerHTML = `
-
-        <div class="quiz-top">
-
-            <span class="quiz-badge">
-
-                Question
-                ${currentQuizIndex + 1}
-                /
-                ${total}
-
-            </span>
-
-            <span class="quiz-badge">
-
-                Score:
-                ${quizScore}
-
-            </span>
-
-        </div>
-
-
-        <div class="quiz-question">
-
-            ${question.question || ""}
-
-        </div>
-
-
-        ${optionsHTML}
-
-
-        <div id="quizFeedback"></div>
-
-    `;
-
-
-    if(options.length === 0){
-
-        quizArea.innerHTML += `
-
-            <textarea
-                id="writtenAnswer"
-                class="study-textarea"
-                placeholder="Type your answer here..."></textarea>
-
-            <button
-                class="study-button quiz-next"
-                onclick="submitWrittenAnswer()">
-
-                Submit Answer
-
-            </button>
-
-        `;
 
     }
 
 }
 
 
-/* =========================
-   CHECK MULTIPLE CHOICE
-   ========================= */
+/* =======================================================
+   SAVE ACTIVE QUIZ
+   ======================================================= */
 
-async function checkQuizAnswer(selectedIndex){
+function saveActiveQuiz(){
 
-    if(quizPaused){
+    try{
+
+        const quizData = {
+
+            questions:
+                currentQuizQuestions,
+
+            currentIndex:
+                currentQuizIndex,
+
+            score:
+                quizScore,
+
+            paused:
+                quizPaused,
+
+            startedAt:
+                quizStartedAt,
+
+            finished:
+                quizFinished,
+
+            savedAt:
+                Date.now()
+
+        };
+
+        localStorage.setItem(
+            QUIZ_STORAGE_KEY,
+            JSON.stringify(
+                quizData
+            )
+        );
+
+    }catch(error){
+
+        console.error(
+            "Save active quiz error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =======================================================
+   LOAD ACTIVE QUIZ
+   ======================================================= */
+
+function loadActiveQuiz(){
+
+    const saved =
+        localStorage.getItem(
+            QUIZ_STORAGE_KEY
+        );
+
+    if(!saved){
+
+        return false;
+
+    }
+
+    try{
+
+        const data =
+            JSON.parse(saved);
+
+        if(
+            !data ||
+            !Array.isArray(
+                data.questions
+            ) ||
+            data.questions.length === 0
+        ){
+
+            return false;
+
+        }
+
+        currentQuizQuestions =
+            data.questions;
+
+        currentQuizIndex =
+            Number(
+                data.currentIndex
+            ) || 0;
+
+        quizScore =
+            Number(
+                data.score
+            ) || 0;
+
+        quizPaused =
+            Boolean(
+                data.paused
+            );
+
+        quizStartedAt =
+            data.startedAt ||
+            Date.now();
+
+        quizFinished =
+            Boolean(
+                data.finished
+            );
+
+        if(
+            currentQuizIndex >=
+            currentQuizQuestions.length
+        ){
+
+            currentQuizIndex =
+                currentQuizQuestions.length - 1;
+
+        }
+
+        return true;
+
+    }catch(error){
+
+        console.error(
+            "Load active quiz error:",
+            error
+        );
+
+        return false;
+
+    }
+
+}
+
+</script>
+<!-- =======================================================
+     QUIZ DISPLAY
+     ======================================================= -->
+
+<script>
+
+function showQuizArea(){
+
+    const setup =
+        document.getElementById(
+            "quizSetup"
+        );
+
+    const quizArea =
+        document.getElementById(
+            "quizArea"
+        );
+
+    const result =
+        document.getElementById(
+            "quizResult"
+        );
+
+    if(setup){
+
+        setup.style.display =
+            "none";
+
+    }
+
+    if(quizArea){
+
+        quizArea.style.display =
+            "block";
+
+    }
+
+    if(result){
+
+        result.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =======================================================
+   RENDER CURRENT QUESTION
+   ======================================================= */
+
+function renderCurrentQuestion(){
+
+    if(
+        !currentQuizQuestions ||
+        currentQuizQuestions.length === 0
+    ){
 
         return;
 
     }
-
-
-    const online =
-        await checkQuizConnection();
-
-
-    if(!online){
-
-        showQuizConnectionError("answer");
-
-        return;
-
-    }
-
 
     const question =
-        currentQuizQuestions[currentQuizIndex];
+        currentQuizQuestions[
+            currentQuizIndex
+        ];
 
+    if(!question){
+
+        finishQuiz();
+
+        return;
+
+    }
+
+    quizAnswerLocked =
+        false;
+
+    selectedQuizAnswer =
+        null;
+
+    const progress =
+        document.getElementById(
+            "quizProgress"
+        );
+
+    const questionBox =
+        document.getElementById(
+            "quizQuestion"
+        );
+
+    const optionsBox =
+        document.getElementById(
+            "quizOptions"
+        );
+
+    const nextButton =
+        document.getElementById(
+            "nextQuestionButton"
+        );
+
+
+    if(progress){
+
+        progress.textContent =
+            "Question " +
+            (
+                currentQuizIndex + 1
+            ) +
+            " of " +
+            currentQuizQuestions.length;
+
+    }
+
+
+    if(questionBox){
+
+        questionBox.textContent =
+            question.question ||
+            question.text ||
+            "Question unavailable.";
+
+    }
+
+
+    if(optionsBox){
+
+        optionsBox.innerHTML =
+            "";
+
+        const options =
+            Array.isArray(
+                question.options
+            )
+            ? question.options
+            : [];
+
+        options.forEach(
+            function(option, index){
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+                button.type =
+                    "button";
+
+                button.className =
+                    "quiz-option";
+
+                button.textContent =
+                    option;
+
+                button.dataset.index =
+                    index;
+
+                button.addEventListener(
+                    "click",
+                    function(){
+
+                        selectQuizAnswer(
+                            index
+                        );
+
+                    }
+                );
+
+                optionsBox.appendChild(
+                    button
+                );
+
+            }
+        );
+
+    }
+
+
+    if(nextButton){
+
+        nextButton.disabled =
+            true;
+
+        nextButton.textContent =
+            currentQuizIndex ===
+            currentQuizQuestions.length - 1
+            ? "Finish Quiz"
+            : "Next Question";
+
+    }
+
+    saveActiveQuiz();
+
+}
+
+
+/* =======================================================
+   SELECT ANSWER
+   ======================================================= */
+
+function selectQuizAnswer(
+    answerIndex
+){
+
+    if(quizAnswerLocked){
+
+        return;
+
+    }
+
+    const question =
+        currentQuizQuestions[
+            currentQuizIndex
+        ];
 
     if(!question){
 
@@ -4204,467 +4113,287 @@ async function checkQuizAnswer(selectedIndex){
 
     }
 
+    quizAnswerLocked =
+        true;
+
+    selectedQuizAnswer =
+        answerIndex;
+
+    const optionsBox =
+        document.getElementById(
+            "quizOptions"
+        );
+
+    if(!optionsBox){
+
+        return;
+
+    }
 
     const buttons =
-        document.querySelectorAll(".quiz-option");
-
+        optionsBox.querySelectorAll(
+            ".quiz-option"
+        );
 
     buttons.forEach(
-        function(button){
+        function(button, index){
 
-            button.disabled = true;
+            button.disabled =
+                true;
+
+            if(
+                index ===
+                answerIndex
+            ){
+
+                button.classList.add(
+                    "selected"
+                );
+
+            }
 
         }
     );
 
 
-    /* FIND THE CORRECT ANSWER */
+    const nextButton =
+        document.getElementById(
+            "nextQuestionButton"
+        );
 
-    let correctIndex =
-        question.correctIndex;
+    if(nextButton){
 
-
-    /* BACKEND USES "correct" */
-
-    if(
-        typeof correctIndex !== "number" &&
-        typeof question.correct === "number"
-    ){
-
-        correctIndex =
-            question.correct;
+        nextButton.disabled =
+            false;
 
     }
 
 
-    /* SUPPORT OTHER FORMATS */
-
     if(
-        typeof correctIndex !== "number" &&
-        typeof question.answerIndex === "number"
+        isCorrectQuizAnswer(
+            question,
+            answerIndex
+        )
     ){
-
-        correctIndex =
-            question.answerIndex;
-
-    }
-
-
-    /* IF AI RETURNED ANSWER AS TEXT */
-
-    if(
-        typeof correctIndex !== "number" &&
-        question.correctAnswer &&
-        Array.isArray(question.options)
-    ){
-
-        const answerText =
-            String(question.correctAnswer)
-            .trim()
-            .toLowerCase();
-
-
-        correctIndex =
-            question.options.findIndex(
-                function(option){
-
-                    return String(option)
-                        .trim()
-                        .toLowerCase()
-                        === answerText;
-
-                }
-            );
-
-    }
-
-
-    /* CHECK THE SELECTED ANSWER */
-
-    const isCorrect =
-        selectedIndex === correctIndex;
-
-
-    if(isCorrect){
 
         quizScore++;
 
-
-        if(buttons[selectedIndex]){
-
-            buttons[selectedIndex]
-                .classList.add("correct");
-
-        }
-
-    }else{
-
-        if(buttons[selectedIndex]){
-
-            buttons[selectedIndex]
-                .classList.add("wrong");
-
-        }
-
-
-        if(
-            correctIndex >= 0 &&
-            buttons[correctIndex]
-        ){
-
-            buttons[correctIndex]
-                .classList.add("correct");
-
-        }
-
     }
 
-
-    const correctAnswer =
-        (
-            correctIndex >= 0 &&
-            question.options?.[correctIndex]
-        ) ||
-        question.correctAnswer ||
-        question.answer ||
-        "Not provided";
-
-
-    const feedback =
-        document.getElementById("quizFeedback");
-
-
-    if(feedback){
-
-        feedback.innerHTML = `
-
-            <div class="quiz-feedback">
-
-                <div class="quiz-answer">
-
-                    ${
-                        isCorrect
-                        ? "Correct!"
-                        : "Incorrect"
-                    }
-
-                </div>
-
-
-                <p>
-
-                    <strong>
-                        Correct answer:
-                    </strong>
-
-                    ${correctAnswer}
-
-                </p>
-
-
-                <p class="quiz-explanation">
-
-                    <strong>
-                        Explanation:
-                    </strong>
-
-                    ${
-                        question.explanation ||
-                        "No explanation provided."
-                    }
-
-                </p>
-
-
-                <button
-                    class="study-button quiz-next"
-                    onclick="nextQuizQuestion()">
-
-                    ${
-                        currentQuizIndex ===
-                        currentQuizQuestions.length - 1
-                        ? "Finish Quiz"
-                        : "Next Question"
-                    }
-
-                </button>
-
-            </div>
-
-        `;
-
-    }
-
-
-    saveQuizSession();
+    saveActiveQuiz();
 
 }
 
 
-/* =========================
-   NEXT QUESTION
-   ========================= */
+/* =======================================================
+   CHECK ANSWER
+   ======================================================= */
 
-async function nextQuizQuestion(){
+function isCorrectQuizAnswer(
+    question,
+    answerIndex
+){
 
-    if(quizPaused){
+    if(
+        typeof question.correctIndex ===
+        "number"
+    ){
+
+        return (
+            answerIndex ===
+            question.correctIndex
+        );
+
+    }
+
+    if(
+        typeof question.correctAnswer ===
+        "number"
+    ){
+
+        return (
+            answerIndex ===
+            question.correctAnswer
+        );
+
+    }
+
+    if(
+        typeof question.answer ===
+        "number"
+    ){
+
+        return (
+            answerIndex ===
+            question.answer
+        );
+
+    }
+
+    return false;
+
+}
+
+</script>
+<!-- =======================================================
+     QUIZ NAVIGATION
+     ======================================================= -->
+
+<script>
+
+function nextQuestion(){
+
+    if(!quizAnswerLocked){
+
+        alert(
+            "Please select an answer first."
+        );
 
         return;
 
     }
 
+    if(
+        currentQuizIndex >=
+        currentQuizQuestions.length - 1
+    ){
 
-    const online =
-        await checkQuizConnection();
-
-
-    if(!online){
-
-        showQuizConnectionError("next");
+        finishQuiz();
 
         return;
 
     }
-
 
     currentQuizIndex++;
 
-    pendingWrittenAnswer = "";
+    selectedQuizAnswer =
+        null;
 
-    saveQuizSession();
+    quizAnswerLocked =
+        false;
 
-    renderQuizQuestion();
+    renderCurrentQuestion();
 
 }
 
 
-/* =========================
-   WRITTEN ANSWER
-   ========================= */
+function restartQuiz(){
 
-async function submitWrittenAnswer(){
+    currentQuizQuestions =
+        [];
 
-    if(quizPaused){
+    currentQuizIndex =
+        0;
 
-        return;
+    quizScore =
+        0;
 
-    }
+    quizPaused =
+        false;
 
+    quizStartedAt =
+        null;
 
-    const answerBox =
-        document.getElementById("writtenAnswer");
+    quizFinished =
+        false;
 
+    selectedQuizAnswer =
+        null;
 
-    const answer =
-        answerBox?.value.trim();
+    quizAnswerLocked =
+        false;
 
+    localStorage.removeItem(
+        QUIZ_STORAGE_KEY
+    );
 
-    if(!answer){
-
-        alert("Please enter your answer.");
-
-        return;
-
-    }
-
-
-    pendingWrittenAnswer =
-        answer;
-
-    saveQuizSession();
-
-
-    const online =
-        await checkQuizConnection();
-
-
-    if(!online){
-
-        showQuizConnectionError(
-            "submitWritten"
+    const setup =
+        document.getElementById(
+            "quizSetup"
         );
-
-        return;
-
-    }
-
-
-    const question =
-        currentQuizQuestions[currentQuizIndex];
-
-
-    const feedback =
-        document.getElementById("quizFeedback");
-
-
-    if(feedback){
-
-        feedback.innerHTML = `
-
-            <div class="quiz-feedback">
-
-                Checking your answer...
-
-            </div>
-
-        `;
-
-    }
-
-
-    try{
-
-        const response =
-            await fetch("/api/quiz",{
-
-                method:"POST",
-
-                headers:{
-                    "Content-Type":"application/json"
-                },
-
-                body:JSON.stringify({
-
-                    mode:"check",
-
-                    question:
-                        question.question,
-
-                    studentAnswer:
-                        answer,
-
-                    correctAnswer:
-                        question.correctAnswer ||
-                        question.answer,
-
-                    explanation:
-                        question.explanation
-
-                })
-
-            });
-
-
-        if(!response.ok){
-
-            throw new Error(
-                "Answer check failed."
-            );
-
-        }
-
-
-        const result =
-            await response.json();
-
-
-        if(result.correct){
-
-            quizScore++;
-
-        }
-
-
-        if(feedback){
-
-            feedback.innerHTML = `
-
-                <div class="quiz-feedback">
-
-                    <div class="quiz-answer">
-
-                        ${
-                            result.correct
-                            ? "Correct!"
-                            : "Incorrect"
-                        }
-
-                    </div>
-
-
-                    <p>
-
-                        <strong>
-                            Correct answer:
-                        </strong>
-
-                        ${
-                            result.correctAnswer ||
-                            question.correctAnswer ||
-                            question.answer ||
-                            "See explanation"
-                        }
-
-                    </p>
-
-
-                    <p class="quiz-explanation">
-
-                        <strong>
-                            Explanation:
-                        </strong>
-
-                        ${
-                            result.explanation ||
-                            question.explanation ||
-                            "No explanation provided."
-                        }
-
-                    </p>
-
-
-                    <button
-                        class="study-button quiz-next"
-                        onclick="nextQuizQuestion()">
-
-                        ${
-                            currentQuizIndex ===
-                            currentQuizQuestions.length - 1
-                            ? "Finish Quiz"
-                            : "Next Question"
-                        }
-
-                    </button>
-
-                </div>
-
-            `;
-
-        }
-
-
-        pendingWrittenAnswer = "";
-
-        saveQuizSession();
-
-
-    }catch(error){
-
-        pendingWrittenAnswer =
-            answer;
-
-        saveQuizSession();
-
-        showQuizConnectionError(
-            "submitWritten"
-        );
-
-    }
-
-}
-
-
-/* =========================
-   QUIZ RESULT
-   ========================= */
-
-function showQuizResult(){
 
     const quizArea =
-        document.getElementById("quizArea");
+        document.getElementById(
+            "quizArea"
+        );
 
-    if(!quizArea){
-        return;
+    const result =
+        document.getElementById(
+            "quizResult"
+        );
+
+    if(setup){
+
+        setup.style.display =
+            "block";
+
+    }
+
+    if(quizArea){
+
+        quizArea.style.display =
+            "none";
+
+    }
+
+    if(result){
+
+        result.style.display =
+            "none";
+
+    }
+
+    updateQuizSubjects();
+
+}
+
+
+/* =======================================================
+   FINISH QUIZ
+   ======================================================= */
+
+function finishQuiz(){
+
+    quizFinished =
+        true;
+
+    quizPaused =
+        false;
+
+    saveActiveQuiz();
+
+    const quizArea =
+        document.getElementById(
+            "quizArea"
+        );
+
+    const result =
+        document.getElementById(
+            "quizResult"
+        );
+
+    const scoreBox =
+        document.getElementById(
+            "quizScore"
+        );
+
+    const messageBox =
+        document.getElementById(
+            "quizResultMessage"
+        );
+
+    if(quizArea){
+
+        quizArea.style.display =
+            "none";
+
+    }
+
+    if(result){
+
+        result.style.display =
+            "block";
+
     }
 
     const total =
@@ -4672,134 +4401,2663 @@ function showQuizResult(){
 
     const percentage =
         total > 0
-        ? Math.round(
-            (quizScore / total) * 100
-        )
-        : 0;
+            ? Math.round(
+                (quizScore / total) * 100
+            )
+            : 0;
 
-    /* SAVE COMPLETED QUIZ */
+    if(scoreBox){
 
-    const quizResults =
-        JSON.parse(
-            localStorage.getItem("KRON_QUIZ_RESULTS") || "[]"
-        );
-
-    quizResults.push({
-
-        date: new Date().toISOString(),
-
-        level:
-            document.getElementById("quizLevel")?.value || "",
-
-        term:
-            document.getElementById("quizTerm")?.value || "",
-
-        subject:
-            document.getElementById("quizSubject")?.value || "",
-
-        score:
-            quizScore,
-
-        total:
-            total,
-
-        percentage:
-            percentage
-
-    });
-
-    localStorage.setItem(
-        "KRON_QUIZ_RESULTS",
-        JSON.stringify(quizResults)
-    );
-
-    /* UPDATE PROGRESS */
-
-    updateProgress();
-
-    quizArea.innerHTML = `
-
-        <div class="quiz-feedback">
-
-            <div class="quiz-answer">
-                Quiz Complete
-            </div>
-
-            <p>
-                Score:
-                <strong>
-                    ${quizScore} / ${total}
-                </strong>
-            </p>
-
-            <p>
-                Percentage:
-                <strong>
-                    ${percentage}%
-                </strong>
-            </p>
-
-            <button
-                class="study-button quiz-next"
-                onclick="startNewQuiz()">
-
-                Start Another Quiz
-
-            </button>
-
-        </div>
-
-    `;
-
-    clearQuizSession();
+        scoreBox.textContent =
+            quizScore +
+            " / " +
+            total +
+            " (" +
+            percentage +
+            "%)";
 
     }
 
-/* =========================
-   START ANOTHER QUIZ
-   ========================= */
+    if(messageBox){
 
-function startNewQuiz(){
+        if(percentage >= 80){
 
-    clearQuizSession();
+            messageBox.textContent =
+                "Excellent work! Keep it up.";
+
+        }else if(percentage >= 60){
+
+            messageBox.textContent =
+                "Good work. Keep practising.";
+
+        }else if(percentage >= 40){
+
+            messageBox.textContent =
+                "You're improving. Review your weak areas.";
+
+        }else{
+
+            messageBox.textContent =
+                "Keep studying and try the quiz again.";
+
+        }
+
+    }
+
+    saveQuizResult();
+
+}
 
 
-    const quizArea =
-        document.getElementById("quizArea");
+/* =======================================================
+   SAVE QUIZ RESULT
+   ======================================================= */
 
+function saveQuizResult(){
 
-    if(quizArea){
+    try{
 
-        quizArea.innerHTML = `
+        const savedResults =
+            localStorage.getItem(
+                "KRON_QUIZ_RESULTS"
+            );
 
-            <p class="empty-message">
+        let results =
+            [];
 
-                Choose your class, term and subject
-                to start a quiz.
+        if(savedResults){
 
-            </p>
+            try{
 
-        `;
+                const parsed =
+                    JSON.parse(
+                        savedResults
+                    );
+
+                if(
+                    Array.isArray(parsed)
+                ){
+
+                    results =
+                        parsed;
+
+                }
+
+            }catch(error){
+
+                results =
+                    [];
+
+            }
+
+        }
+
+        results.unshift({
+
+            score:
+                quizScore,
+
+            total:
+                currentQuizQuestions.length,
+
+            percentage:
+                currentQuizQuestions.length > 0
+                ? Math.round(
+                    (
+                        quizScore /
+                        currentQuizQuestions.length
+                    ) * 100
+                )
+                : 0,
+
+            completedAt:
+                new Date().toISOString()
+
+        });
+
+        results =
+            results.slice(
+                0,
+                10
+            );
+
+        localStorage.setItem(
+            "KRON_QUIZ_RESULTS",
+            JSON.stringify(
+                results
+            )
+        );
+
+    }catch(error){
+
+        console.error(
+            "Quiz result save error:",
+            error
+        );
+
+    }
+
+}
+
+</script>
+<!-- =======================================================
+     QUIZ RECOVERY
+     ======================================================= -->
+
+<script>
+
+function checkForSavedQuiz(){
+
+    const saved =
+        localStorage.getItem(
+            QUIZ_STORAGE_KEY
+        );
+
+    if(!saved){
+
+        return;
+
+    }
+
+    try{
+
+        const data =
+            JSON.parse(saved);
+
+        if(
+            !data ||
+            !Array.isArray(
+                data.questions
+            ) ||
+            data.questions.length === 0
+        ){
+
+            localStorage.removeItem(
+                QUIZ_STORAGE_KEY
+            );
+
+            return;
+
+        }
+
+        if(data.finished){
+
+            return;
+
+        }
+
+        const savedTime =
+            Number(
+                data.savedAt
+            ) || 0;
+
+        const age =
+            Date.now() -
+            savedTime;
+
+        if(
+            age >
+            QUIZ_RECOVERY_TIME
+        ){
+
+            localStorage.removeItem(
+                QUIZ_STORAGE_KEY
+            );
+
+            return;
+
+        }
+
+        const continueQuiz =
+            confirm(
+                "You have an unfinished quiz. Would you like to continue it?"
+            );
+
+        if(!continueQuiz){
+
+            localStorage.removeItem(
+                QUIZ_STORAGE_KEY
+            );
+
+            return;
+
+        }
+
+        if(
+            loadActiveQuiz()
+        ){
+
+            showQuizArea();
+
+            renderCurrentQuestion();
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Quiz recovery error:",
+            error
+        );
+
+        localStorage.removeItem(
+            QUIZ_STORAGE_KEY
+        );
 
     }
 
 }
 
 
-/* =========================
-   CLEAR SESSION WHEN LEAVING
-   ========================= */
+/* =======================================================
+   QUIZ INITIALIZATION
+   ======================================================= */
 
-window.addEventListener(
-    "pagehide",
+document.addEventListener(
+    "DOMContentLoaded",
     function(){
 
-        clearQuizSession();
+        updateQuizSubjects();
+
+        updateQuizTerms();
+
+        setTimeout(
+            function(){
+
+                checkForSavedQuiz();
+
+            },
+            300
+        );
+
+    }
+);
+
+
+/* =======================================================
+   SAVE QUIZ BEFORE PAGE LEAVES
+   ======================================================= */
+
+window.addEventListener(
+    "beforeunload",
+    function(){
+
+        if(
+            currentQuizQuestions &&
+            currentQuizQuestions.length > 0 &&
+            !quizFinished
+        ){
+
+            saveActiveQuiz();
+
+        }
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     QUIZ HISTORY AND PROGRESS
+     ======================================================= -->
+
+<script>
+
+function getQuizResults(){
+
+    const saved =
+        localStorage.getItem(
+            "KRON_QUIZ_RESULTS"
+        );
+
+    if(!saved){
+
+        return [];
+
+    }
+
+    try{
+
+        const results =
+            JSON.parse(
+                saved
+            );
+
+        if(
+            Array.isArray(results)
+        ){
+
+            return results;
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Quiz history error:",
+            error
+        );
+
+    }
+
+    return [];
+
+}
+
+
+/* =======================================================
+   GET QUIZ TOTALS
+   ======================================================= */
+
+function getQuizHistoryStats(){
+
+    const results =
+        getQuizResults();
+
+    let totalQuizzes =
+        results.length;
+
+    let totalQuestions =
+        0;
+
+    let totalCorrect =
+        0;
+
+    results.forEach(
+        function(result){
+
+            totalQuestions +=
+                Number(
+                    result.total
+                ) || 0;
+
+            totalCorrect +=
+                Number(
+                    result.score
+                ) || 0;
+
+        }
+    );
+
+    const accuracy =
+        totalQuestions > 0
+        ? Math.round(
+            (
+                totalCorrect /
+                totalQuestions
+            ) * 100
+        )
+        : 0;
+
+    return {
+
+        totalQuizzes:
+            totalQuizzes,
+
+        totalQuestions:
+            totalQuestions,
+
+        totalCorrect:
+            totalCorrect,
+
+        accuracy:
+            accuracy
+
+    };
+
+}
+
+
+/* =======================================================
+   UPDATE QUIZ PROGRESS
+   ======================================================= */
+
+function updateQuizProgress(){
+
+    const stats =
+        getQuizHistoryStats();
+
+    const quizCount =
+        document.getElementById(
+            "quizHistoryCount"
+        );
+
+    const quizAccuracy =
+        document.getElementById(
+            "quizAccuracy"
+        );
+
+    const quizQuestions =
+        document.getElementById(
+            "quizQuestionsAnswered"
+        );
+
+    if(quizCount){
+
+        quizCount.textContent =
+            stats.totalQuizzes;
+
+    }
+
+    if(quizAccuracy){
+
+        quizAccuracy.textContent =
+            stats.accuracy +
+            "%";
+
+    }
+
+    if(quizQuestions){
+
+        quizQuestions.textContent =
+            stats.totalQuestions;
+
+    }
+
+}
+
+
+/* =======================================================
+   CLEAR QUIZ HISTORY
+   ======================================================= */
+
+function clearQuizHistory(){
+
+    const results =
+        getQuizResults();
+
+    if(
+        results.length === 0
+    ){
+
+        return;
+
+    }
+
+    const confirmed =
+        confirm(
+            "Clear all saved quiz history?"
+        );
+
+    if(!confirmed){
+
+        return;
+
+    }
+
+    localStorage.removeItem(
+        "KRON_QUIZ_RESULTS"
+    );
+
+    updateQuizProgress();
+
+}
+
+
+/* =======================================================
+   INITIAL QUIZ PROGRESS UPDATE
+   ======================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        updateQuizProgress();
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     QUIZ HISTORY AND PROGRESS
+     ======================================================= -->
+
+<script>
+
+function getQuizResults(){
+
+    const saved =
+        localStorage.getItem(
+            "KRON_QUIZ_RESULTS"
+        );
+
+    if(!saved){
+
+        return [];
+
+    }
+
+    try{
+
+        const results =
+            JSON.parse(
+                saved
+            );
+
+        if(
+            Array.isArray(results)
+        ){
+
+            return results;
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Quiz history error:",
+            error
+        );
+
+    }
+
+    return [];
+
+}
+
+
+/* =======================================================
+   GET QUIZ TOTALS
+   ======================================================= */
+
+function getQuizHistoryStats(){
+
+    const results =
+        getQuizResults();
+
+    let totalQuizzes =
+        results.length;
+
+    let totalQuestions =
+        0;
+
+    let totalCorrect =
+        0;
+
+    results.forEach(
+        function(result){
+
+            totalQuestions +=
+                Number(
+                    result.total
+                ) || 0;
+
+            totalCorrect +=
+                Number(
+                    result.score
+                ) || 0;
+
+        }
+    );
+
+    const accuracy =
+        totalQuestions > 0
+        ? Math.round(
+            (
+                totalCorrect /
+                totalQuestions
+            ) * 100
+        )
+        : 0;
+
+    return {
+
+        totalQuizzes:
+            totalQuizzes,
+
+        totalQuestions:
+            totalQuestions,
+
+        totalCorrect:
+            totalCorrect,
+
+        accuracy:
+            accuracy
+
+    };
+
+}
+
+
+/* =======================================================
+   UPDATE QUIZ PROGRESS
+   ======================================================= */
+
+function updateQuizProgress(){
+
+    const stats =
+        getQuizHistoryStats();
+
+    const quizCount =
+        document.getElementById(
+            "quizHistoryCount"
+        );
+
+    const quizAccuracy =
+        document.getElementById(
+            "quizAccuracy"
+        );
+
+    const quizQuestions =
+        document.getElementById(
+            "quizQuestionsAnswered"
+        );
+
+    if(quizCount){
+
+        quizCount.textContent =
+            stats.totalQuizzes;
+
+    }
+
+    if(quizAccuracy){
+
+        quizAccuracy.textContent =
+            stats.accuracy +
+            "%";
+
+    }
+
+    if(quizQuestions){
+
+        quizQuestions.textContent =
+            stats.totalQuestions;
+
+    }
+
+}
+
+
+/* =======================================================
+   CLEAR QUIZ HISTORY
+   ======================================================= */
+
+function clearQuizHistory(){
+
+    const results =
+        getQuizResults();
+
+    if(
+        results.length === 0
+    ){
+
+        return;
+
+    }
+
+    const confirmed =
+        confirm(
+            "Clear all saved quiz history?"
+        );
+
+    if(!confirmed){
+
+        return;
+
+    }
+
+    localStorage.removeItem(
+        "KRON_QUIZ_RESULTS"
+    );
+
+    updateQuizProgress();
+
+}
+
+
+/* =======================================================
+   INITIAL QUIZ PROGRESS UPDATE
+   ======================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        updateQuizProgress();
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     QUIZ ANSWER COMPATIBILITY
+     ======================================================= -->
+
+<script>
+
+function normalizeQuizAnswer(
+    answer
+){
+
+    if(
+        answer === null ||
+        answer === undefined
+    ){
+
+        return "";
+
+    }
+
+    return String(
+        answer
+    )
+    .trim()
+    .toLowerCase();
+
+}
+
+
+/* =======================================================
+   CHECK QUIZ ANSWER
+   ======================================================= */
+
+function isCorrectQuizAnswer(
+    question,
+    answerIndex
+){
+
+    if(!question){
+
+        return false;
+
+    }
+
+    const selectedOption =
+        question.options &&
+        question.options[
+            answerIndex
+        ];
+
+    const possibleAnswers = [
+
+        question.correctIndex,
+
+        question.correctAnswer,
+
+        question.answer,
+
+        question.correct,
+
+        question.correctOption
+
+    ];
+
+
+    for(
+        let i = 0;
+        i < possibleAnswers.length;
+        i++
+    ){
+
+        const answer =
+            possibleAnswers[i];
+
+        if(
+            answer === null ||
+            answer === undefined
+        ){
+
+            continue;
+
+        }
+
+
+        /* ---------------------------------------
+           NUMERIC INDEX
+        --------------------------------------- */
+
+        if(
+            typeof answer ===
+            "number"
+        ){
+
+            if(
+                answerIndex ===
+                answer
+            ){
+
+                return true;
+
+            }
+
+            /*
+             * Some APIs use 1,2,3,4
+             * instead of 0,1,2,3.
+             */
+
+            if(
+                answerIndex + 1 ===
+                answer
+            ){
+
+                return true;
+
+            }
+
+        }
+
+
+        const normalizedAnswer =
+            normalizeQuizAnswer(
+                answer
+            );
+
+        const normalizedSelected =
+            normalizeQuizAnswer(
+                selectedOption
+            );
+
+
+        /* ---------------------------------------
+           LETTER ANSWERS
+           --------------------------------------- */
+
+        const letters = [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e"
+        ];
+
+        if(
+            letters[
+                answerIndex
+            ] ===
+            normalizedAnswer
+        ){
+
+            return true;
+
+        }
+
+
+        /* ---------------------------------------
+           OPTION TEXT ANSWERS
+        --------------------------------------- */
+
+        if(
+            normalizedSelected &&
+            normalizedSelected ===
+            normalizedAnswer
+        ){
+
+            return true;
+
+        }
+
+    }
+
+    return false;
+
+}
+
+
+/* =======================================================
+   PREVENT DOUBLE SCORING
+   ======================================================= */
+
+function resetQuizAnswerState(){
+
+    selectedQuizAnswer =
+        null;
+
+    quizAnswerLocked =
+        false;
+
+}
+
+
+/* =======================================================
+   QUIZ SYSTEM READY
+   ======================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        resetQuizAnswerState();
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     QUIZ RESULT DETAILS
+     ======================================================= -->
+
+<script>
+
+function getQuizPerformanceMessage(
+    percentage
+){
+
+    if(
+        percentage >= 80
+    ){
+
+        return "Excellent work! You have a strong understanding of this quiz.";
+
+    }
+
+    if(
+        percentage >= 60
+    ){
+
+        return "Good work. Keep practising and strengthen the areas you missed.";
+
+    }
+
+    if(
+        percentage >= 40
+    ){
+
+        return "You're making progress. Review the questions you missed and try again.";
+
+    }
+
+    return "Keep studying. Review the topic carefully and take another quiz.";
+
+}
+
+
+/* =======================================================
+   UPDATE RESULT MESSAGE
+   ======================================================= */
+
+function updateQuizResultDetails(){
+
+    const total =
+        currentQuizQuestions.length;
+
+    if(
+        total <= 0
+    ){
+
+        return;
+
+    }
+
+    const percentage =
+        Math.round(
+            (
+                quizScore /
+                total
+            ) * 100
+        );
+
+    const scoreBox =
+        document.getElementById(
+            "quizScore"
+        );
+
+    const messageBox =
+        document.getElementById(
+            "quizResultMessage"
+        );
+
+
+    if(scoreBox){
+
+        scoreBox.textContent =
+            quizScore +
+            " / " +
+            total +
+            " (" +
+            percentage +
+            "%)";
+
+    }
+
+
+    if(messageBox){
+
+        messageBox.textContent =
+            getQuizPerformanceMessage(
+                percentage
+            );
+
+    }
+
+}
+
+
+/* =======================================================
+   SAVE FINAL QUIZ STATE
+   ======================================================= */
+
+function saveFinalQuizState(){
+
+    try{
+
+        const finalState = {
+
+            questions:
+                currentQuizQuestions,
+
+            currentIndex:
+                currentQuizIndex,
+
+            score:
+                quizScore,
+
+            paused:
+                false,
+
+            startedAt:
+                quizStartedAt,
+
+            finished:
+                true,
+
+            savedAt:
+                Date.now()
+
+        };
+
+        localStorage.setItem(
+            QUIZ_STORAGE_KEY,
+            JSON.stringify(
+                finalState
+            )
+        );
+
+    }catch(error){
+
+        console.error(
+            "Final quiz save error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =======================================================
+   CLEAN UP ACTIVE QUIZ
+   ======================================================= */
+
+function clearActiveQuiz(){
+
+    try{
+
+        localStorage.removeItem(
+            QUIZ_STORAGE_KEY
+        );
+
+    }catch(error){
+
+        console.error(
+            "Clear active quiz error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =======================================================
+   QUIZ RESULT EVENT
+   ======================================================= */
+
+function announceQuizFinished(){
+
+    try{
+
+        document.dispatchEvent(
+            new CustomEvent(
+                "quizFinished"
+            )
+        );
+
+    }catch(error){
+
+        console.error(
+            "Quiz finished event error:",
+            error
+        );
+
+    }
+
+}
+
+</script>
+<!-- =======================================================
+     QUIZ FINISH CONTROL
+     ======================================================= -->
+
+<script>
+
+function completeQuiz(){
+
+    if(quizFinished){
+
+        return;
+
+    }
+
+    quizFinished =
+        true;
+
+    quizPaused =
+        false;
+
+
+    /* ---------------------------------------
+       CALCULATE SCORE
+    --------------------------------------- */
+
+    const total =
+        currentQuizQuestions.length;
+
+    const percentage =
+        total > 0
+        ? Math.round(
+            (
+                quizScore /
+                total
+            ) * 100
+        )
+        : 0;
+
+
+    /* ---------------------------------------
+       SAVE RESULT
+    --------------------------------------- */
+
+    saveQuizResult();
+
+    saveFinalQuizState();
+
+
+    /* ---------------------------------------
+       SHOW RESULT
+    --------------------------------------- */
+
+    const quizArea =
+        document.getElementById(
+            "quizArea"
+        );
+
+    const result =
+        document.getElementById(
+            "quizResult"
+        );
+
+    if(quizArea){
+
+        quizArea.style.display =
+            "none";
+
+    }
+
+    if(result){
+
+        result.style.display =
+            "block";
+
+    }
+
+
+    /* ---------------------------------------
+       UPDATE SCORE
+    --------------------------------------- */
+
+    const scoreBox =
+        document.getElementById(
+            "quizScore"
+        );
+
+    const messageBox =
+        document.getElementById(
+            "quizResultMessage"
+        );
+
+
+    if(scoreBox){
+
+        scoreBox.textContent =
+            quizScore +
+            " / " +
+            total +
+            " (" +
+            percentage +
+            "%)";
+
+    }
+
+
+    if(messageBox){
+
+        messageBox.textContent =
+            getQuizPerformanceMessage(
+                percentage
+            );
+
+    }
+
+
+    /* ---------------------------------------
+       UPDATE PROGRESS
+    --------------------------------------- */
+
+    updateQuizProgress();
+
+    refreshKronProgress();
+
+    announceQuizFinished();
+
+}
+
+
+/* =======================================================
+   USE COMPLETE QUIZ
+   ======================================================= */
+
+function finishQuiz(){
+
+    completeQuiz();
+
+}
+
+
+/* =======================================================
+   PROTECT AGAINST EMPTY QUIZ
+   ======================================================= */
+
+function canFinishQuiz(){
+
+    if(
+        !currentQuizQuestions ||
+        currentQuizQuestions.length === 0
+    ){
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+
+/* =======================================================
+   FINAL RESULT REFRESH
+   ======================================================= */
+
+document.addEventListener(
+    "quizFinished",
+    function(){
+
+        setTimeout(
+            function(){
+
+                updateQuizResultDetails();
+
+                updateQuizProgress();
+
+            },
+            100
+        );
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     QUIZ TIMER AND PAUSE CONTROL
+     ======================================================= -->
+
+<script>
+
+let quizTimerInterval =
+    null;
+
+let quizTimeRemaining =
+    QUIZ_RECOVERY_TIME;
+
+
+/* =======================================================
+   START QUIZ TIMER
+   ======================================================= */
+
+function startQuizTimer(){
+
+    stopQuizTimer();
+
+    quizPaused =
+        false;
+
+    quizTimeRemaining =
+        QUIZ_RECOVERY_TIME;
+
+    quizTimerInterval =
+        setInterval(
+            function(){
+
+                if(
+                    quizFinished
+                ){
+
+                    stopQuizTimer();
+
+                    return;
+
+                }
+
+                if(
+                    quizPaused
+                ){
+
+                    return;
+
+                }
+
+                quizTimeRemaining -=
+                    1000;
+
+                if(
+                    quizTimeRemaining <=
+                    0
+                ){
+
+                    quizTimeRemaining =
+                        0;
+
+                    stopQuizTimer();
+
+                    if(
+                        canFinishQuiz()
+                    ){
+
+                        completeQuiz();
+
+                    }
+
+                    return;
+
+                }
+
+                updateQuizTimerDisplay();
+
+            },
+            1000
+        );
+
+    updateQuizTimerDisplay();
+
+}
+
+
+/* =======================================================
+   STOP QUIZ TIMER
+   ======================================================= */
+
+function stopQuizTimer(){
+
+    if(
+        quizTimerInterval !==
+        null
+    ){
+
+        clearInterval(
+            quizTimerInterval
+        );
+
+        quizTimerInterval =
+            null;
+
+    }
+
+}
+
+
+/* =======================================================
+   UPDATE TIMER DISPLAY
+   ======================================================= */
+
+function updateQuizTimerDisplay(){
+
+    const timer =
+        document.getElementById(
+            "quizTimer"
+        );
+
+    if(!timer){
+
+        return;
+
+    }
+
+    const totalSeconds =
+        Math.max(
+            Math.ceil(
+                quizTimeRemaining /
+                1000
+            ),
+            0
+        );
+
+    const minutes =
+        Math.floor(
+            totalSeconds /
+            60
+        );
+
+    const seconds =
+        totalSeconds %
+        60;
+
+    timer.textContent =
+        String(minutes)
+        .padStart(2,"0") +
+        ":" +
+        String(seconds)
+        .padStart(2,"0");
+
+}
+
+
+/* =======================================================
+   PAUSE QUIZ
+   ======================================================= */
+
+function pauseQuiz(){
+
+    if(
+        quizFinished
+    ){
+
+        return;
+
+    }
+
+    quizPaused =
+        true;
+
+    saveActiveQuiz();
+
+    updateQuizPauseDisplay();
+
+}
+
+
+/* =======================================================
+   RESUME QUIZ
+   ======================================================= */
+
+function resumeQuiz(){
+
+    if(
+        quizFinished
+    ){
+
+        return;
+
+    }
+
+    quizPaused =
+        false;
+
+    saveActiveQuiz();
+
+    updateQuizPauseDisplay();
+
+}
+
+
+/* =======================================================
+   TOGGLE PAUSE
+   ======================================================= */
+
+function toggleQuizPause(){
+
+    if(
+        quizPaused
+    ){
+
+        resumeQuiz();
+
+    }else{
+
+        pauseQuiz();
+
+    }
+
+}
+
+
+/* =======================================================
+   PAUSE DISPLAY
+   ======================================================= */
+
+function updateQuizPauseDisplay(){
+
+    const pauseButton =
+        document.getElementById(
+            "quizPauseButton"
+        );
+
+    if(!pauseButton){
+
+        return;
+
+    }
+
+    pauseButton.textContent =
+        quizPaused
+        ? "Resume Quiz"
+        : "Pause Quiz";
+
+}
+
+
+/* =======================================================
+   STOP TIMER WHEN QUIZ FINISHES
+   ======================================================= */
+
+document.addEventListener(
+    "quizFinished",
+    function(){
+
+        stopQuizTimer();
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     QUIZ TIMER DISPLAY SUPPORT
+     ======================================================= -->
+
+<script>
+
+function createQuizTimerDisplay(){
+
+    const quizArea =
+        document.getElementById(
+            "quizArea"
+        );
+
+    if(!quizArea){
+
+        return;
+
+    }
+
+    if(
+        document.getElementById(
+            "quizTimer"
+        )
+    ){
+
+        return;
+
+    }
+
+    const timerWrapper =
+        document.createElement(
+            "div"
+        );
+
+    timerWrapper.id =
+        "quizTimerWrapper";
+
+    timerWrapper.style.marginBottom =
+        "15px";
+
+    timerWrapper.style.textAlign =
+        "center";
+
+    const timerLabel =
+        document.createElement(
+            "span"
+        );
+
+    timerLabel.textContent =
+        "Time: ";
+
+    const timer =
+        document.createElement(
+            "strong"
+        );
+
+    timer.id =
+        "quizTimer";
+
+    timer.textContent =
+        "05:00";
+
+    timerWrapper.appendChild(
+        timerLabel
+    );
+
+    timerWrapper.appendChild(
+        timer
+    );
+
+    quizArea.insertBefore(
+        timerWrapper,
+        quizArea.firstChild
+    );
+
+}
+
+
+/* =======================================================
+   CREATE PAUSE BUTTON
+   ======================================================= */
+
+function createQuizPauseButton(){
+
+    const quizArea =
+        document.getElementById(
+            "quizArea"
+        );
+
+    if(!quizArea){
+
+        return;
+
+    }
+
+    if(
+        document.getElementById(
+            "quizPauseButton"
+        )
+    ){
+
+        return;
+
+    }
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+    button.id =
+        "quizPauseButton";
+
+    button.type =
+        "button";
+
+    button.textContent =
+        "Pause Quiz";
+
+    button.style.marginBottom =
+        "15px";
+
+    button.addEventListener(
+        "click",
+        function(){
+
+            toggleQuizPause();
+
+        }
+    );
+
+    const question =
+        document.getElementById(
+            "quizQuestion"
+        );
+
+    if(question){
+
+        question.parentNode.insertBefore(
+            button,
+            question
+        );
+
+    }else{
+
+        quizArea.appendChild(
+            button
+        );
+
+    }
+
+}
+
+
+/* =======================================================
+   PREPARE QUIZ CONTROLS
+   ======================================================= */
+
+function prepareQuizControls(){
+
+    createQuizTimerDisplay();
+
+    createQuizPauseButton();
+
+    updateQuizTimerDisplay();
+
+    updateQuizPauseDisplay();
+
+}
+
+
+/* =======================================================
+   PREPARE WHEN QUIZ OPENS
+   ======================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        prepareQuizControls();
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     QUIZ TIMER START / RECOVERY
+     ======================================================= -->
+
+<script>
+
+function initializeQuizTimer(){
+
+    if(
+        !currentQuizQuestions ||
+        currentQuizQuestions.length === 0
+    ){
+
+        return;
+
+    }
+
+    if(
+        quizFinished
+    ){
+
+        stopQuizTimer();
+
+        return;
+
+    }
+
+    if(
+        quizTimerInterval !== null
+    ){
+
+        return;
+
+    }
+
+    if(
+        quizPaused
+    ){
+
+        updateQuizPauseDisplay();
+
+        updateQuizTimerDisplay();
+
+        return;
+
+    }
+
+    startQuizTimer();
+
+}
+
+
+/* =======================================================
+   START TIMER AFTER NEW QUIZ
+   ======================================================= */
+
+document.addEventListener(
+    "quizStarted",
+    function(){
+
+        setTimeout(
+            function(){
+
+                prepareQuizControls();
+
+                initializeQuizTimer();
+
+            },
+            100
+        );
+
+    }
+);
+
+
+/* =======================================================
+   START TIMER WHEN QUIZ AREA OPENS
+   ======================================================= */
+
+function startQuizAfterDisplay(){
+
+    setTimeout(
+        function(){
+
+            prepareQuizControls();
+
+            initializeQuizTimer();
+
+        },
+        100
+    );
+
+}
+
+
+/* =======================================================
+   CONTINUE SAVED QUIZ
+   ======================================================= */
+
+document.addEventListener(
+    "quizRecovered",
+    function(){
+
+        setTimeout(
+            function(){
+
+                prepareQuizControls();
+
+                initializeQuizTimer();
+
+            },
+            100
+        );
+
+    }
+);
+
+
+/* =======================================================
+   SAVE TIMER STATE
+   ======================================================= */
+
+function saveQuizTimerState(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(
+                QUIZ_STORAGE_KEY
+            );
+
+        if(!saved){
+
+            return;
+
+        }
+
+        const data =
+            JSON.parse(
+                saved
+            );
+
+        data.timeRemaining =
+            quizTimeRemaining;
+
+        data.paused =
+            quizPaused;
+
+        data.savedAt =
+            Date.now();
+
+        localStorage.setItem(
+            QUIZ_STORAGE_KEY,
+            JSON.stringify(
+                data
+            )
+        );
+
+    }catch(error){
+
+        console.error(
+            "Quiz timer save error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =======================================================
+   UPDATE ACTIVE QUIZ SAVE
+   ======================================================= */
+
+document.addEventListener(
+    "visibilitychange",
+    function(){
+
+        if(
+            document.hidden
+        ){
+
+            if(
+                currentQuizQuestions &&
+                currentQuizQuestions.length > 0 &&
+                !quizFinished
+            ){
+
+                saveActiveQuiz();
+
+                saveQuizTimerState();
+
+            }
+
+        }
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     QUIZ TIMER RECOVERY
+     ======================================================= -->
+
+<script>
+
+function restoreQuizTimer(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(
+                QUIZ_STORAGE_KEY
+            );
+
+        if(!saved){
+
+            return;
+
+        }
+
+        const data =
+            JSON.parse(
+                saved
+            );
+
+        if(!data){
+
+            return;
+
+        }
+
+        if(
+            typeof data.timeRemaining ===
+            "number"
+        ){
+
+            quizTimeRemaining =
+                Math.max(
+                    data.timeRemaining,
+                    0
+                );
+
+        }
+
+        quizPaused =
+            Boolean(
+                data.paused
+            );
+
+        updateQuizTimerDisplay();
+
+        updateQuizPauseDisplay();
+
+    }catch(error){
+
+        console.error(
+            "Restore quiz timer error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =======================================================
+   RECOVERY TIMER START
+   ======================================================= */
+
+function continueRecoveredQuiz(){
+
+    restoreQuizTimer();
+
+    showQuizArea();
+
+    renderCurrentQuestion();
+
+    if(
+        !quizPaused &&
+        quizTimeRemaining > 0
+    ){
+
+        initializeQuizTimer();
+
+    }
+
+}
+
+
+/* =======================================================
+   RECOVERY EVENT
+   ======================================================= */
+
+document.addEventListener(
+    "quizRecoveryReady",
+    function(){
+
+        continueRecoveredQuiz();
+
+    }
+);
+
+
+/* =======================================================
+   CHECK TIMER EXPIRY
+   ======================================================= */
+
+function checkQuizTimer(){
+
+    if(
+        quizFinished
+    ){
+
+        return;
+
+    }
+
+    if(
+        !currentQuizQuestions ||
+        currentQuizQuestions.length === 0
+    ){
+
+        return;
+
+    }
+
+    if(
+        quizTimeRemaining <= 0
+    ){
+
+        stopQuizTimer();
+
+        quizTimeRemaining =
+            0;
+
+        updateQuizTimerDisplay();
+
+        completeQuiz();
+
+    }
+
+}
+
+
+/* =======================================================
+   PERIODIC TIMER CHECK
+   ======================================================= */
+
+setInterval(
+    function(){
+
+        checkQuizTimer();
+
+    },
+    1000
+);
+
+
+/* =======================================================
+   RESET TIMER FOR NEW QUIZ
+   ======================================================= */
+
+function resetQuizTimer(){
+
+    stopQuizTimer();
+
+    quizTimeRemaining =
+        QUIZ_RECOVERY_TIME;
+
+    quizPaused =
+        false;
+
+    updateQuizTimerDisplay();
+
+    updateQuizPauseDisplay();
+
+}
+
+
+/* =======================================================
+   CLEAN TIMER WHEN RESTARTING
+   ======================================================= */
+
+document.addEventListener(
+    "quizRestarted",
+    function(){
+
+        resetQuizTimer();
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     QUIZ EVENT CONNECTIONS
+     ======================================================= -->
+
+<script>
+
+function announceQuizStarted(){
+
+    try{
+
+        document.dispatchEvent(
+            new CustomEvent(
+                "quizStarted"
+            )
+        );
+
+    }catch(error){
+
+        console.error(
+            "Quiz start event error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =======================================================
+   ANNOUNCE QUIZ RECOVERY
+   ======================================================= */
+
+function announceQuizRecovery(){
+
+    try{
+
+        document.dispatchEvent(
+            new CustomEvent(
+                "quizRecovered"
+            )
+        );
+
+    }catch(error){
+
+        console.error(
+            "Quiz recovery event error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =======================================================
+   ANNOUNCE RECOVERY READY
+   ======================================================= */
+
+function announceQuizRecoveryReady(){
+
+    try{
+
+        document.dispatchEvent(
+            new CustomEvent(
+                "quizRecoveryReady"
+            )
+        );
+
+    }catch(error){
+
+        console.error(
+            "Quiz recovery ready event error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =======================================================
+   NEW QUIZ SETUP CONNECTION
+   ======================================================= */
+
+function prepareNewQuiz(){
+
+    resetQuizTimer();
+
+    resetQuizAnswerState();
+
+    quizFinished =
+        false;
+
+    quizPaused =
+        false;
+
+}
+
+
+/* =======================================================
+   QUIZ START CONNECTION
+   ======================================================= */
+
+function notifyQuizStarted(){
+
+    prepareNewQuiz();
+
+    announceQuizStarted();
+
+}
+
+
+/* =======================================================
+   QUIZ RECOVERY CONNECTION
+   ======================================================= */
+
+function notifyQuizRecovered(){
+
+    announceQuizRecovery();
+
+    announceQuizRecoveryReady();
+
+}
+
+
+/* =======================================================
+   PAGE VISIBILITY CONNECTION
+   ======================================================= */
+
+document.addEventListener(
+    "visibilitychange",
+    function(){
+
+        if(
+            !document.hidden &&
+            currentQuizQuestions &&
+            currentQuizQuestions.length > 0 &&
+            !quizFinished
+        ){
+
+            restoreQuizTimer();
+
+            updateQuizTimerDisplay();
+
+            updateQuizPauseDisplay();
+
+        }
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     QUIZ START INTEGRATION
+     ======================================================= -->
+
+<script>
+
+function connectQuizStartButton(){
+
+    const button =
+        document.getElementById(
+            "startQuizButton"
+        );
+
+    if(!button){
+
+        return;
+
+    }
+
+    if(
+        button.dataset.kronConnected ===
+        "true"
+    ){
+
+        return;
+
+    }
+
+    button.dataset.kronConnected =
+        "true";
+
+    button.addEventListener(
+        "click",
+        function(){
+
+            setTimeout(
+                function(){
+
+                    if(
+                        currentQuizQuestions &&
+                        currentQuizQuestions.length > 0
+                    ){
+
+                        notifyQuizStarted();
+
+                        startQuizAfterDisplay();
+
+                    }
+
+                },
+                300
+            );
+
+        }
+    );
+
+}
+
+
+/* =======================================================
+   RECOVERY CONNECTION
+   ======================================================= */
+
+function connectQuizRecovery(){
+
+    if(
+        !currentQuizQuestions ||
+        currentQuizQuestions.length === 0
+    ){
+
+        return;
+
+    }
+
+    if(quizFinished){
+
+        return;
+
+    }
+
+    restoreQuizTimer();
+
+    prepareQuizControls();
+
+    initializeQuizTimer();
+
+}
+
+
+/* =======================================================
+   QUIZ AREA OBSERVER
+   ======================================================= */
+
+function observeQuizArea(){
+
+    const quizArea =
+        document.getElementById(
+            "quizArea"
+        );
+
+    if(!quizArea){
+
+        return;
+
+    }
+
+    if(
+        quizArea.dataset.kronObserved ===
+        "true"
+    ){
+
+        return;
+
+    }
+
+    quizArea.dataset.kronObserved =
+        "true";
+
+    const observer =
+        new MutationObserver(
+            function(){
+
+                if(
+                    quizArea.style.display !==
+                    "none" &&
+                    currentQuizQuestions &&
+                    currentQuizQuestions.length > 0 &&
+                    !quizFinished
+                ){
+
+                    prepareQuizControls();
+
+                }
+
+            }
+        );
+
+    observer.observe(
+        quizArea,
+        {
+            attributes:
+                true,
+            attributeFilter:[
+                "style"
+            ]
+        }
+    );
+
+}
+
+
+/* =======================================================
+   FINAL QUIZ INITIALIZATION
+   ======================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        setTimeout(
+            function(){
+
+                connectQuizStartButton();
+
+                observeQuizArea();
+
+                connectQuizRecovery();
+
+            },
+            800
+        );
+
+    }
+);
+
+</script>
+<!-- =======================================================
+     QUIZ SYSTEM FINAL SAFETY CHECK
+     ======================================================= -->
+
+<script>
+
+function verifyQuizSystem(){
+
+    const requiredFunctions = [
+
+        "startQuiz",
+        "nextQuestion",
+        "finishQuiz",
+        "completeQuiz",
+        "restartQuiz",
+        "renderCurrentQuestion",
+        "selectQuizAnswer",
+        "getQuizSetup",
+        "saveActiveQuiz",
+        "loadActiveQuiz"
+
+    ];
+
+    const missing =
+        [];
+
+    requiredFunctions.forEach(
+        function(functionName){
+
+            if(
+                typeof window[
+                    functionName
+                ] !==
+                "function"
+            ){
+
+                missing.push(
+                    functionName
+                );
+
+            }
+
+        }
+    );
+
+
+    if(
+        missing.length > 0
+    ){
+
+        console.error(
+            "KRON Quiz System missing functions:",
+            missing
+        );
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+
+/* =======================================================
+   VERIFY QUIZ ELEMENTS
+   ======================================================= */
+
+function verifyQuizElements(){
+
+    const requiredElements = [
+
+        "quizSetup",
+        "quizLevel",
+        "quizTerm",
+        "quizSubject",
+        "quizCount",
+        "startQuizButton",
+        "quizArea",
+        "quizProgress",
+        "quizQuestion",
+        "quizOptions",
+        "nextQuestionButton",
+        "quizResult",
+        "quizScore",
+        "quizResultMessage"
+
+    ];
+
+    const missing =
+        [];
+
+    requiredElements.forEach(
+        function(elementId){
+
+            if(
+                !document.getElementById(
+                    elementId
+                )
+            ){
+
+                missing.push(
+                    elementId
+                );
+
+            }
+
+        }
+    );
+
+
+    if(
+        missing.length > 0
+    ){
+
+        console.warn(
+            "KRON Quiz elements missing:",
+            missing
+        );
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+
+/* =======================================================
+   RUN QUIZ SYSTEM CHECK
+   ======================================================= */
+
+function runQuizSystemCheck(){
+
+    const functionsOK =
+        verifyQuizSystem();
+
+    const elementsOK =
+        verifyQuizElements();
+
+    if(
+        functionsOK &&
+        elementsOK
+    ){
+
+        console.log(
+            "KRON Quiz System: READY"
+        );
+
+        return true;
+
+    }
+
+    console.warn(
+        "KRON Quiz System: CHECK REQUIRED"
+    );
+
+    return false;
+
+}
+
+
+/* =======================================================
+   START FINAL CHECK
+   ======================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        setTimeout(
+            function(){
+
+                runQuizSystemCheck();
+
+            },
+            1000
+        );
 
     }
 );
 
 </script>
 
-</body>
-</html> 
+    </body>
+</html>
