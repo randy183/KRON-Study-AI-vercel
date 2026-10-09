@@ -736,6 +736,26 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
+    /* =========================
+   TEST SUPABASE CONNECTION
+========================= */
+
+async function testSupabaseConnection() {
+  try {
+    const { error } = await supabaseClient.auth.getSession();
+
+    if (error) {
+      console.error("KRON Supabase test failed:", error.message);
+      return;
+    }
+
+    console.log("KRON Supabase connection initialized successfully.");
+  } catch (error) {
+    console.error("KRON Supabase test failed:", error.message);
+  }
+}
+
+testSupabaseConnection();
     
 function loadSavedData() {
   try {
