@@ -704,8 +704,11 @@ main {
   </button>
   <button class="nav-btn" data-page="notes">
     <span>📒</span>Notes
-  </button>
+    </button>
     </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
 "use strict";
 
@@ -719,6 +722,21 @@ const KRON = {
   theme: "dark"
 };
 
+    /* =========================
+   SUPABASE CONNECTION
+========================= */
+
+const SUPABASE_URL =
+  "https://toydidlmpqvxgdcnbpjf.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_ZoKGcIDEkUuqxA6L1jw58Q_FJE6yj0K";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+    
 function loadSavedData() {
   try {
     const savedTheme = localStorage.getItem("KRON_THEME");
