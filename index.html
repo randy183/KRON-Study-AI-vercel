@@ -678,13 +678,224 @@ main {
     </div>
   </section>
 
-  <section class="page" id="page-profile">
+    <section class="page" id="page-profile">
     <div class="placeholder">
-      <h2>👤 Student Profile</h2>
-      <p>Your name, country, class, term, and selected subjects will be configured here.</p>
-      <button class="secondary-btn" id="profileBack">Back to dashboard</button>
+
+      <h2 id="profileHeading">👤 Student Account</h2>
+
+      <p id="profileIntro" class="muted">
+        Sign in to KRON Study AI or create your student account.
+      </p>
+
+      <!-- LOGIN AND SIGNUP -->
+      <div id="authPanel">
+
+        <!-- LOGIN FORM -->
+        <form id="loginForm">
+
+          <div class="form-field">
+            <label for="loginEmail">Email Address</label>
+            <input
+              type="email"
+              id="loginEmail"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="loginPassword">Password</label>
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+          </div>
+
+          <button type="submit" class="primary-btn" id="loginBtn">
+            Log In
+          </button>
+
+        </form>
+
+        <!-- SIGNUP FORM -->
+        <form id="signupForm" class="hidden">
+
+          <div class="form-field">
+            <label for="signupName">Full Name</label>
+            <input
+              type="text"
+              id="signupName"
+              placeholder="Enter your name"
+              autocomplete="name"
+              required
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="signupEmail">Email Address</label>
+            <input
+              type="email"
+              id="signupEmail"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="signupPassword">Create Password</label>
+            <input
+              type="password"
+              id="signupPassword"
+              placeholder="At least 8 characters"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="signupPasswordConfirm">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              id="signupPasswordConfirm"
+              placeholder="Enter password again"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            >
+          </div>
+
+          <button type="submit" class="primary-btn" id="signupBtn">
+            Create Account
+          </button>
+
+        </form>
+
+        <!-- ACCOUNT OPTIONS -->
+        <div style="margin-top:16px; display:grid; gap:10px;">
+
+          <button
+            type="button"
+            class="secondary-btn"
+            id="showSignup"
+          >
+            New to KRON? Create an account
+          </button>
+
+          <button
+            type="button"
+            class="secondary-btn hidden"
+            id="showLogin"
+          >
+            Already have an account? Log in
+          </button>
+
+          <button
+            type="button"
+            class="secondary-btn"
+            id="forgotPassword"
+          >
+            Forgot Password?
+          </button>
+
+        </div>
+
+        <p
+          id="authMessage"
+          class="muted"
+          role="status"
+          aria-live="polite"
+          style="margin-top:14px;"
+        ></p>
+
+      </div>
+
+      <!-- LOGGED-IN STUDENT PROFILE -->
+      <div id="accountPanel" class="hidden">
+
+        <p class="muted">You are signed in to KRON Study AI.</p>
+
+        <div class="form-field">
+          <label for="profileName">Display Name</label>
+          <input
+            type="text"
+            id="profileName"
+            placeholder="Your display name"
+            maxlength="60"
+          >
+        </div>
+
+        <div class="form-field">
+          <label for="favoriteSubject">Favorite Subject</label>
+          <select id="favoriteSubject">
+            <option value="">Choose a subject</option>
+            <option>Mathematics</option>
+            <option>English Language</option>
+            <option>Physics</option>
+            <option>Chemistry</option>
+            <option>Biology</option>
+            <option>Agricultural Science</option>
+            <option>Economics</option>
+            <option>Government</option>
+            <option>Geography</option>
+            <option>Commerce</option>
+            <option>Financial Accounting</option>
+            <option>Literature in English</option>
+            <option>Christian Religious Studies</option>
+            <option>Islamic Religious Studies</option>
+            <option>Computer Studies</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <p id="accountEmail" class="muted"></p>
+
+        <button
+          type="button"
+          class="primary-btn"
+          id="saveProfileBtn"
+        >
+          Save Profile
+        </button>
+
+        <button
+          type="button"
+          class="secondary-btn"
+          id="logoutBtn"
+          style="margin-top:10px;"
+        >
+          Log Out
+        </button>
+
+        <p
+          id="profileMessage"
+          class="muted"
+          role="status"
+          aria-live="polite"
+          style="margin-top:14px;"
+        ></p>
+
+      </div>
+
+      <button
+        type="button"
+        class="secondary-btn"
+        id="profileBack"
+        style="margin-top:18px;"
+      >
+        Back to Dashboard
+      </button>
+
     </div>
-  </section>
+    </section>
+
 </main>
 
 <button class="profile-fab" id="profileButton" aria-label="Open student profile">👤</button>
@@ -756,6 +967,372 @@ async function testSupabaseConnection() {
 }
 
 testSupabaseConnection();
+
+    /* =========================
+   KRON ACCOUNT MANAGEMENT
+========================= */
+
+let currentKRONUser = null;
+
+function showAuthMessage(message, isError = false) {
+  const element = document.getElementById("authMessage");
+
+  if (element) {
+    element.textContent = message;
+    element.style.color = isError ? "#ef4444" : "";
+  }
+}
+
+function showProfileMessage(message, isError = false) {
+  const element = document.getElementById("profileMessage");
+
+  if (element) {
+    element.textContent = message;
+    element.style.color = isError ? "#ef4444" : "";
+  }
+}
+
+function showAuthMode(mode) {
+  const isSignup = mode === "signup";
+
+  document.getElementById("loginForm").classList.toggle(
+    "hidden",
+    isSignup
+  );
+
+  document.getElementById("signupForm").classList.toggle(
+    "hidden",
+    !isSignup
+  );
+
+  document.getElementById("showSignup").classList.toggle(
+    "hidden",
+    isSignup
+  );
+
+  document.getElementById("showLogin").classList.toggle(
+    "hidden",
+    !isSignup
+  );
+
+  document.getElementById("forgotPassword").classList.toggle(
+    "hidden",
+    isSignup
+  );
+
+  document.getElementById("profileHeading").textContent =
+    isSignup ? "Create Your KRON Account" : "Welcome Back";
+
+  document.getElementById("profileIntro").textContent =
+    isSignup
+      ? "Create your account to begin your learning journey."
+      : "Log in to continue your learning journey.";
+
+  showAuthMessage("");
+}
+
+async function loadKRONProfile(user) {
+  currentKRONUser = user;
+
+  document.getElementById("authPanel").classList.add("hidden");
+  document.getElementById("accountPanel").classList.remove("hidden");
+
+  document.getElementById("profileHeading").textContent =
+    "👤 Student Profile";
+
+  document.getElementById("profileIntro").textContent =
+    "Manage your KRON Study AI account.";
+
+  document.getElementById("accountEmail").textContent =
+    "Email: " + (user.email || "");
+
+  const { data, error } = await supabaseClient
+    .from("profiles")
+    .select("display_name, favorite_subject")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Could not load profile:", error.message);
+    showProfileMessage(
+      "Your account is active, but your profile could not be loaded.",
+      true
+    );
+    return;
+  }
+
+  document.getElementById("profileName").value =
+    data?.display_name ||
+    user.user_metadata?.display_name ||
+    "";
+
+  document.getElementById("favoriteSubject").value =
+    data?.favorite_subject || "";
+}
+
+async function checkKRONSession() {
+  const { data, error } =
+    await supabaseClient.auth.getSession();
+
+  if (error) {
+    console.error("Session check failed:", error.message);
+    return;
+  }
+
+  if (data.session?.user) {
+    await loadKRONProfile(data.session.user);
+  } else {
+    currentKRONUser = null;
+
+    document.getElementById("authPanel").classList.remove("hidden");
+    document.getElementById("accountPanel").classList.add("hidden");
+
+    showAuthMode("login");
+  }
+}
+
+function connectKRONAccounts() {
+  document.getElementById("showSignup").addEventListener(
+    "click",
+    () => showAuthMode("signup")
+  );
+
+  document.getElementById("showLogin").addEventListener(
+    "click",
+    () => showAuthMode("login")
+  );
+
+  document.getElementById("signupForm").addEventListener(
+    "submit",
+    async function (event) {
+      event.preventDefault();
+      showAuthMessage("");
+
+      const name =
+        document.getElementById("signupName").value.trim();
+
+      const email =
+        document.getElementById("signupEmail").value.trim();
+
+      const password =
+        document.getElementById("signupPassword").value;
+
+      const confirmPassword =
+        document.getElementById("signupPasswordConfirm").value;
+
+      if (password !== confirmPassword) {
+        showAuthMessage("Your passwords do not match.", true);
+        return;
+      }
+
+      const button = document.getElementById("signupBtn");
+      button.disabled = true;
+      button.textContent = "Creating account...";
+
+      try {
+        const { data, error } =
+          await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+              data: {
+                display_name: name
+              }
+            }
+          });
+
+        if (error) throw error;
+
+        if (data.session && data.user) {
+          await loadKRONProfile(data.user);
+          showProfileMessage("Your account was created successfully.");
+        } else {
+          showAuthMessage(
+            "Registration received. Check your email if verification is required, then log in."
+          );
+          showAuthMode("login");
+        }
+      } catch (error) {
+        showAuthMessage(
+          error.message || "Could not create your account.",
+          true
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = "Create Account";
+      }
+    }
+  );
+
+  document.getElementById("loginForm").addEventListener(
+    "submit",
+    async function (event) {
+      event.preventDefault();
+      showAuthMessage("");
+
+      const email =
+        document.getElementById("loginEmail").value.trim();
+
+      const password =
+        document.getElementById("loginPassword").value;
+
+      const button = document.getElementById("loginBtn");
+      button.disabled = true;
+      button.textContent = "Logging in...";
+
+      try {
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+
+        if (error) throw error;
+
+        await loadKRONProfile(data.user);
+        showProfileMessage("You are now logged in.");
+      } catch (error) {
+        showAuthMessage(
+          error.message || "Login failed. Check your details.",
+          true
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = "Log In";
+      }
+    }
+  );
+
+  document.getElementById("forgotPassword").addEventListener(
+    "click",
+    async function () {
+      const email =
+        document.getElementById("loginEmail").value.trim();
+
+      if (!email) {
+        showAuthMessage(
+          "Enter your email address above first.",
+          true
+        );
+        return;
+      }
+
+      try {
+        const { error } =
+          await supabaseClient.auth.resetPasswordForEmail(email);
+
+        if (error) throw error;
+
+        showAuthMessage(
+          "If password recovery is available, check your email for the reset link."
+        );
+      } catch (error) {
+        showAuthMessage(
+          error.message || "Could not request password recovery.",
+          true
+        );
+      }
+    }
+  );
+
+  document.getElementById("saveProfileBtn").addEventListener(
+    "click",
+    async function () {
+      if (!currentKRONUser) {
+        showProfileMessage("Please log in again.", true);
+        return;
+      }
+
+      const displayName =
+        document.getElementById("profileName").value.trim();
+
+      const favoriteSubject =
+        document.getElementById("favoriteSubject").value;
+
+      if (!displayName) {
+        showProfileMessage("Please enter your display name.", true);
+        return;
+      }
+
+      const button = document.getElementById("saveProfileBtn");
+      button.disabled = true;
+      button.textContent = "Saving...";
+
+      try {
+        const { error } = await supabaseClient
+          .from("profiles")
+          .upsert(
+            {
+              id: currentKRONUser.id,
+              display_name: displayName,
+              favorite_subject: favoriteSubject || null
+            },
+            {
+              onConflict: "id"
+            }
+          );
+
+        if (error) throw error;
+
+        showProfileMessage("Your profile has been saved.");
+      } catch (error) {
+        showProfileMessage(
+          error.message || "Could not save your profile.",
+          true
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = "Save Profile";
+      }
+    }
+  );
+
+  document.getElementById("logoutBtn").addEventListener(
+    "click",
+    async function () {
+      const button = document.getElementById("logoutBtn");
+      button.disabled = true;
+      button.textContent = "Logging out...";
+
+      try {
+        const { error } = await supabaseClient.auth.signOut();
+
+        if (error) throw error;
+
+        currentKRONUser = null;
+
+        document.getElementById("profileName").value = "";
+        document.getElementById("favoriteSubject").value = "";
+
+        await checkKRONSession();
+
+        showAuthMessage("You have logged out successfully.");
+      } catch (error) {
+        showProfileMessage(
+          error.message || "Could not log out.",
+          true
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = "Log Out";
+      }
+    }
+  );
+
+  supabaseClient.auth.onAuthStateChange(
+    async function (event, session) {
+      if (event === "SIGNED_IN" && session?.user) {
+        currentKRONUser = session.user;
+      }
+
+      if (event === "SIGNED_OUT") {
+        currentKRONUser = null;
+      }
+    }
+  );
+
+  checkKRONSession();
+    }
     
 function loadSavedData() {
   try {
@@ -950,6 +1527,7 @@ function connectNavigation() {
 function startKRON() {
   loadSavedData();
   connectNavigation();
+  connectKRONAccounts();
   updateDashboardDate();
   updateDashboardStats();
   showPage("home");
