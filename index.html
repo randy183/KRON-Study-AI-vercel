@@ -495,6 +495,41 @@ main {
     padding: 10px 8px;
   }
 }
+  /* Favorite Subjects */
+.favorite-subjects-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.favorite-subjects-list label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px;
+  min-height: 44px;
+  border: 1px solid rgba(100, 116, 139, 0.45);
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.06);
+  color: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.favorite-subjects-list input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: #2563eb;
+}
+
+.favorite-subjects-list label:has(input:checked) {
+  border-color: #3b82f6;
+  background: rgba(37, 99, 235, 0.18);
+  }
 </style>
 </head>
 <body>
@@ -832,29 +867,40 @@ main {
           >
         </div>
 
-        <div class="form-field">
-          <label for="favoriteSubject">Favorite Subject</label>
-          <select id="favoriteSubject">
-            <option value="">Choose a subject</option>
-            <option>Mathematics</option>
-            <option>English Language</option>
-            <option>Physics</option>
-            <option>Chemistry</option>
-            <option>Biology</option>
-            <option>Agricultural Science</option>
-            <option>Economics</option>
-            <option>Government</option>
-            <option>Geography</option>
-            <option>Commerce</option>
-            <option>Financial Accounting</option>
-            <option>Literature in English</option>
-            <option>Christian Religious Studies</option>
-            <option>Islamic Religious Studies</option>
-            <option>Computer Studies</option>
-            <option>Other</option>
-          </select>
-        </div>
-
+     <div class="form-field">
+          <label>Favorite Subjects</label>
+          <p class="muted">Select all the subjects you enjoy studying.</p>    
+       
+       <div id="favoriteSubjectsList" class="favorite-subjects-list">
+        <label><input type="checkbox" value="Mathematics"> Mathematics</label>
+        <label><input type="checkbox" value="English Language"> English Language</label>
+        <label><input type="checkbox" value="Physics"> Physics</label>
+        <label><input type="checkbox" value="Chemistry"> Chemistry</label>
+        <label><input type="checkbox" value="Biology"> Biology</label>
+        <label><input type="checkbox" value="Agricultural Science"> Agricultural Science</label>
+        <label><input type="checkbox" value="Economics"> Economics</label>
+        <label><input type="checkbox" value="Government"> Government</label>
+        <label><input type="checkbox" value="Geography"> Geography</label>
+        <label><input type="checkbox" value="Commerce"> Commerce</label>
+        <label><input type="checkbox" value="Financial Accounting"> Financial Accounting</label>
+        <label><input type="checkbox" value="Literature in English"> Literature in English</label>
+        <label><input type="checkbox" value="Christian Religious Studies"> Christian Religious Studies</label>
+        <label><input type="checkbox" value="Islamic Religious Studies"> Islamic Religious Studies</label>
+        <label><input type="checkbox" value="Computer Studies"> Computer Studies</label>
+        <label><input type="checkbox" value="Civic Education"> Civic Education</label>
+        <label><input type="checkbox" value="Further Mathematics"> Further Mathematics</label>
+        <label><input type="checkbox" value="Data Processing"> Data Processing</label>
+        <label><input type="checkbox" value="Marketing"> Marketing</label>
+        <label><input type="checkbox" value="Insurance"> Insurance</label>
+        <label><input type="checkbox" value="Technical Drawing"> Technical Drawing</label>
+        <label><input type="checkbox" value="Visual Arts"> Visual Arts</label>
+        <label><input type="checkbox" value="Music"> Music</label>
+        <label><input type="checkbox" value="Yoruba"> Yoruba</label>
+        <label><input type="checkbox" value="Igbo"> Igbo</label>
+        <label><input type="checkbox" value="Hausa"> Hausa</label>
+        <label><input type="checkbox" value="Other"> Other</label>
+      </div>
+  </div>
         <p id="accountEmail" class="muted"></p>
 
         <button
@@ -1066,10 +1112,17 @@ async function loadKRONProfile(user) {
     user.user_metadata?.display_name ||
     "";
 
-  document.getElementById("favoriteSubject").value =
-    data?.favorite_subject || "";
-}
+  const savedSubjects = (data?.favorite_subject || "")
+    .split(",")
+    .map(subject => subject.trim())
+    .filter(Boolean);
 
+  document.querySelectorAll(
+    '#favoriteSubjectsList input[type="checkbox"]'
+  ).forEach(checkbox => {
+    checkbox.checked = savedSubjects.includes(checkbox.value);
+  });
+    }
 async function checkKRONSession() {
   const { data, error } =
     await supabaseClient.auth.getSession();
@@ -1235,57 +1288,63 @@ function connectKRONAccounts() {
     }
   );
 
-  document.getElementById("saveProfileBtn").addEventListener(
-    "click",
-    async function () {
-      if (!currentKRONUser) {
-        showProfileMessage("Please log in again.", true);
-        return;
-      }
+document.getElementById("saveProfileBtn").addEventListener(
+"click",
+async function () {
+if (!currentKRONUser) {
+showProfileMessage("Please log in again.", true);
+return;
+}
 
-      const displayName =
-        document.getElementById("profileName").value.trim();
+  const displayName =
+    document.getElementById("profileName").value.trim();
 
-      const favoriteSubject =
-        document.getElementById("favoriteSubject").value;
+  const favoriteSubjects = Array.from(
+    document.querySelectorAll(
+      '#favoriteSubjectsList input[type="checkbox"]:checked'
+    )
+  ).map(checkbox => checkbox.value);
 
-      if (!displayName) {
-        showProfileMessage("Please enter your display name.", true);
-        return;
-      }
+  if (!displayName) {
+    showProfileMessage("Please enter your display name.", true);
+    return;
+  }
 
-      const button = document.getElementById("saveProfileBtn");
-      button.disabled = true;
-      button.textContent = "Saving...";
+  const button = document.getElementById("saveProfileBtn");
+  button.disabled = true;
+  button.textContent = "Saving...";
 
-      try {
-        const { error } = await supabaseClient
-          .from("profiles")
-          .upsert(
-            {
-              id: currentKRONUser.id,
-              display_name: displayName,
-              favorite_subject: favoriteSubject || null
-            },
-            {
-              onConflict: "id"
-            }
-          );
+  try {
+    const { error } = await supabaseClient
+      .from("profiles")
+      .upsert(
+        {
+          id: currentKRONUser.id,
+          display_name: displayName,
+          favorite_subject: favoriteSubjects.length
+            ? favoriteSubjects.join(", ")
+            : null
+        },
+        {
+          onConflict: "id"
+        }
+      );
 
-        if (error) throw error;
+    if (error) throw error;
 
-        showProfileMessage("Your profile has been saved.");
-      } catch (error) {
-        showProfileMessage(
-          error.message || "Could not save your profile.",
-          true
-        );
-      } finally {
-        button.disabled = false;
-        button.textContent = "Save Profile";
-      }
-    }
-  );
+    showProfileMessage("Your profile has been saved.");
+  } catch (error) {
+    showProfileMessage(
+      error.message || "Could not save your profile.",
+      true
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = "Save Profile";
+  }
+}
+
+);
 
   document.getElementById("logoutBtn").addEventListener(
     "click",
