@@ -1360,9 +1360,14 @@ return;
 
         currentKRONUser = null;
 
-        document.getElementById("profileName").value = "";
-        document.getElementById("favoriteSubject").value = "";
+               document.getElementById("profileName").value = "";
 
+        document.querySelectorAll(
+          '#favoriteSubjectsList input[type="checkbox"]'
+        ).forEach(checkbox => {
+          checkbox.checked = false;
+        }); 
+        
         await checkKRONSession();
 
         showAuthMessage("You have logged out successfully.");
