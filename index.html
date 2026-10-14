@@ -530,6 +530,205 @@ main {
   border-color: #3b82f6;
   background: rgba(37, 99, 235, 0.18);
   }
+
+  /* KRON AI TUTOR — CHAT LAYOUT */
+
+.tutor-container {
+display: flex;
+flex-direction: column;
+gap: 14px;
+width: 100%;
+max-width: 850px;
+margin: 0 auto;
+min-width: 0;
+}
+
+.tutor-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 12px;
+padding: 12px 14px;
+background: var(--panel, #101f35);
+border: 1px solid var(--border, #243650);
+border-radius: 14px;
+}
+
+.tutor-header h2 {
+margin: 0 0 4px;
+font-size: 18px;
+}
+
+.tutor-header p {
+margin: 0;
+font-size: 12px;
+opacity: 0.75;
+}
+
+.tutor-settings {
+display: grid;
+grid-template-columns: auto minmax(0, 1fr);
+align-items: center;
+gap: 10px;
+padding: 12px;
+background: var(--panel, #101f35);
+border: 1px solid var(--border, #243650);
+border-radius: 14px;
+}
+
+.tutor-settings label {
+font-size: 13px;
+font-weight: 600;
+}
+
+.tutor-settings select {
+width: 100%;
+min-width: 0;
+padding: 10px;
+border-radius: 9px;
+}
+
+.tutor-chat-messages {
+display: flex;
+flex-direction: column;
+align-items: stretch;
+gap: 14px;
+width: 100%;
+min-width: 0;
+min-height: 280px;
+max-height: 55vh;
+overflow-y: auto;
+padding: 14px 10px;
+background: var(--bg, #07111f);
+border: 1px solid var(--border, #243650);
+border-radius: 16px;
+scroll-behavior: smooth;
+}
+
+.tutor-message {
+display: block;
+width: fit-content;
+max-width: 88%;
+min-width: 0;
+padding: 11px 14px;
+border-radius: 15px;
+overflow-wrap: anywhere;
+word-break: normal;
+line-height: 1.6;
+font-size: 14px;
+}
+
+.tutor-message strong {
+display: block;
+margin-bottom: 6px;
+font-size: 12px;
+}
+
+.tutor-message p {
+margin: 5px 0;
+}
+
+.tutor-ai-message {
+align-self: flex-start;
+margin-right: auto;
+color: var(--text, #e8eef8);
+background: var(--panel2, #172943);
+border: 1px solid var(--border, #243650);
+border-top-left-radius: 5px;
+}
+
+.tutor-user-message {
+align-self: flex-end;
+margin-left: auto;
+color: #ffffff;
+background: #2563eb;
+border: 1px solid #3b82f6;
+border-top-right-radius: 5px;
+}
+
+.tutor-message pre {
+max-width: 100%;
+overflow-x: auto;
+white-space: pre-wrap;
+}
+
+.tutor-message table {
+display: block;
+max-width: 100%;
+overflow-x: auto;
+border-collapse: collapse;
+}
+
+.tutor-message th,
+.tutor-message td {
+padding: 7px;
+border: 1px solid var(--border, #40516b);
+text-align: left;
+}
+
+.tutor-chat-form {
+display: flex;
+align-items: flex-end;
+gap: 9px;
+padding: 10px;
+background: var(--panel, #101f35);
+border: 1px solid var(--border, #243650);
+border-radius: 15px;
+}
+
+.tutor-chat-form textarea {
+flex: 1;
+width: 0;
+min-width: 0;
+resize: vertical;
+padding: 12px;
+border: 1px solid var(--border, #40516b);
+border-radius: 11px;
+background: var(--bg, #07111f);
+color: var(--text, #e8eef8);
+font: inherit;
+}
+
+.tutor-chat-form button {
+flex-shrink: 0;
+min-height: 44px;
+}
+
+.tutor-note {
+margin: 0;
+font-size: 11px;
+text-align: center;
+opacity: 0.7;
+}
+
+@media (max-width: 480px) {
+.tutor-header {
+padding: 10px;
+}
+
+.tutor-header h2 {
+font-size: 16px;
+}
+
+.tutor-message {
+max-width: 94%;
+font-size: 14px;
+}
+
+.tutor-chat-messages {
+padding: 12px 8px;
+max-height: 52vh;
+}
+
+.tutor-chat-form {
+gap: 7px;
+padding: 8px;
+}
+
+.tutor-chat-form button {
+padding: 10px;
+}
+  }
 </style>
 </head>
 <body>
