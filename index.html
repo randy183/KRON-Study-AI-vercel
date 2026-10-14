@@ -648,11 +648,75 @@ main {
   </section>
 
   <section class="page" id="page-tutor">
-    <div class="placeholder">
-      <h2>🤖 AI Tutor</h2>
-      <p>Your personal tutor will guide you through lessons, explain difficult concepts, and check your understanding.</p>
-      <p class="muted">The teaching interface and AI connection will be added in the next stages.</p>
+    <div class="tutor-container">  <div class="tutor-header">
+    <div>
+      <h2>🤖 KRON AI Tutor</h2>
+      <p>Your personal learning assistant</p>
     </div>
+    <button type="button" id="clearTutorChat" class="secondary-btn">
+      New Chat
+    </button>
+  </div>
+
+  <div class="tutor-settings">
+    <label for="tutorLevel">Your Level</label>
+    <select id="tutorLevel">
+      <option value="SS1">SS1</option>
+      <option value="SS2">SS2</option>
+      <option value="SS3">SS3</option>
+      <option value="WAEC">WAEC Preparation</option>
+    </select>
+
+    <label for="tutorSubject">Subject</label>
+    <select id="tutorSubject">
+      <option value="General">General Questions</option>
+      <option value="Mathematics">Mathematics</option>
+      <option value="English Language">English Language</option>
+      <option value="Physics">Physics</option>
+      <option value="Chemistry">Chemistry</option>
+      <option value="Biology">Biology</option>
+      <option value="Economics">Economics</option>
+      <option value="Government">Government</option>
+      <option value="Geography">Geography</option>
+      <option value="Agricultural Science">Agricultural Science</option>
+      <option value="Commerce">Commerce</option>
+      <option value="Financial Accounting">Financial Accounting</option>
+      <option value="CRS">Christian Religious Studies</option>
+      <option value="IRS">Islamic Religious Studies</option>
+      <option value="Further Mathematics">Further Mathematics</option>
+      <option value="Literature in English">Literature in English</option>
+      <option value="Computer Studies">Computer Studies</option>
+    </select>
+  </div>
+
+  <div id="tutorChatMessages" class="tutor-chat-messages" aria-live="polite">
+    <div class="tutor-message tutor-ai-message">
+      <strong>KRON AI Tutor</strong>
+      <p>Hello! What would you like to learn today?</p>
+      <p>I can explain difficult topics, solve questions step by step, and help you prepare for examinations.</p>
+      <p>Choose your level and subject above, then ask your first question!</p>
+    </div>
+  </div>
+
+  <form id="tutorChatForm" class="tutor-chat-form">
+    <textarea
+      id="tutorMessageInput"
+      placeholder="Ask KRON anything about your studies..."
+      rows="2"
+      maxlength="4000"
+      required
+    ></textarea>
+    <button type="submit" id="tutorSendButton">
+      Send ➤
+    </button>
+  </form>
+
+  <p class="muted tutor-note">
+    Check important answers against your textbooks and class notes.
+  </p>
+
+</div>
+
   </section>
 
   <section class="page" id="page-quiz">
