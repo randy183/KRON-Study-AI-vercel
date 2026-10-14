@@ -1368,9 +1368,12 @@ return;
           checkbox.checked = false;
         }); 
         
-        await checkKRONSession();
+            document.getElementById("authPanel").classList.remove("hidden");
+    document.getElementById("accountPanel").classList.add("hidden");
 
-        showAuthMessage("You have logged out successfully.");
+    showAuthMode("login");
+    showAuthMessage("You have logged out successfully.");
+        
       } catch (error) {
         showProfileMessage(
           error.message || "Could not log out.",
