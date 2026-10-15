@@ -1350,7 +1350,7 @@ function showAuthMode(mode) {
   showAuthMessage("");
 }
 
-async function loadKRONProfile(user) {
+   async function loadKRONProfile(user) {
   currentKRONUser = user;
 
   document.getElementById("authPanel").classList.add("hidden");
@@ -1367,16 +1367,18 @@ async function loadKRONProfile(user) {
 
   const { data, error } = await supabaseClient
     .from("profiles")
-    .select("display_name, favorite_subject")
+    .select("display_name, favorite_subject, class_level")
     .eq("id", user.id)
     .maybeSingle();
 
   if (error) {
     console.error("Could not load profile:", error.message);
+
     showProfileMessage(
       "Your account is active, but your profile could not be loaded.",
       true
     );
+
     return;
   }
 
@@ -1384,6 +1386,13 @@ async function loadKRONProfile(user) {
     data?.display_name ||
     user.user_metadata?.display_name ||
     "";
+
+  const classSelector =
+    document.getElementById("profileClassLevel");
+
+  if (classSelector) {
+    classSelector.value = data?.class_level || "";
+  }
 
   const savedSubjects = (data?.favorite_subject || "")
     .split(",")
@@ -1396,6 +1405,7 @@ async function loadKRONProfile(user) {
     checkbox.checked = savedSubjects.includes(checkbox.value);
   });
     }
+    
 async function checkKRONSession() {
   const { data, error } =
     await supabaseClient.auth.getSession();
@@ -1561,7 +1571,7 @@ function connectKRONAccounts() {
     }
   );
 
-document.getElementById("saveProfileBtn").addEventListener(
+ document.getElementById("saveProfileBtn").addEventListener(
 "click",
 async function () {
 if (!currentKRONUser) {
@@ -1569,56 +1579,69 @@ showProfileMessage("Please log in again.", true);
 return;
 }
 
-  const displayName =
-    document.getElementById("profileName").value.trim();
+const displayName =
+  document.getElementById("profileName").value.trim();
 
-  const favoriteSubjects = Array.from(
-    document.querySelectorAll(
-      '#favoriteSubjectsList input[type="checkbox"]:checked'
-    )
-  ).map(checkbox => checkbox.value);
+const classLevel =
+  document.getElementById("profileClassLevel").value;
 
-  if (!displayName) {
-    showProfileMessage("Please enter your display name.", true);
-    return;
-  }
+const favoriteSubjects = Array.from(
+  document.querySelectorAll(
+    '#favoriteSubjectsList input[type="checkbox"]:checked'
+  )
+).map(checkbox => checkbox.value);
 
-  const button = document.getElementById("saveProfileBtn");
-  button.disabled = true;
-  button.textContent = "Saving...";
-
-  try {
-    const { error } = await supabaseClient
-      .from("profiles")
-      .upsert(
-        {
-          id: currentKRONUser.id,
-          display_name: displayName,
-          favorite_subject: favoriteSubjects.length
-            ? favoriteSubjects.join(", ")
-            : null
-        },
-        {
-          onConflict: "id"
-        }
-      );
-
-    if (error) throw error;
-
-    showProfileMessage("Your profile has been saved.");
-  } catch (error) {
-    showProfileMessage(
-      error.message || "Could not save your profile.",
-      true
-    );
-  } finally {
-    button.disabled = false;
-    button.textContent = "Save Profile";
-  }
+if (!displayName) {
+  showProfileMessage("Please enter your display name.", true);
+  return;
 }
 
-);
+if (!["SS1", "SS2", "SS3", "WAEC"].includes(classLevel)) {
+  showProfileMessage("Please select your class level.", true);
+  return;
+}
 
+if (favoriteSubjects.length === 0) {
+  showProfileMessage("Please select at least one subject.", true);
+  return;
+}
+
+const button = document.getElementById("saveProfileBtn");
+button.disabled = true;
+button.textContent = "Saving...";
+
+try {
+  const { error } = await supabaseClient
+    .from("profiles")
+    .upsert(
+      {
+        id: currentKRONUser.id,
+        display_name: displayName,
+        favorite_subject: favoriteSubjects.join(", "),
+        class_level: classLevel
+      },
+      {
+        onConflict: "id"
+      }
+    );
+
+  if (error) throw error;
+
+  showProfileMessage("Your profile and class have been saved.");
+} catch (error) {
+  console.error("KRON profile save error:", error);
+
+  showProfileMessage(
+    error.message || "Could not save your profile.",
+    true
+  );
+} finally {
+  button.disabled = false;
+  button.textContent = "Save Profile";
+}
+
+}
+);
   document.getElementById("logoutBtn").addEventListener(
     "click",
     async function () {
