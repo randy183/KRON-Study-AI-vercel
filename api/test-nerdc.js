@@ -7,8 +7,9 @@ export default async function handler(req, res) {
 
   const targets = [
     "https://lmis.nerdcportals.com.ng/sss_1",
-    "https://lmis.nerdcportals.com.ng/sss_2",
-    "https://lmis.nerdcportals.com.ng/sss_3"
+    "https://lmis.nerdcportals.com.ng/s1_core",
+    "https://lmis.nerdcportals.com.ng/sss_1/necurrdc/viewer.html?file=4.pdf",
+    "https://lmis.nerdcportals.com.ng/sss_1/necurrdc/viewer.html?file=6.pdf"
   ];
 
   const results = [];
@@ -31,6 +32,29 @@ export default async function handler(req, res) {
           .replace(/\s+/g, " ")
           .trim() || "";
 
+      const links = [];
+      const pattern =
+        /<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+
+      let match;
+
+      while ((match = pattern.exec(html)) !== null) {
+        links.push({
+          text: match[2]
+            .replace(/<[^>]*>/g, " ")
+            .replace(/\s+/g, " ")
+            .trim(),
+          url: new URL(match[1], response.url).href
+        });
+      }
+
+      const visibleText = html
+        .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+        .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
       results.push({
         requestedUrl: url,
         finalUrl: response.url,
@@ -38,9 +62,8 @@ export default async function handler(req, res) {
         contentType: response.headers.get("content-type"),
         pageLength: html.length,
         title,
-        hasLoginForm: /type=["']password["']/i.test(html),
-        hasPdfLink: /\.pdf(?:[?#"']|$)/i.test(html),
-        preview: html.slice(0, 250)
+        textPreview: visibleText.slice(0, 1800),
+        links: links.slice(0, 25)
       });
     } catch (error) {
       results.push({
