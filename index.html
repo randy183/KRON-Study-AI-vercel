@@ -1480,28 +1480,162 @@ function showAuthMode(mode) {
   });
     }
 
-    async function loadCurriculumProfile() {
-  const classDisplay = document.getElementById("curriculumClass");
-  const introDisplay = document.getElementById("curriculumIntro");
-  const subjectsDisplay = document.getElementById("curriculumSubjects");
-  const weeksDisplay = document.getElementById("curriculumWeeks");
+  /* =========================================
+   KRON CURRICULUM SYSTEM
+   ========================================= */
 
-  if (!classDisplay || !introDisplay || !subjectsDisplay || !weeksDisplay) {
+let kronCurriculumProfile = {
+  level: "",
+  subjects: [],
+  term: ""
+};
+
+let kronCurriculumRequestId = 0;
+
+function curriculumElement(tag, className, text) {
+  const element = document.createElement(tag);
+
+  if (className) {
+    element.className = className;
+  }
+
+  if (text !== undefined) {
+    element.textContent = text;
+  }
+
+  return element;
+}
+
+function curriculumButton(text, onClick) {
+  const button = document.createElement("button");
+
+  button.type = "button";
+  button.className = "secondary-btn";
+  button.textContent = text;
+  button.style.margin = "5px";
+  button.addEventListener("click", onClick);
+
+  return button;
+}
+
+function curriculumMessage(container, message) {
+  container.replaceChildren();
+
+  const card = curriculumElement(
+    "div",
+    "stat-card",
+    ""
+  );
+
+  card.appendChild(
+    curriculumElement("p", "", message)
+  );
+
+  container.appendChild(card);
+}
+
+function getCurriculumTermOptions(level) {
+  if (level === "WAEC") {
+    return ["WAEC Syllabus"];
+  }
+
+  return [
+    "First Term",
+    "Second Term",
+    "Third Term"
+  ];
+}
+
+async function requestCurriculumAPI(payload) {
+  const response = await fetch("/api/curriculum", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  let data;
+
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error(
+      "The curriculum server returned an invalid response."
+    );
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.error ||
+      "Unable to retrieve curriculum content."
+    );
+  }
+
+  if (!data.success || !data.content) {
+    throw new Error(
+      "The curriculum server returned no usable content."
+    );
+  }
+
+  return data;
+}
+
+async function loadCurriculumProfile() {
+  const classDisplay =
+    document.getElementById("curriculumClass");
+
+  const introDisplay =
+    document.getElementById("curriculumIntro");
+
+  const subjectsDisplay =
+    document.getElementById("curriculumSubjects");
+
+  const weeksDisplay =
+    document.getElementById("curriculumWeeks");
+
+  if (
+    !classDisplay ||
+    !introDisplay ||
+    !subjectsDisplay ||
+    !weeksDisplay
+  ) {
     return;
   }
 
   if (!currentKRONUser) {
     classDisplay.textContent = "Please log in";
-    introDisplay.textContent = "Log in to view your personal curriculum.";
-    subjectsDisplay.textContent = "Your subjects will appear here after login.";
-    weeksDisplay.textContent = "Your study weeks will appear here after login.";
+
+    introDisplay.textContent =
+      "Log in to access your curriculum.";
+
+    curriculumMessage(
+      subjectsDisplay,
+      "Your selected subjects will appear here."
+    );
+
+    curriculumMessage(
+      weeksDisplay,
+      "Log in to load your study curriculum."
+    );
+
     return;
   }
 
-  classDisplay.textContent = "Loading...";
-  introDisplay.textContent = "Retrieving your saved profile...";
-  subjectsDisplay.textContent = "Loading subjects...";
-  weeksDisplay.textContent = "Loading study weeks...";
+  classDisplay.textContent = "Loading profile...";
+
+  introDisplay.textContent =
+    "Retrieving your saved class and subjects.";
+
+  curriculumMessage(
+    subjectsDisplay,
+    "Loading your subjects..."
+  );
+
+  curriculumMessage(
+    weeksDisplay,
+    "Preparing your curriculum..."
+  );
 
   try {
     const { data, error } = await supabaseClient
@@ -1510,15 +1644,30 @@ function showAuthMode(mode) {
       .eq("id", currentKRONUser.id)
       .maybeSingle();
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
-    if (!data?.class_level) {
+    if (!data || !data.class_level) {
       classDisplay.textContent = "Class not selected";
-      introDisplay.textContent = "Open your Profile and save your class level.";
-      subjectsDisplay.textContent = "No subjects available yet.";
-      weeksDisplay.textContent = "Save your profile to begin.";
+
+      introDisplay.textContent =
+        "Open your Profile and save your class first.";
+
+      curriculumMessage(
+        subjectsDisplay,
+        "Select your subjects in your Profile."
+      );
+
+      curriculumMessage(
+        weeksDisplay,
+        "Your curriculum will appear after your profile is saved."
+      );
+
       return;
     }
+
+    const level = data.class_level;
 
     const classNames = {
       SS1: "Senior Secondary School 1",
@@ -1527,107 +1676,817 @@ function showAuthMode(mode) {
       WAEC: "WAEC Preparation"
     };
 
-    classDisplay.textContent =
-      classNames[data.class_level] || data.class_level;
-
-    introDisplay.textContent =
-      "Your curriculum will be organised for " + classDisplay.textContent + ".";
-
-    const subjects = (data.favorite_subject || "")
+    const subjects = String(
+      data.favorite_subject || ""
+    )
       .split(",")
-      .map(subject => subject.trim())
+      .map(function(subject) {
+        return subject.trim();
+      })
       .filter(Boolean);
 
+    kronCurriculumProfile.level = level;
+    kronCurriculumProfile.subjects = subjects;
+
+    classDisplay.textContent =
+      classNames[level] || level;
+
+    introDisplay.textContent =
+      "Choose your term and subject to load your learning roadmap.";
+
     subjectsDisplay.replaceChildren();
-
-    if (subjects.length === 0) {
-      subjectsDisplay.textContent =
-        "No subjects selected. Choose subjects in your Profile.";
-    } else {
-      subjects.forEach(subject => {
-        const card = document.createElement("div");
-        card.className = "stat-card";
-
-        const title = document.createElement("h3");
-        title.textContent = subject;
-
-        const description = document.createElement("p");
-        description.textContent = "Curriculum subject";
-
-        card.append(title, description);
-        subjectsDisplay.appendChild(card);
-      });
-    }
-
     weeksDisplay.replaceChildren();
 
-    for (let week = 1; week <= 12; week++) {
-  const card = document.createElement("button");
-
-  card.type = "button";
-  card.className = "stat-card";
-  card.style.color = "white";
-  card.style.backgroundColor = "#0b1730";
-  card.style.cursor = "pointer";
-  card.style.textAlign = "left";
-  card.style.width = "100%";
-  card.style.marginBottom = "12px";
-  card.setAttribute("aria-label", "Open Week " + week);
-
-  const title = document.createElement("h3");
-  title.textContent = "📅 Week " + week;
-
-  const description = document.createElement("p");
-  description.textContent = "Tap to view this week's subjects.";
-
-  card.append(title, description);
-
-  card.addEventListener("click", function () {
-    introDisplay.textContent =
-      "You selected Week " + week + " for " +
-      classDisplay.textContent + ".";
-
-    subjectsDisplay.replaceChildren();
-
     if (subjects.length === 0) {
-      subjectsDisplay.textContent =
-        "No subjects selected. Update your Profile first.";
+      curriculumMessage(
+        subjectsDisplay,
+        "No subjects selected. Update your Profile first."
+      );
+
+      curriculumMessage(
+        weeksDisplay,
+        "Select subjects in your Profile before continuing."
+      );
+
       return;
     }
 
-    subjects.forEach(function (subject) {
-      const subjectCard = document.createElement("div");
-      subjectCard.className = "stat-card";
+    /* TERM SELECTOR */
 
-      const subjectTitle = document.createElement("h3");
-      subjectTitle.textContent = "📘 " + subject;
+    const termCard = curriculumElement(
+      "div",
+      "stat-card"
+    );
 
-      const subjectDescription = document.createElement("p");
-      subjectDescription.textContent =
-        "Week " + week + " · Curriculum topics will be added here.";
+    termCard.style.marginBottom = "16px";
 
-      subjectCard.append(subjectTitle, subjectDescription);
-      subjectsDisplay.appendChild(subjectCard);
+    termCard.appendChild(
+      curriculumElement(
+        "h3",
+        "",
+        "Choose your term"
+      )
+    );
+
+    const termSelect = document.createElement("select");
+
+    termSelect.id = "curriculumTermSelect";
+    termSelect.style.width = "100%";
+    termSelect.style.padding = "12px";
+    termSelect.style.marginTop = "10px";
+    termSelect.style.borderRadius = "8px";
+    termSelect.style.border = "1px solid #2563eb";
+    termSelect.style.fontSize = "16px";
+
+    const termOptions =
+      getCurriculumTermOptions(level);
+
+    termOptions.forEach(function(term) {
+      const option = document.createElement("option");
+
+      option.value = term;
+      option.textContent = term;
+
+      termSelect.appendChild(option);
     });
 
-    subjectsDisplay.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  });
+    const savedTermKey =
+      "KRON_CURRICULUM_TERM_" + level;
 
-        weeksDisplay.appendChild(card);
+    try {
+      const savedTerm = localStorage.getItem(
+        savedTermKey
+      );
+
+      if (termOptions.includes(savedTerm)) {
+        termSelect.value = savedTerm;
+      }
+    } catch (error) {
+      console.warn("Could not read saved curriculum term.");
     }
+
+    kronCurriculumProfile.term = termSelect.value;
+
+    termCard.appendChild(termSelect);
+
+    const termHelp = curriculumElement(
+      "p",
+      "",
+      level === "WAEC"
+        ? "WAEC preparation uses the WAEC syllabus."
+        : "Choose the term you are currently studying."
+    );
+
+    termCard.appendChild(termHelp);
+
+    weeksDisplay.appendChild(termCard);
+
+    /* SUBJECT CARDS */
+
+    subjects.forEach(function(subject) {
+      const card = curriculumElement(
+        "div",
+        "stat-card"
+      );
+
+      card.style.marginBottom = "12px";
+
+      card.appendChild(
+        curriculumElement(
+          "h3",
+          "",
+          "📘 " + subject
+        )
+      );
+
+      card.appendChild(
+        curriculumElement(
+          "p",
+          "",
+          "Load the researched curriculum and weekly topics."
+        )
+      );
+
+      const button = curriculumButton(
+        "Load Curriculum",
+        function() {
+          loadSubjectCurriculum(subject);
+        }
+      );
+
+      card.appendChild(button);
+
+      subjectsDisplay.appendChild(card);
+    });
+
+    termSelect.addEventListener(
+      "change",
+      function() {
+        kronCurriculumProfile.term = termSelect.value;
+
+        try {
+          localStorage.setItem(
+            savedTermKey,
+            termSelect.value
+          );
+        } catch (error) {
+          console.warn("Could not save curriculum term.");
+        }
+
+        kronCurriculumRequestId++;
+
+        curriculumMessage(
+          weeksDisplay,
+          "Term changed. Select Load Curriculum beside a subject."
+        );
+      }
+    );
+
+    try {
+      localStorage.setItem(
+        savedTermKey,
+        termSelect.value
+      );
+    } catch (error) {
+      console.warn("Could not save curriculum term.");
+    }
+
+    curriculumMessage(
+      weeksDisplay,
+      "Choose a subject above to retrieve its weekly curriculum."
+    );
 
   } catch (error) {
-    console.error("Curriculum profile loading error:", error);
+    console.error(
+      "KRON curriculum profile error:",
+      error
+    );
 
     classDisplay.textContent = "Unable to load profile";
-    introDisplay.textContent = "Please refresh and try again.";
-    subjectsDisplay.textContent = "Subjects could not be loaded.";
-    weeksDisplay.textContent = "Study weeks could not be loaded.";
+
+    introDisplay.textContent =
+      error.message ||
+      "Please refresh the page and try again.";
+
+    curriculumMessage(
+      subjectsDisplay,
+      "Your subjects could not be loaded."
+    );
+
+    curriculumMessage(
+      weeksDisplay,
+      "Please check your connection and try again."
+    );
   }
+}
+
+/* =========================================
+   LOAD A SUBJECT'S WEEKLY CURRICULUM
+   ========================================= */
+
+async function loadSubjectCurriculum(subject) {
+  const weeksDisplay =
+    document.getElementById("curriculumWeeks");
+
+  const introDisplay =
+    document.getElementById("curriculumIntro");
+
+  const termSelect =
+    document.getElementById("curriculumTermSelect");
+
+  if (!weeksDisplay || !termSelect) {
+    return;
+  }
+
+  if (!currentKRONUser) {
+    curriculumMessage(
+      weeksDisplay,
+      "Please log in to access your curriculum."
+    );
+
+    return;
+  }
+
+  const level = kronCurriculumProfile.level;
+  const term = termSelect.value;
+  const requestId = ++kronCurriculumRequestId;
+
+  kronCurriculumProfile.term = term;
+
+  introDisplay.textContent =
+    "Researching " + subject + " for " + term + "...";
+
+  curriculumMessage(
+    weeksDisplay,
+    "Checking saved curriculum first. If it is not saved, KRON will attempt online research."
+  );
+
+  try {
+    const result = await requestCurriculumAPI({
+      action: "getCurriculum",
+      level: level,
+      term: term,
+      subject: subject
+    });
+
+    if (requestId !== kronCurriculumRequestId) {
+      return;
     }
+
+    const content = result.content;
+
+    if (
+      !content ||
+      !Array.isArray(content.topics) ||
+      content.topics.length === 0
+    ) {
+      throw new Error(
+        "No weekly topics were returned for this subject."
+      );
+    }
+
+    introDisplay.textContent =
+      (content.title || subject + " Curriculum") +
+      " · " + level + " · " + term +
+      (result.cached ? " · Saved curriculum" : " · Newly generated");
+
+    displayCurriculumTopics(
+      subject,
+      content,
+      result.cached
+    );
+
+  } catch (error) {
+    if (requestId !== kronCurriculumRequestId) {
+      return;
+    }
+
+    console.error(
+      "KRON curriculum request failed:",
+      error
+    );
+
+    introDisplay.textContent =
+      "Could not load " + subject + " for " + term + ".";
+
+    curriculumMessage(
+      weeksDisplay,
+      error.message ||
+      "Please check your connection and try again."
+    );
+
+    const retryButton = curriculumButton(
+      "Try Again",
+      function() {
+        loadSubjectCurriculum(subject);
+      }
+    );
+
+    const retryCard = curriculumElement(
+      "div",
+      "stat-card"
+    );
+
+    retryCard.appendChild(retryButton);
+    weeksDisplay.appendChild(retryCard);
+  }
+}
+
+/* =========================================
+   DISPLAY WEEKLY TOPICS
+   ========================================= */
+
+function displayCurriculumTopics(
+  subject,
+  content,
+  cached
+) {
+  const weeksDisplay =
+    document.getElementById("curriculumWeeks");
+
+  if (!weeksDisplay) {
+    return;
+  }
+
+  weeksDisplay.replaceChildren();
+
+  const headingCard = curriculumElement(
+    "div",
+    "stat-card"
+  );
+
+  headingCard.appendChild(
+    curriculumElement(
+      "h3",
+      "",
+      "📚 " + subject + " Topics"
+    )
+  );
+
+  headingCard.appendChild(
+    curriculumElement(
+      "p",
+      "",
+      cached
+        ? "Loaded from your saved curriculum."
+        : "This curriculum has been generated and saved."
+    )
+  );
+
+  const backButton = curriculumButton(
+    "← Back to Subjects",
+    function() {
+      loadCurriculumProfile();
+    }
+  );
+
+  headingCard.appendChild(backButton);
+  weeksDisplay.appendChild(headingCard);
+
+  content.topics.forEach(function(topicItem) {
+    const week = topicItem.week || "";
+
+    const title =
+      topicItem.title || "Untitled topic";
+
+    const description =
+      topicItem.description || "";
+
+    const card = curriculumElement(
+      "div",
+      "stat-card"
+    );
+
+    card.style.marginTop = "12px";
+
+    card.appendChild(
+      curriculumElement(
+        "h3",
+        "",
+        "📅 Week " + week
+      )
+    );
+
+    card.appendChild(
+      curriculumElement(
+        "h4",
+        "",
+        title
+      )
+    );
+
+    if (description) {
+      card.appendChild(
+        curriculumElement(
+          "p",
+          "",
+          description
+        )
+      );
+    }
+
+    const lessonButton = curriculumButton(
+      "Open Lesson",
+      function() {
+        loadCurriculumLesson(
+          subject,
+          title
+        );
+      }
+    );
+
+    card.appendChild(lessonButton);
+    weeksDisplay.appendChild(card);
+  });
+
+  /* CURRICULUM SOURCES */
+
+  if (
+    Array.isArray(content.sources) &&
+    content.sources.length > 0
+  ) {
+    const sourceCard = curriculumElement(
+      "div",
+      "stat-card"
+    );
+
+    sourceCard.style.marginTop = "16px";
+
+    sourceCard.appendChild(
+      curriculumElement(
+        "h3",
+        "",
+        "🔎 Research Sources"
+      )
+    );
+
+    content.sources.forEach(function(source) {
+      const link = document.createElement("a");
+
+      link.textContent =
+        source.title || source.url || "Source";
+
+      link.href = source.url || "#";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.style.display = "block";
+      link.style.marginTop = "10px";
+
+      sourceCard.appendChild(link);
+    });
+
+    weeksDisplay.appendChild(sourceCard);
+  }
+
+  weeksDisplay.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+/* =========================================
+   LOAD AN INDIVIDUAL LESSON
+   ========================================= */
+
+async function loadCurriculumLesson(subject, topic) {
+  const weeksDisplay =
+    document.getElementById("curriculumWeeks");
+
+  const introDisplay =
+    document.getElementById("curriculumIntro");
+
+  const termSelect =
+    document.getElementById("curriculumTermSelect");
+
+  if (!weeksDisplay || !termSelect) {
+    return;
+  }
+
+  if (!currentKRONUser) {
+    curriculumMessage(
+      weeksDisplay,
+      "Please log in to open lessons."
+    );
+
+    return;
+  }
+
+  const level = kronCurriculumProfile.level;
+  const term = termSelect.value;
+  const requestId = ++kronCurriculumRequestId;
+
+  curriculumMessage(
+    weeksDisplay,
+    "Loading the lesson. KRON will check your saved lessons first..."
+  );
+
+  try {
+    const result = await requestCurriculumAPI({
+      action: "getLesson",
+      level: level,
+      term: term,
+      subject: subject,
+      topic: topic
+    });
+
+    if (requestId !== kronCurriculumRequestId) {
+      return;
+    }
+
+    displayCurriculumLesson(
+      subject,
+      topic,
+      result.content,
+      result.cached
+    );
+
+    introDisplay.textContent =
+      subject + " · " + term +
+      (result.cached
+        ? " · Saved lesson"
+        : " · New lesson saved");
+
+  } catch (error) {
+    if (requestId !== kronCurriculumRequestId) {
+      return;
+    }
+
+    console.error(
+      "KRON lesson loading error:",
+      error
+    );
+
+    curriculumMessage(
+      weeksDisplay,
+      error.message ||
+      "The lesson could not be loaded."
+    );
+
+    const retryButton = curriculumButton(
+      "Try Again",
+      function() {
+        loadCurriculumLesson(subject, topic);
+      }
+    );
+
+    const retryCard = curriculumElement(
+      "div",
+      "stat-card"
+    );
+
+    retryCard.appendChild(retryButton);
+    weeksDisplay.appendChild(retryCard);
+  }
+}
+
+/* =========================================
+   DISPLAY LESSON CONTENT
+   ========================================= */
+
+function displayCurriculumLesson(
+  subject,
+  topic,
+  lesson,
+  cached
+) {
+  const weeksDisplay =
+    document.getElementById("curriculumWeeks");
+
+  if (!weeksDisplay) {
+    return;
+  }
+
+  weeksDisplay.replaceChildren();
+
+  const topCard = curriculumElement(
+    "div",
+    "stat-card"
+  );
+
+  topCard.appendChild(
+    curriculumElement(
+      "h3",
+      "",
+      "📖 " + (lesson.title || topic)
+    )
+  );
+
+  topCard.appendChild(
+    curriculumElement(
+      "p",
+      "",
+      subject + (cached
+        ? " · Loaded from saved lessons"
+        : " · Generated and saved")
+    )
+  );
+
+  topCard.appendChild(
+    curriculumButton(
+      "← Back to Curriculum",
+      function() {
+        loadSubjectCurriculum(subject);
+      }
+    )
+  );
+
+  weeksDisplay.appendChild(topCard);
+
+  if (lesson.introduction) {
+    appendLessonSection(
+      weeksDisplay,
+      "Introduction",
+      lesson.introduction
+    );
+  }
+
+  if (Array.isArray(lesson.learningObjectives)) {
+    appendLessonList(
+      weeksDisplay,
+      "🎯 Learning Objectives",
+      lesson.learningObjectives
+    );
+  }
+
+  if (Array.isArray(lesson.sections)) {
+    lesson.sections.forEach(function(section) {
+      appendLessonSection(
+        weeksDisplay,
+        section.heading || "Lesson Section",
+        section.explanation || ""
+      );
+    });
+  }
+
+  if (Array.isArray(lesson.workedExamples)) {
+    const exampleCard = curriculumElement(
+      "div",
+      "stat-card"
+    );
+
+    exampleCard.appendChild(
+      curriculumElement(
+        "h3",
+        "",
+        "✍️ Worked Examples"
+      )
+    );
+
+    lesson.workedExamples.forEach(function(example) {
+      exampleCard.appendChild(
+        curriculumElement(
+          "h4",
+          "",
+          example.question || "Example"
+        )
+      );
+
+      exampleCard.appendChild(
+        curriculumElement(
+          "p",
+          "",
+          example.solution || ""
+        )
+      );
+    });
+
+    weeksDisplay.appendChild(exampleCard);
+  }
+
+  if (Array.isArray(lesson.summary)) {
+    appendLessonList(
+      weeksDisplay,
+      "🧠 Lesson Summary",
+      lesson.summary
+    );
+  }
+
+  if (Array.isArray(lesson.practiceQuestions)) {
+    const practiceCard = curriculumElement(
+      "div",
+      "stat-card"
+    );
+
+    practiceCard.appendChild(
+      curriculumElement(
+        "h3",
+        "",
+        "📝 Practice Questions"
+      )
+    );
+
+    lesson.practiceQuestions.forEach(function(item, index) {
+      practiceCard.appendChild(
+        curriculumElement(
+          "h4",
+          "",
+          (index + 1) + ". " +
+          (item.question || "Practice question")
+        )
+      );
+
+      if (item.answer) {
+        const answer = curriculumElement(
+          "details",
+          ""
+        );
+
+        const summary = curriculumElement(
+          "summary",
+          "",
+          "Show answer and explanation"
+        );
+
+        answer.appendChild(summary);
+
+        answer.appendChild(
+          curriculumElement(
+            "p",
+            "",
+            item.answer
+          )
+        );
+
+        practiceCard.appendChild(answer);
+      }
+    });
+
+    weeksDisplay.appendChild(practiceCard);
+  }
+
+  if (
+    Array.isArray(lesson.sources) &&
+    lesson.sources.length > 0
+  ) {
+    const sourcesCard = curriculumElement(
+      "div",
+      "stat-card"
+    );
+
+    sourcesCard.appendChild(
+      curriculumElement(
+        "h3",
+        "",
+        "🔎 Lesson Sources"
+      )
+    );
+
+    lesson.sources.forEach(function(source) {
+      const link = document.createElement("a");
+
+      link.textContent =
+        source.title || source.url || "Source";
+
+      link.href = source.url || "#";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.style.display = "block";
+      link.style.marginTop = "10px";
+
+      sourcesCard.appendChild(link);
+    });
+
+    weeksDisplay.appendChild(sourcesCard);
+  }
+
+  weeksDisplay.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+function appendLessonSection(container, heading, text) {
+  const card = curriculumElement(
+    "div",
+    "stat-card"
+  );
+
+  card.style.marginTop = "12px";
+
+  card.appendChild(
+    curriculumElement("h3", "", heading)
+  );
+
+  card.appendChild(
+    curriculumElement("p", "", text)
+  );
+
+  container.appendChild(card);
+}
+
+function appendLessonList(container, heading, items) {
+  const card = curriculumElement(
+    "div",
+    "stat-card"
+  );
+
+  card.style.marginTop = "12px";
+
+  card.appendChild(
+    curriculumElement("h3", "", heading)
+  );
+
+  const list = document.createElement("ul");
     
 async function checkKRONSession() {
   const { data, error } =
