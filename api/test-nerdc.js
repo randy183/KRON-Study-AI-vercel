@@ -6,10 +6,12 @@ export default async function handler(req, res) {
   }
 
   const targets = [
-    "https://lmis.nerdcportals.com.ng/sss_1",
     "https://lmis.nerdcportals.com.ng/s1_core",
-    "https://lmis.nerdcportals.com.ng/sss_1/necurrdc/viewer.html?file=4.pdf",
-    "https://lmis.nerdcportals.com.ng/sss_1/necurrdc/viewer.html?file=6.pdf"
+    "https://lmis.nerdcportals.com.ng/s1_science",
+    "https://lmis.nerdcportals.com.ng/s1_humanities",
+    "https://lmis.nerdcportals.com.ng/s1_business",
+    "https://lmis.nerdcportals.com.ng/viewer/sss_1/1",
+    "https://lmis.nerdcportals.com.ng/viewer/sss_1/2"
   ];
 
   const results = [];
@@ -39,35 +41,53 @@ export default async function handler(req, res) {
       let match;
 
       while ((match = pattern.exec(html)) !== null) {
-        links.push({
-          text: match[2]
-            .replace(/<[^>]*>/g, " ")
-            .replace(/\s+/g, " ")
-            .trim(),
-          url: new URL(match[1], response.url).href
-        });
+        try {
+          links.push({
+            text: match[2]
+              .replace(/<[^>]*>/g, " ")
+              .replace(/\s+/g, " ")
+              .trim(),
+            url: new URL(match[1], response.url).href
+          });
+        } catch {}
       }
 
       const visibleText = html
         .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
         .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
         .replace(/<[^>]+>/g, " ")
+        .replace(/&nbsp;/gi, " ")
+        .replace(/&amp;/gi, "&")
         .replace(/\s+/g, " ")
         .trim();
 
+      const pdfReferences = [
+        ...new Set(
+          [...html.matchAll(/["']([^"'<>]*\.pdf(?:\?[^"'<>]*)?)["']/gi)]
+            .map(item => {
+              try {
+                return new URL(item[1], response.url).href;
+              } catch {
+                return null;
+              }
+            })
+            .filter(Boolean)
+        )
+      ];
+
       results.push({
-        requestedUrl: url,
-        finalUrl: response.url,
+        url,
         status: response.status,
         contentType: response.headers.get("content-type"),
         pageLength: html.length,
         title,
-        textPreview: visibleText.slice(0, 1800),
-        links: links.slice(0, 25)
+        textPreview: visibleText.slice(0, 900),
+        links: links.slice(0, 15),
+        pdfReferences: pdfReferences.slice(0, 10)
       });
     } catch (error) {
       results.push({
-        requestedUrl: url,
+        url,
         error: error.message
       });
     }
