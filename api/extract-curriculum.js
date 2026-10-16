@@ -14,6 +14,85 @@ SS2: "sss_2",
 SS3: "sss_3"
 };
 
+function cleanText(text) {
+return text
+.replace(/\r/g, "\n")
+.replace(/[ \t]+/g, " ")
+.replace(/\n[ \t]+/g, "\n")
+.replace(/\n{3,}/g, "\n\n")
+.trim();
+}
+
+function extractTopicSections(text) {
+const headings = [
+"Overview",
+"Scope and Sequence",
+"Scope and Sequence of Content",
+"Content",
+"Learning Outcomes",
+"Learning Objectives",
+"Performance Objectives",
+"Curriculum Content",
+"Specific Objectives"
+];
+
+const lines = text
+.split("\n")
+.map(line => line.trim())
+.filter(Boolean);
+
+const sections = [];
+const seen = new Set();
+
+for (let i = 0; i < lines.length; i++) {
+const line = lines[i];
+const normalized = line
+.replace(/[:.]+$/, "")
+.trim()
+.toLowerCase();
+
+const matchedHeading = headings.find(
+  heading => heading.toLowerCase() === normalized
+);
+
+if (!matchedHeading) continue;
+
+const collected = [];
+const limit = Math.min(lines.length, i + 45);
+
+for (let j = i + 1; j < limit; j++) {
+  const current = lines[j];
+
+  if (
+    headings.some(
+      heading =>
+        heading.toLowerCase() ===
+        current.replace(/[:.]+$/, "").trim().toLowerCase()
+    )
+  ) {
+    break;
+  }
+
+  collected.push(current);
+}
+
+const sectionText = collected.join("\n").trim();
+const key = sectionText.toLowerCase();
+
+if (sectionText.length > 80 && !seen.has(key)) {
+  seen.add(key);
+
+  sections.push({
+    heading: matchedHeading,
+    text: sectionText.slice(0, 5000)
+  });
+}
+
+}
+
+return sections.slice(0, 12);
+}
+
 export default async function handler(req, res) {
 if (req.method !== "GET" && req.method !== "POST") {
 return res.status(405).json({
@@ -26,18 +105,9 @@ try {
 let input = {};
 
 if (req.method === "POST") {
-  if (typeof req.body === "string") {
-    try {
-      input = JSON.parse(req.body);
-    } catch {
-      return res.status(400).json({
-        success: false,
-        error: "Request body must contain valid JSON."
-      });
-    }
-  } else {
-    input = req.body || {};
-  }
+  input = typeof req.body === "string"
+    ? JSON.parse(req.body)
+    : req.body || {};
 } else {
   input = req.query || {};
 }
@@ -54,15 +124,14 @@ const week = Number(input.week || 1);
 if (!CURRICULUM_FOLDERS[level]) {
   return res.status(400).json({
     success: false,
-    error: "Choose SS1, SS2, or SS3.",
-    availableLevels: Object.keys(CURRICULUM_FOLDERS)
+    error: "Choose SS1, SS2, or SS3."
   });
 }
 
 if (!Number.isInteger(week) || week < 1 || week > 12) {
   return res.status(400).json({
     success: false,
-    error: "Week must be a whole number from 1 to 12."
+    error: "Week must be between 1 and 12."
   });
 }
 
@@ -71,16 +140,14 @@ const pdfFile = SUBJECTS[subject];
 if (!pdfFile) {
   return res.status(400).json({
     success: false,
-    error: "This subject has not been configured yet.",
+    error: "Subject is not configured.",
     availableSubjects: Object.keys(SUBJECTS)
   });
 }
 
-const folder = CURRICULUM_FOLDERS[level];
-
 const pdfUrl =
   "https://lmis.nerdcportals.com.ng/" +
-  folder +
+  CURRICULUM_FOLDERS[level] +
   "/necurrdc/" +
   pdfFile;
 
@@ -96,12 +163,8 @@ if (!response.ok) {
   return res.status(502).json({
     success: false,
     error: "Could not retrieve the curriculum PDF.",
-    level,
-    subject,
     source: pdfUrl,
-    upstreamStatus: response.status,
-    note:
-      "The PDF may be missing from this folder or the source may be unavailable."
+    upstreamStatus: response.status
   });
 }
 
@@ -112,8 +175,6 @@ if (!contentType.toLowerCase().includes("application/pdf")) {
   return res.status(502).json({
     success: false,
     error: "The source did not return a PDF.",
-    level,
-    subject,
     source: pdfUrl,
     contentType
   });
@@ -123,60 +184,40 @@ const buffer = Buffer.from(
   await response.arrayBuffer()
 );
 
-if (
-  buffer.length < 5 ||
-  buffer.subarray(0, 5).toString() !== "%PDF-"
-) {
+if (buffer.subarray(0, 5).toString() !== "%PDF-") {
   return res.status(502).json({
     success: false,
-    error: "The downloaded file is not a valid PDF.",
-    level,
-    subject,
-    source: pdfUrl
+    error: "Invalid PDF file."
   });
 }
 
 const document = await pdf(buffer);
-
-const text = document.text
-  .replace(/[ \t]+/g, " ")
-  .replace(/\n{3,}/g, "\n\n")
-  .trim();
-
-if (!text || text.length < 100) {
-  return res.status(502).json({
-    success: false,
-    error: "The PDF was retrieved, but too little text was extracted.",
-    level,
-    subject,
-    source: pdfUrl,
-    pages: document.numpages,
-    extractedCharacters: text.length
-  });
-}
+const text = cleanText(document.text);
+const topicSections = extractTopicSections(text);
 
 return res.status(200).json({
   success: true,
   level,
   subject,
   requestedWeek: week,
-  document: "NERDC Senior Secondary Curriculum",
   source: pdfUrl,
   pages: document.numpages,
   extractedCharacters: text.length,
-  note:
-    "This endpoint extracts the source document. It does not yet identify weekly topics or create an official week-by-week schedule.",
-  textPreview: text.slice(0, 8000)
+  topicSectionsFound: topicSections.length,
+  topicSections,
+  note: topicSections.length
+    ? "These are extracted curriculum sections. They have not yet been verified as a week-by-week plan."
+    : "No matching headings were detected. The PDF's actual structure needs inspection before topics can be extracted reliably."
 });
 
 } catch (error) {
-console.error("Curriculum extraction failed:", error);
+console.error("Topic extraction failed:", error);
 
 return res.status(500).json({
   success: false,
-  error: "Curriculum extraction failed.",
-  details: error.message || "Unknown server error."
+  error: "Topic extraction failed.",
+  details: error.message || "Unknown error."
 });
 
 }
-}
+  }
