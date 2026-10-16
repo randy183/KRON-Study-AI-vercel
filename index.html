@@ -1562,28 +1562,60 @@ function showAuthMode(mode) {
     weeksDisplay.replaceChildren();
 
     for (let week = 1; week <= 12; week++) {
-      const card = document.createElement("div");
-      card.className = "stat-card";
+  const card = document.createElement("button");
 
-      const title = document.createElement("h3");
-      title.textContent = "Week " + week;
+  card.type = "button";
+  card.className = "stat-card";
+  card.style.cursor = "pointer";
+  card.style.textAlign = "left";
+  card.style.width = "100%";
+  card.style.marginBottom = "12px";
+  card.setAttribute("aria-label", "Open Week " + week);
 
-      const description = document.createElement("p");
-      description.textContent =
-        "Your " + classDisplay.textContent + " study plan.";
+  const title = document.createElement("h3");
+  title.textContent = "📅 Week " + week;
 
-      card.append(title, description);
-      weeksDisplay.appendChild(card);
+  const description = document.createElement("p");
+  description.textContent = "Tap to view this week's subjects.";
+
+  card.append(title, description);
+
+  card.addEventListener("click", function () {
+    introDisplay.textContent =
+      "You selected Week " + week + " for " +
+      classDisplay.textContent + ".";
+
+    subjectsDisplay.replaceChildren();
+
+    if (subjects.length === 0) {
+      subjectsDisplay.textContent =
+        "No subjects selected. Update your Profile first.";
+      return;
     }
-  } catch (error) {
-    console.error("Curriculum profile loading error:", error);
 
-    classDisplay.textContent = "Unable to load profile";
-    introDisplay.textContent = "Please refresh and try again.";
-    subjectsDisplay.textContent = "Subjects could not be loaded.";
-    weeksDisplay.textContent = "Study weeks could not be loaded.";
-  }
-    }
+    subjects.forEach(function (subject) {
+      const subjectCard = document.createElement("div");
+      subjectCard.className = "stat-card";
+
+      const subjectTitle = document.createElement("h3");
+      subjectTitle.textContent = "📘 " + subject;
+
+      const subjectDescription = document.createElement("p");
+      subjectDescription.textContent =
+        "Week " + week + " · Curriculum topics will be added here.";
+
+      subjectCard.append(subjectTitle, subjectDescription);
+      subjectsDisplay.appendChild(subjectCard);
+    });
+
+    subjectsDisplay.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  });
+
+  weeksDisplay.appendChild(card);
+                     }
     
 async function checkKRONSession() {
   const { data, error } =
