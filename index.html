@@ -1614,8 +1614,18 @@ function showAuthMode(mode) {
     });
   });
 
-  weeksDisplay.appendChild(card);
-                     }
+        weeksDisplay.appendChild(card);
+    }
+
+  } catch (error) {
+    console.error("Curriculum profile loading error:", error);
+
+    classDisplay.textContent = "Unable to load profile";
+    introDisplay.textContent = "Please refresh and try again.";
+    subjectsDisplay.textContent = "Subjects could not be loaded.";
+    weeksDisplay.textContent = "Study weeks could not be loaded.";
+  }
+    }
     
 async function checkKRONSession() {
   const { data, error } =
