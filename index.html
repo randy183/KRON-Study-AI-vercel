@@ -1479,6 +1479,111 @@ function showAuthMode(mode) {
     checkbox.checked = savedSubjects.includes(checkbox.value);
   });
     }
+
+    async function loadCurriculumProfile() {
+  const classDisplay = document.getElementById("curriculumClass");
+  const introDisplay = document.getElementById("curriculumIntro");
+  const subjectsDisplay = document.getElementById("curriculumSubjects");
+  const weeksDisplay = document.getElementById("curriculumWeeks");
+
+  if (!classDisplay || !introDisplay || !subjectsDisplay || !weeksDisplay) {
+    return;
+  }
+
+  if (!currentKRONUser) {
+    classDisplay.textContent = "Please log in";
+    introDisplay.textContent = "Log in to view your personal curriculum.";
+    subjectsDisplay.textContent = "Your subjects will appear here after login.";
+    weeksDisplay.textContent = "Your study weeks will appear here after login.";
+    return;
+  }
+
+  classDisplay.textContent = "Loading...";
+  introDisplay.textContent = "Retrieving your saved profile...";
+  subjectsDisplay.textContent = "Loading subjects...";
+  weeksDisplay.textContent = "Loading study weeks...";
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("profiles")
+      .select("class_level, favorite_subject")
+      .eq("id", currentKRONUser.id)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (!data?.class_level) {
+      classDisplay.textContent = "Class not selected";
+      introDisplay.textContent = "Open your Profile and save your class level.";
+      subjectsDisplay.textContent = "No subjects available yet.";
+      weeksDisplay.textContent = "Save your profile to begin.";
+      return;
+    }
+
+    const classNames = {
+      SS1: "Senior Secondary School 1",
+      SS2: "Senior Secondary School 2",
+      SS3: "Senior Secondary School 3",
+      WAEC: "WAEC Preparation"
+    };
+
+    classDisplay.textContent =
+      classNames[data.class_level] || data.class_level;
+
+    introDisplay.textContent =
+      "Your curriculum will be organised for " + classDisplay.textContent + ".";
+
+    const subjects = (data.favorite_subject || "")
+      .split(",")
+      .map(subject => subject.trim())
+      .filter(Boolean);
+
+    subjectsDisplay.replaceChildren();
+
+    if (subjects.length === 0) {
+      subjectsDisplay.textContent =
+        "No subjects selected. Choose subjects in your Profile.";
+    } else {
+      subjects.forEach(subject => {
+        const card = document.createElement("div");
+        card.className = "stat-card";
+
+        const title = document.createElement("h3");
+        title.textContent = subject;
+
+        const description = document.createElement("p");
+        description.textContent = "Curriculum subject";
+
+        card.append(title, description);
+        subjectsDisplay.appendChild(card);
+      });
+    }
+
+    weeksDisplay.replaceChildren();
+
+    for (let week = 1; week <= 12; week++) {
+      const card = document.createElement("div");
+      card.className = "stat-card";
+
+      const title = document.createElement("h3");
+      title.textContent = "Week " + week;
+
+      const description = document.createElement("p");
+      description.textContent =
+        "Your " + classDisplay.textContent + " study plan.";
+
+      card.append(title, description);
+      weeksDisplay.appendChild(card);
+    }
+  } catch (error) {
+    console.error("Curriculum profile loading error:", error);
+
+    classDisplay.textContent = "Unable to load profile";
+    introDisplay.textContent = "Please refresh and try again.";
+    subjectsDisplay.textContent = "Subjects could not be loaded.";
+    weeksDisplay.textContent = "Study weeks could not be loaded.";
+  }
+    }
     
 async function checkKRONSession() {
   const { data, error } =
@@ -1841,7 +1946,9 @@ function showPage(pageName) {
 
   target.classList.add("active");
   KRON.currentPage = pageName;
-
+  if (pageName === "curriculum") {
+    loadCurriculumProfile();
+    }
   document.querySelectorAll("[data-page]").forEach(
     function(button) {
       button.classList.toggle(
