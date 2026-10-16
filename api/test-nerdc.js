@@ -3,92 +3,79 @@ if (req.method !== "GET") {
 return res.status(405).json({ error: "Use GET for this test." });
 }
 
-const targets = [
-"https://www.nerdc.gov.ng/content_manager/national_curriculum_brief.html",
-"https://www.nerdc.gov.ng/content_manager/cdc.html",
-"https://www.nerdc.gov.ng/content_manager/cd.html"
-];
+const url =
+"https://www.nerdc.gov.ng/content_manager/national_curriculum_brief.html";
 
-const results = [];
-
-for (const url of targets) {
 try {
 const response = await fetch(url, {
 redirect: "follow",
-signal: AbortSignal.timeout(12000)
+signal: AbortSignal.timeout(15000)
 });
 
-  const html = await response.text();
+const html = await response.text();
 
-  const title =
-    html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]
-      ?.replace(/<[^>]*>/g, "")
-      .replace(/\s+/g, " ")
-      .trim() || "";
+const text = html
+  .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+  .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
+  .replace(/<[^>]+>/g, " ")
+  .replace(/&nbsp;/gi, " ")
+  .replace(/&amp;/gi, "&")
+  .replace(/&quot;/gi, '"')
+  .replace(/&#39;/gi, "'")
+  .replace(/\s+/g, " ")
+  .trim();
 
-  const links = [];
-  const pattern =
-    /<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+const terms = [
+  "senior secondary",
+  "SS1",
+  "SS2",
+  "SS3",
+  "Mathematics",
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "download",
+  ".pdf",
+  ".docx"
+];
 
-  let match;
+const matches = {};
 
-  while ((match = pattern.exec(html)) !== null) {
-    const href = match[1].trim();
-    const text = match[2]
-      .replace(/<[^>]*>/g, " ")
-      .replace(/&nbsp;/gi, " ")
-      .replace(/&amp;/gi, "&")
-      .replace(/\s+/g, " ")
-      .trim();
+for (const term of terms) {
+  const found = [];
+  const lowerText = text.toLowerCase();
+  const lowerTerm = term.toLowerCase();
+  let position = 0;
 
-    if (!href || href.startsWith("#") || href.startsWith("javascript:")) {
-      continue;
-    }
-
-    let resolved;
-
-    try {
-      resolved = new URL(href, url);
-    } catch {
-      continue;
-    }
-
-    if (
-      !["nerdc.gov.ng", "www.nerdc.gov.ng", "nerdc.org.ng", "www.nerdc.org.ng"]
-        .includes(resolved.hostname.toLowerCase())
-    ) {
-      continue;
-    }
-
-    if (
-      /\.(pdf|doc|docx|xls|xlsx|zip)(?:$|[?#])/i.test(resolved.href) ||
-      /curriculum|syllabus|senior secondary|subject|download|document|education/i.test(
-        text + " " + resolved.pathname
+  while (
+    (position = lowerText.indexOf(lowerTerm, position)) !== -1 &&
+    found.length < 3
+  ) {
+    found.push(
+      text.slice(
+        Math.max(0, position - 140),
+        Math.min(text.length, position + term.length + 220)
       )
-    ) {
-      links.push({
-        title: text || "(No link title)",
-        url: resolved.href
-      });
-    }
+    );
+
+    position += lowerTerm.length;
   }
 
-  results.push({
-    url,
-    status: response.status,
-    title,
-    pageLength: html.length,
-    relevantLinkCount: links.length,
-    links: links.slice(0, 20)
-  });
+  matches[term] = found;
+}
+
+return res.status(200).json({
+  success: response.ok,
+  status: response.status,
+  pageLength: html.length,
+  extractedTextLength: text.length,
+  matches
+});
+
 } catch (error) {
-  results.push({
-    url,
-    error: error.message
-  });
+return res.status(200).json({
+success: false,
+error: error.message
+});
 }
-
-}
-
-return res.status(200).json({ results });
 }
