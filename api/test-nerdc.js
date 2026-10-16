@@ -1,54 +1,93 @@
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({
-      error: "Use GET for this test."
+if (req.method !== "GET") {
+return res.status(405).json({
+error: "Use GET for this test."
+});
+}
+
+const baseUrl =
+"https://www.nerdc.gov.ng/content_manager/new_senior_curriculum_home.html";
+
+try {
+const response = await fetch(baseUrl, {
+redirect: "follow",
+signal: AbortSignal.timeout(15000)
+});
+
+if (!response.ok) {
+  return res.status(200).json({
+    success: false,
+    status: response.status,
+    message: "NERDC homepage could not be retrieved."
+  });
+}
+
+const html = await response.text();
+
+const links = [];
+const pattern =
+  /<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+
+let match;
+
+while ((match = pattern.exec(html)) !== null) {
+  const href = match[1].trim();
+  const title = match[2]
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!href || href.startsWith("#") || href.startsWith("javascript:")) {
+    continue;
+  }
+
+  let url;
+
+  try {
+    url = new URL(href, baseUrl);
+  } catch {
+    continue;
+  }
+
+  if (
+    !["nerdc.gov.ng", "www.nerdc.gov.ng", "nerdc.org.ng", "www.nerdc.org.ng"]
+      .includes(url.hostname.toLowerCase())
+  ) {
+    continue;
+  }
+
+  const combined = (title + " " + url.pathname).toLowerCase();
+
+  const relevant =
+    /\.(pdf|doc|docx|xls|xlsx|zip)(?:$|\/)/i.test(url.pathname) ||
+    /curriculum|syllabus|senior secondary|subject|education|download|document|scheme of work/.test(combined);
+
+  if (relevant) {
+    links.push({
+      title: title || "(No link title)",
+      url: url.href
     });
   }
+}
 
-  const targets = [
-    "http://www.nerdc.org.ng/eCurriculum",
-    "https://www.nerdc.org.ng/eCurriculum",
-    "https://nerdc.org.ng/CurriculumView.aspx"
-  ];
+const uniqueLinks = [
+  ...new Map(links.map(link => [link.url, link])).values()
+];
 
-  const results = [];
+return res.status(200).json({
+  success: true,
+  homepageStatus: response.status,
+  homepageLength: html.length,
+  relevantLinkCount: uniqueLinks.length,
+  links: uniqueLinks.slice(0, 40)
+});
 
-  for (const url of targets) {
-    try {
-      const response = await fetch(url, {
-        redirect: "follow",
-        signal: AbortSignal.timeout(12000)
-      });
-
-      const html = await response.text();
-
-      const title =
-        html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]
-          ?.replace(/<[^>]*>/g, "")
-          .replace(/\s+/g, " ")
-          .trim() || "";
-
-      const formCount = (html.match(/<form\b/gi) || []).length;
-      const selectCount = (html.match(/<select\b/gi) || []).length;
-
-      results.push({
-        requestedUrl: url,
-        finalUrl: response.url,
-        status: response.status,
-        contentType: response.headers.get("content-type"),
-        responseLength: html.length,
-        title,
-        formCount,
-        selectCount,
-        preview: html.slice(0, 150)
-      });
-    } catch (error) {
-      results.push({
-        requestedUrl: url,
-        error: error.message
-      });
-    }
-  }
-
-  return res.status(200).json({ results });
+} catch (error) {
+return res.status(200).json({
+success: false,
+error: error.message
+});
+}
 }
