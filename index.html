@@ -916,13 +916,6 @@ padding: 10px;
   </div>
 
   <div class="tutor-settings">
-    <label for="tutorLevel">Your Level</label>
-    <select id="tutorLevel">
-      <option value="SS1">SS1</option>
-      <option value="SS2">SS2</option>
-      <option value="SS3">SS3</option>
-      <option value="WAEC">WAEC Preparation</option>
-    </select>
 
     <label for="tutorSubject">Subject</label>
     <select id="tutorSubject">
@@ -3051,8 +3044,7 @@ const question = input.value.trim();
 
 if (!question || sendButton.disabled) return;
 
-const level = document.getElementById("tutorLevel").value;
-const subject = document.getElementById("tutorSubject").value;
+ const subject = document.getElementById("tutorSubject").value;
 
 addTutorMessage(question, "user");
 
@@ -3072,12 +3064,9 @@ headers: {
 "Content-Type": "application/json"
 },
 body: JSON.stringify({
-question: question,
-level: level,
-subject: subject
+  question: question,
+  subject: subject
 })
-});
-
 const data = await response.json();
 
 if (!response.ok) {
