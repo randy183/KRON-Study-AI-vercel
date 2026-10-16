@@ -3044,7 +3044,7 @@ const question = input.value.trim();
 
 if (!question || sendButton.disabled) return;
 
- const subject = document.getElementById("tutorSubject").value;
+const subject = document.getElementById("tutorSubject").value;
 
 addTutorMessage(question, "user");
 
@@ -3064,13 +3064,17 @@ headers: {
 "Content-Type": "application/json"
 },
 body: JSON.stringify({
-  question: question,
-  subject: subject
+question: question,
+subject: subject
 })
+});
+
 const data = await response.json();
 
 if (!response.ok) {
-  throw new Error(data.error || "The tutor could not answer right now.");
+  throw new Error(
+    data.error || "The tutor could not answer right now."
+  );
 }
 
 loadingMessage.querySelector("p").textContent =
@@ -3079,37 +3083,13 @@ loadingMessage.querySelector("p").textContent =
 } catch (error) {
 loadingMessage.querySelector("p").textContent =
 "Sorry, I couldn't connect to the tutor. Please check your connection and try again.";
+
 console.error("KRON Tutor error:", error);
+
 } finally {
 sendButton.disabled = false;
 sendButton.textContent = "Send ➤";
 input.focus();
-}
-}
-
-function connectTutor() {
-const form = document.getElementById("tutorChatForm");
-const clearButton = document.getElementById("clearTutorChat");
-
-if (form && !form.dataset.connected) {
-form.addEventListener("submit", sendTutorMessage);
-form.dataset.connected = "true";
-}
-
-if (clearButton && !clearButton.dataset.connected) {
-clearButton.addEventListener("click", function() {
-const messages = document.getElementById("tutorChatMessages");
-
-  messages.innerHTML = "";
-
-  addTutorMessage(
-    "New chat started! Choose your subject and ask me a question.",
-    "ai"
-  );
-});
-
-clearButton.dataset.connected = "true";
-
 }
     }
     
