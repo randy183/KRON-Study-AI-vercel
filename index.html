@@ -3092,6 +3092,17 @@ sendButton.textContent = "Send ➤";
 input.focus();
 }
     }
+
+    function connectTutor() {
+  const form = document.getElementById("tutorChatForm");
+
+  if (!form) {
+    console.error("KRON Tutor form not found.");
+    return;
+  }
+
+  form.addEventListener("submit", sendTutorMessage);
+    }
     
 function startKRON() {
   loadSavedData();
